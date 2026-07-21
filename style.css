@@ -91,3 +91,83 @@ font-size:4rem;
     z-index:2;
 
 }
+
+.nav-links{
+    display:flex;
+    gap:40px;
+
+    list-style:none;
+
+    margin:0;
+    padding:0;
+}
+
+header{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    z-index:1000;
+
+    backdrop-filter:blur(14px);
+
+    background:rgba(10,10,15,.25);
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.navbar{
+
+    max-width:1300px;
+
+    margin:auto;
+
+    height:70px;
+
+    padding:0 40px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+.logo{
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:1.3rem;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+}
+
+.nav-links a{
+
+    color:rgba(255,255,255,.8);
+
+    text-decoration:none;
+
+    font-size:.95rem;
+
+    transition:.3s;
+}
+
+.nav-links a:hover{
+
+    color:white;
+}
+
+#hero{
+
+    padding-top:70px;
+}
+
