@@ -225,7 +225,7 @@ header{
 
 .publication-card{
 
-    background:rgba(255,255,255,.03);
+    background:rgba(208,3,32,.12);
 
     border:1px solid rgba(255,255,255,.08);
 
@@ -243,7 +243,7 @@ header{
 
     transform:translateY(-4px);
 
-    border-color:rgba(110,198,255,.4);
+    border-color:rgba(187,85,121,1.0);
 
 }
 
