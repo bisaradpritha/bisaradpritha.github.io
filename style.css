@@ -1,4 +1,4 @@
-tml,
+html,
 
 body{
     margin:0;
@@ -9,7 +9,7 @@ body{
 
 body{
     font-family:Arial, sans-serif;
-    overflow:hidden;
+    overflow-x:hidden;
 }
 
 #hero{
@@ -23,6 +23,7 @@ body{
 
     position:relative;
     overflow:hidden;
+    padding-top:70px;
 
 }
 
@@ -166,11 +167,6 @@ header{
     color:white;
 }
 
-
-#hero{
-
-    padding-top:70px;
-}
 
 /* Overview Section*/
 #overview{
