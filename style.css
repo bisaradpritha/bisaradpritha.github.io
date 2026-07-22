@@ -311,3 +311,59 @@ footer {
 footer p {
     margin: 0;
 }
+
+/* ==========================
+   Cursor Trail
+========================== */
+
+#cursor-trail{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9999;
+}
+
+.cursor-dot{
+    position:absolute;
+
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:#bb5579;
+
+    opacity:.35;
+
+    transform:translate(-50%,-50%);
+
+    filter:blur(1px);
+
+    animation:fadeDot .6s linear forwards;
+}
+
+@keyframes fadeDot{
+
+    from{
+
+        opacity:.35;
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+
+    }
+
+    to{
+
+        opacity:0;
+
+        transform:
+            translate(
+                calc(-50% + var(--dx)),
+                calc(-50% + var(--dy))
+            )
+            scale(.2);
+
+    }
+
+}
