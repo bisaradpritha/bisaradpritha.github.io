@@ -1,6 +1,9 @@
 const cards = document.querySelectorAll(".journey-card");
 const dots = document.querySelectorAll(".dot");
 
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+
 let currentCard = 0;
 
 function showCard(index) {
@@ -18,6 +21,27 @@ function showCard(index) {
     currentCard = index;
 }
 
+function nextCard() {
+
+    let next = currentCard + 1;
+
+    if (next >= cards.length) next = 0;
+
+    showCard(next);
+
+}
+
+function previousCard() {
+
+    let prev = currentCard - 1;
+
+    if (prev < 0) prev = cards.length - 1;
+
+    showCard(prev);
+
+}
+
+
 // Click dots
 dots.forEach((dot, index) => {
 
@@ -29,28 +53,23 @@ dots.forEach((dot, index) => {
 
 });
 
-// Arrow keys
+// -------------------------------------
+// Button navigation
+// -------------------------------------
+nextBtn.addEventListener("click", nextCard);
+
+prevBtn.addEventListener("click", previousCard);
+
+// -------------------------------------
+// Keyboard navigation
+// -------------------------------------
 document.addEventListener("keydown", (e) => {
 
-    if (e.key === "ArrowRight") {
+    if (e.key === "ArrowRight")
+        nextCard();
 
-        let next = currentCard + 1;
-
-        if (next >= cards.length) next = 0;
-
-        showCard(next);
-
-    }
-
-    if (e.key === "ArrowLeft") {
-
-        let prev = currentCard - 1;
-
-        if (prev < 0) prev = cards.length - 1;
-
-        showCard(prev);
-
-    }
+    if (e.key === "ArrowLeft")
+        previousCard();
 
 });
 
