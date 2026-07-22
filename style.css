@@ -523,21 +523,25 @@ footer p {
 
 .about-image{
 
-    position:sticky;
+    position: sticky;
 
-    top:120px;
+    top: 120px;
 
 }
 
 .about-image img{
 
-    width:100%;
+    width: 100%;
 
-    display:block;
+    max-width: 260px;
 
-    border-radius:20px;
+    display: block;
 
-    border:1px solid var(--border);
+    margin: auto;
+
+    border-radius: 24px;
+
+    border: 1px solid rgba(187,85,121,.35);
 
 }
 
