@@ -553,6 +553,12 @@ footer p {
 
 }
 
+.journey-cards{
+
+    position:relative;
+
+}
+
 .journey-card{
 
     background:rgba(187,85,121,.12);
@@ -621,15 +627,57 @@ footer p {
 
 }
 
-.carousel-dots{
+.carousel-controls{
 
     display:flex;
 
     justify-content:center;
 
-    gap:12px;
+    align-items:center;
+
+    gap:1.2rem;
 
     margin-top:1.75rem;
+
+}
+
+.carousel-dots{
+
+    display:flex;
+
+    gap:.75rem;
+
+}
+
+#prev,
+#next{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(187,85,121,.12);
+
+    color:var(--text);
+
+    font-size:1.2rem;
+
+    cursor:pointer;
+
+    transition:.3s ease;
+
+}
+
+#prev:hover,
+#next:hover{
+
+    background:#bb5579;
+
+    transform:scale(1.08);
 
 }
 
