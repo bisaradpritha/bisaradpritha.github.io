@@ -336,7 +336,7 @@ footer p {
 
     pointer-events:none;
 
-    filter:blur(1.5px);
+    filter:blur(0.5px);
 
     animation:particleFade .8s ease-out forwards;
 
@@ -388,7 +388,7 @@ footer p {
 
     transform:translate(-50%,-50%);
 
-    filter:blur(10px);
+    filter:blur(8px);
 
     z-index:9998;
 
