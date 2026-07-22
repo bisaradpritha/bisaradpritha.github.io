@@ -1,52 +1,67 @@
 const trail = document.getElementById("cursor-trail");
 
-let lastTime = 0;
+const colors = [
+    "#bb5579",
+    "#bb5579",
+    "#bb5579",
+    "#bb5579",
+    "#bb5579"
+];
 
-document.addEventListener("mousemove", (e) => {
+let mouseX = 0;
+let mouseY = 0;
 
-    const now = Date.now();
+document.addEventListener("mousemove",(e)=>{
 
-    if (now - lastTime < 20) return;
-
-    lastTime = now;
-
-    const dot = document.createElement("div");
-
-    dot.className = "cursor-dot";
-
-    // Random size
-    const size = 3 + Math.random() * 4;
-
-    dot.style.width = size + "px";
-    dot.style.height = size + "px";
-
-    // Random opacity
-    dot.style.opacity = 0.15 + Math.random() * 0.25;
-
-    // Random drift direction
-    dot.style.setProperty("--dx", (Math.random() * 12 - 6) + "px");
-    dot.style.setProperty("--dy", (Math.random() * 12 - 6) + "px");
-
-    // Mostly pink with occasional cyan spark
-    const colors = [
-        "#bb5579",
-        "#bb5579",
-        "#bb5579",
-        "#bb5579",
-        "#47d8ff"
-    ];
-
-    dot.style.background =
-        colors[Math.floor(Math.random() * colors.length)];
-
-    // Position
-    dot.style.left = e.clientX + "px";
-    dot.style.top = e.clientY + "px";
-
-    trail.appendChild(dot);
-
-    setTimeout(() => {
-        dot.remove();
-    }, 600);
+    mouseX=e.clientX;
+    mouseY=e.clientY;
 
 });
+
+function createParticle(){
+
+    const p=document.createElement("div");
+
+    p.className="cursor-particle";
+
+    const size=2+Math.random()*6;
+
+    p.style.width=size+"px";
+    p.style.height=size+"px";
+
+    p.style.left=mouseX+"px";
+    p.style.top=mouseY+"px";
+
+    p.style.opacity=.15+Math.random()*.3;
+
+    p.style.background=
+        colors[Math.floor(Math.random()*colors.length)];
+
+    p.style.boxShadow=
+        `0 0 ${size*3}px ${p.style.background}`;
+
+    p.style.setProperty("--dx",
+        (Math.random()*18-9)+"px");
+
+    p.style.setProperty("--dy",
+        (Math.random()*18-9)+"px");
+
+    trail.appendChild(p);
+
+    setTimeout(()=>{
+
+        p.remove();
+
+    },800);
+
+}
+
+function animate(){
+
+    createParticle();
+
+    requestAnimationFrame(animate);
+
+}
+
+animate();
