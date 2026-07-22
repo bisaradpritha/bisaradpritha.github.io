@@ -567,6 +567,30 @@ footer p {
 
 }
 
+.journey-card{
+
+    display:none;
+
+    opacity:0;
+
+    transform:translateX(25px);
+
+    transition:
+        opacity .45s ease,
+        transform .45s ease;
+
+}
+
+.journey-card.active{
+
+    display:block;
+
+    opacity:1;
+
+    transform:translateX(0);
+
+}
+
 .journey-card:hover{
 
     border-color:#bb5579;
