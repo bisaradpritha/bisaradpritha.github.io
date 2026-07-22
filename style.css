@@ -12,7 +12,24 @@ body{
 
 body{
     font-family:'Inter', sans-serif;
+    color: #f4f5fb;
     overflow-x:hidden;
+
+    background:
+        radial-gradient(circle at top right,
+            rgba(71,216,255,0.05) 0%,
+            transparent 30%),
+
+        radial-gradient(circle at bottom left,
+            rgba(187,85,121,0.08) 0%,
+            transparent 35%),
+
+        linear-gradient(
+            180deg,
+            #0d0320 0%,
+            #12062b 45%,
+            #090018 100%
+        );
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -276,20 +293,19 @@ header{
 footer {
     width: 100%;
     padding: 2rem 0;
-    margin-top: 2rem;
+    margin-top: 4rem;
 
     text-align: center;
 
-    color: #bb5579;
+    color: rgba(244,245,251,.65);
     font-size: 0.9rem;
-    font-weight: 400;
 
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
 
-    background: rgba(10, 10, 15, 0.25);
+    background: rgba(13,3,32,.55);
 
-    border-top: 1px solid rgba(255,255,255,.08);
+    border-top: 1px solid rgba(71,216,255,.12);
 }
 
 footer p {
