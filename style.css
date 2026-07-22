@@ -396,3 +396,78 @@ footer p {
         transform .08s linear;
 
 }
+
+/* CTA Home Page */
+.cta-btn{
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-top:2.5rem;
+
+    padding:0.9rem 2.3rem;
+
+    border:2px solid #bb5579;
+    border-radius:999px;
+
+    color:#ffffff;
+    text-decoration:none;
+
+    font-weight:600;
+    letter-spacing:.4px;
+
+    background:transparent;
+
+    position:relative;
+    overflow:hidden;
+
+    transition:
+        color .35s ease,
+        transform .35s ease,
+        box-shadow .35s ease;
+
+    box-shadow:
+        0 0 10px rgba(187,85,121,.18);
+
+}
+.cta-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:#bb5579;
+
+    transform:scaleX(0);
+    transform-origin:left;
+
+    transition:transform .35s ease;
+
+    z-index:-1;
+
+}
+
+.cta-btn:hover{
+
+    color:white;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 0 22px rgba(187,85,121,.45);
+
+}
+
+.cta-btn:hover::before{
+
+    transform:scaleX(1);
+
+}
+.cta-btn:active{
+
+    transform:translateY(-1px);
+
+}
