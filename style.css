@@ -774,7 +774,7 @@ body::before{
 
     filter:blur(140px);
 
-    animation:ambientFlow1 25s ease-in-out infinite alternate;
+    animation:ambientFlow1 60s ease-in-out infinite alternate;
 
 }
 
