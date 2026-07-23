@@ -813,3 +813,110 @@ body::before{
 
 }
 
+/* =====================================
+   Glass Variables
+===================================== */
+
+:root{
+
+    --glass-bg:rgba(18, 8, 40, 0.55);
+
+    --glass-bg-hover:rgba(22, 10, 48, 0.65);
+
+    --glass-border:rgba(255,255,255,0.08);
+
+    --glass-highlight:rgba(255,255,255,0.05);
+
+    --glass-shadow:
+        0 12px 35px rgba(0,0,0,0.28);
+
+    --glass-shadow-hover:
+        0 18px 45px rgba(0,0,0,0.35);
+
+    --glass-blur:18px;
+
+    --radius-sm:12px;
+
+    --radius-md:18px;
+
+    --radius-lg:24px;
+
+    --radius-xl:32px;
+
+}
+
+
+/* =====================================
+   Glass Components
+===================================== */
+
+.glass{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:var(--glass-bg);
+
+    backdrop-filter:blur(var(--glass-blur));
+
+    -webkit-backdrop-filter:blur(var(--glass-blur));
+
+    border:1px solid var(--glass-border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--glass-shadow);
+
+    transition:
+        background .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease,
+        transform .35s ease;
+
+}
+
+
+/* =====================================
+   Glass Highlight
+===================================== */
+
+.glass::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    border-radius:inherit;
+
+    background:
+
+        linear-gradient(
+            180deg,
+            var(--glass-highlight) 0%,
+            rgba(255,255,255,0.02) 18%,
+            transparent 45%
+        );
+
+}
+
+
+/* =====================================
+   Glass Hover
+===================================== */
+
+.glass:hover{
+
+    background:var(--glass-bg-hover);
+
+    border-color:rgba(187,85,121,0.22);
+
+    box-shadow:var(--glass-shadow-hover);
+
+    transform:translateY(-3px);
+
+}
