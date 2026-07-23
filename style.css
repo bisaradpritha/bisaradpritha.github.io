@@ -715,3 +715,91 @@ footer p {
 }
 
 }
+
+/* =====================================
+   Ambient Background
+===================================== */
+
+body{
+
+    background: var(--bg-main);
+
+    position: relative;
+
+    overflow-x: hidden;
+
+}
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    inset:-40%;
+
+    pointer-events:none;
+
+    z-index:-2;
+
+    background:
+
+        radial-gradient(
+            circle at 25% 30%,
+            rgba(187,85,121,.18),
+            transparent 45%
+        ),
+
+        radial-gradient(
+            circle at 75% 65%,
+            rgba(58,20,101,.22),
+            transparent 45%
+        ),
+
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(26,8,56,.70),
+            transparent 70%
+        );
+
+    filter:blur(140px);
+
+    animation:ambientFlow1 90s ease-in-out infinite alternate;
+
+}
+
+/* =====================================
+   Ambient Background Animation
+===================================== */
+
+@keyframes ambientFlow1{
+
+    0%{
+
+        transform:
+            translate(-3%, -2%)
+            scale(1)
+            rotate(0deg);
+
+    }
+
+    50%{
+
+        transform:
+            translate(2%, 3%)
+            scale(1.08)
+            rotate(2deg);
+
+    }
+
+    100%{
+
+        transform:
+            translate(-2%, 1%)
+            scale(.98)
+            rotate(-2deg);
+
+    }
+
+}
+
