@@ -787,7 +787,7 @@ body::before{
     0%{
 
         transform:
-            translate(-3%, -2%)
+            translate(-12%, -8%)
             scale(1)
             rotate(0deg);
 
@@ -796,18 +796,18 @@ body::before{
     50%{
 
         transform:
-            translate(2%, 3%)
-            scale(1.08)
-            rotate(2deg);
+            translate(8%, 10%)
+            scale(1.12)
+            rotate(4deg);
 
     }
 
     100%{
 
         transform:
-            translate(-2%, 1%)
-            scale(.98)
-            rotate(-2deg);
+            translate(-10%, 6%)
+            scale(.94)
+            rotate(-3deg);
 
     }
 
