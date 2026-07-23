@@ -523,13 +523,11 @@ footer p {
 
 .about-photo{
 
-    position: sticky;
+    display:flex;
 
-    top: 120px;
+    justify-content:center;
 
-    display: flex;
-
-    justify-content: center;
+    align-items:center;
 
 }
 
@@ -551,6 +549,8 @@ footer p {
 
     flex-direction:column;
 
+    justify-content:center;
+
 }
 
 .journey-cards{
@@ -561,33 +561,22 @@ footer p {
 
 .journey-card{
 
-    background:rgba(187,85,121,.12);
+    background: rgba(187,85,121,.12);
+    border: 2px solid rgba(187,85,121,.18);
+    border-radius: 24px;
+    padding: 2.5rem;
+    backdrop-filter: blur(16px);
+    min-height: 420px;
 
-    border:2px solid rgba(187,85,121,.18);
-
-    border-radius:24px;
-
-    padding:2.5rem;
-
-    backdrop-filter:blur(16px);
-
-    min-height:420px;
-
-    transition:.35s ease;
-
-}
-
-.journey-card{
-
-    display:none;
-
-    opacity:0;
-
-    transform:translateX(25px);
+    display: none;
+    opacity: 0;
+    transform: translateX(25px);
 
     transition:
         opacity .45s ease,
-        transform .45s ease;
+        transform .45s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
 
 }
 
