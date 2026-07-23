@@ -843,6 +843,8 @@ body::before{
 
     --radius-xl:32px;
 
+    --glass-padding:clamp(1.5rem, 2vw, 2.5rem);
+
 }
 
 
@@ -856,15 +858,17 @@ body::before{
 
     overflow:hidden;
 
+    padding:var(--glass-padding);
+
     background:var(--glass-bg);
 
     backdrop-filter:blur(var(--glass-blur));
 
     -webkit-backdrop-filter:blur(var(--glass-blur));
 
-    border:1px solid var(--glass-border);
+    border:2px solid var(--glass-border);
 
-    border-radius:var(--radius-lg);
+    border-radius:var(--radius-xl);
 
     box-shadow:var(--glass-shadow);
 
