@@ -752,13 +752,13 @@ body::before{
 
         radial-gradient(
             circle at 75% 65%,
-            rgba(58,20,101,.2),
+            rgba(58,20,101,.07),
             transparent 45%
         ),
 
         radial-gradient(
             circle at 50% 50%,
-            rgba(187,85,121,.5),
+            rgba(28,8,56,.1),
             transparent 70%
         );
 
