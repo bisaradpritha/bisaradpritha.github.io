@@ -746,7 +746,7 @@ body::before{
 
         radial-gradient(
             circle at 25% 30%,
-            rgba(187,85,121,.18),
+            rgba(28,8,56,.18),
             transparent 45%
         ),
 
@@ -758,13 +758,13 @@ body::before{
 
         radial-gradient(
             circle at 50% 50%,
-            rgba(26,8,56,.70),
+            rgba(187,85,121,.70),
             transparent 70%
         );
 
     filter:blur(140px);
 
-    animation:ambientFlow1 90s ease-in-out infinite alternate;
+    animation:ambientFlow1 30s ease-in-out infinite alternate;
 
 }
 
