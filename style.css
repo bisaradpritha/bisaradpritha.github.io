@@ -540,7 +540,7 @@ footer p {
     border-radius: 20px;
 
     border: 1px solid var(--border);
-    transform:translateY(30px);
+    transform:translateY(-60px);
 
 }
 
