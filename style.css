@@ -493,8 +493,6 @@ footer p {
 
     overflow:hidden;
 
-    padding:8rem 0;
-
 }
 
 
@@ -521,7 +519,7 @@ footer p {
 
     position:relative;
 
-    z-index:2;
+    z-index:1;
 
 }
 
