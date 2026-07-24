@@ -949,3 +949,70 @@ footer p {
     color:rgba(255,255,255,.82);
 
 }
+
+
+/* =====================================
+   Research Timeline
+===================================== */
+
+.research-timeline{
+
+    position:relative;
+
+    padding:2rem 0 6rem;
+
+}
+
+.timeline{
+
+    position:relative;
+
+    width:min(1200px,90%);
+
+    margin:0 auto;
+
+}
+
+.timeline::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    bottom:0;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:2px;
+
+    background:rgba(255,255,255,.15);
+
+}
+
+.timeline-item{
+
+    position:relative;
+
+    width:50%;
+
+    margin-bottom:5rem;
+
+}
+
+.timeline-item.left{
+
+    padding-right:4rem;
+
+}
+
+.timeline-item.right{
+
+    margin-left:50%;
+
+    padding-left:4rem;
+
+}
