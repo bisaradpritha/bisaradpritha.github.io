@@ -1029,6 +1029,10 @@ footer p {
 
     top:2rem;
 
+    left:50%;
+
+    transform:translate(-50%, 0);
+
     width:22px;
 
     height:22px;
@@ -1037,24 +1041,12 @@ footer p {
 
     border-radius:50%;
 
-    background:rgba(13,3,32,.95);
+    background:#0d0320;
 
     z-index:5;
 
 }
 
-
-.timeline-item.left .timeline-node{
-
-    right:-11px;
-
-}
-
-.timeline-item.right .timeline-node{
-
-    left:-11px;
-
-}
 
 .node-core{
 
