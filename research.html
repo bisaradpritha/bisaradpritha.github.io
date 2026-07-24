@@ -46,10 +46,18 @@ content="Research Page on the Official website of Pritha Bisarad.">
     <!-- =====================================
      Research Hero
      ===================================== -->
+    <main id="about-page">
 
-<section class="research-hero">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.fog.min.js"></script>
 
-    <div class="container">
+          <script src="script.js"></script>
+ 
+         
+         <section class="research-hero">
+
+    
+              <div class="container">
 
         <h1>Research</h1>
 
@@ -204,6 +212,26 @@ content="Research Page on the Official website of Pritha Bisarad.">
     </a>
 
 </section>
+
+        <script>
+          VANTA.FOG({
+          el: "#about-page",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          highlightColor: 0xbb5579,
+          midtoneColor: 0x0d0320,
+          lowlightColor:0x0d0320,
+          baseColor: 0x0d0320,
+          blurFactor: 0.9,
+          zoom: 0.6,
+          speed: 1.0
+        });
+        </script>
+
+    </main>
 
 <footer>
     <p>&copy; <span id="year"></span> Pritha Bisarad. All rights reserved.</p>
