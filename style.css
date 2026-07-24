@@ -259,6 +259,14 @@ Recent Publication Section
 
 }
 
+#publications .container{
+
+    width:min(900px, 90%);
+
+    margin:auto;
+
+}
+
 #publications h2{
 
     color:#f5f5f5;
@@ -308,7 +316,9 @@ Recent Publication Section
 
 }
 
-/* footer */
+/* =====================
+       Footer 
+======================== */
 footer {
     width: 100%;
     padding: 2rem 0;
