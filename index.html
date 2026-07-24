@@ -90,8 +90,6 @@ VANTA.NET({
 
 <section id="overview">
 
-    <div class="finisher-header"></div>
-
     <div class="container glass">
 
         <h2>Research</h2>
@@ -109,51 +107,21 @@ VANTA.NET({
 </section>
 
 <script>
-
-new FinisherHeader({
-
-    count:100,
-
-    size:{
-        min:2,
-        max:13,
-        pulse:0
-    },
-
-    speed:{
-        x:{
-            min:0,
-            max:0.4
-        },
-        y:{
-            min:0,
-            max:0.6
-        }
-    },
-
-    colors:{
-        background:"#0d0320",
-        particles:[
-            "#bb5579",
-            "#ae1249"
-        ]
-    },
-
-    blending:"overlay",
-
-    opacity:{
-        center:1,
-        edge:0
-    },
-
-    skew:-2,
-
-    shapes:["c"]
-
-});
-
+VANTA.FOG({
+  el: "#overview",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  highlightColor: 0xbb5579,
+  midtoneColor: 0x0d0320,
+  lowlightColor:0x0d0320,
+  baseColor: 0x0d0320
+})
 </script>
 
+     
 <!-- recent publication section -->
 <section id="publications">
 
