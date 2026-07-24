@@ -192,8 +192,15 @@ header{
 }
 
 
-/* Overview Section*/
+/* =====================================
+   Overview Section
+===================================== */
+
 #overview{
+
+    position:relative;
+
+    overflow:hidden;
 
     padding:120px 0;
 
@@ -201,7 +208,37 @@ header{
 
 }
 
-.container{
+
+/* =====================================
+   Finisher Background
+===================================== */
+
+#overview .finisher-header{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:0;
+
+    width:100%;
+
+    height:100%;
+
+    pointer-events:none;
+
+}
+
+
+/* =====================================
+   Overview Content
+===================================== */
+
+#overview .container{
+
+    position:relative;
+
+    z-index:1;
 
     width:min(900px,90%);
 
@@ -483,45 +520,7 @@ footer p {
 
 }
 
-/* =====================================
-   Overview Section
-===================================== */
 
-#overview{
-
-    position:relative;
-
-    overflow:hidden;
-
-}
-
-
-/* =====================================
-   Finisher Background
-===================================== */
-
-#overview .finisher-header{
-
-    position:absolute;
-
-    inset:0;
-
-    z-index:0;
-
-}
-
-
-/* =====================================
-   Overview Content
-===================================== */
-
-#overview .container{
-
-    position:relative;
-
-    z-index:1;
-
-}
 
 /* ====================================
         About
