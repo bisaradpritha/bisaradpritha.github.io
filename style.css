@@ -930,9 +930,11 @@ footer p {
 
     font-family:"Space Grotesk",sans-serif;
 
-    max-width:750px;
+    max-width:700px;
 
     margin:0 auto 5rem;
+
+    padding:0 1rem;
 
     font-size:1.15rem;
 
