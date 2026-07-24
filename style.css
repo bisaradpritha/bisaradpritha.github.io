@@ -519,6 +519,21 @@ footer p {
 /* ====================================
         About
 ======================================= */
+
+#about{
+
+    position:relative;
+
+    min-height:100vh;
+
+    padding:140px 0 120px;
+
+    overflow:hidden;
+
+    background:#0d0320;
+
+}
+
 .about-header{
 
     margin-bottom:4rem;
@@ -553,7 +568,7 @@ footer p {
 
     gap:4rem;
 
-    align-items:center;
+    align-items:flex-start;
 
 }
 
@@ -576,7 +591,6 @@ footer p {
     border-radius: 20px;
 
     border: 1px solid var(--border);
-    transform:translateY(-60px);
 
 }
 
