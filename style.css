@@ -963,6 +963,10 @@ footer p {
 
 }
 
+/* =====================================
+   Timeline Container
+===================================== */
+
 .timeline{
 
     position:relative;
@@ -972,6 +976,10 @@ footer p {
     margin:0 auto;
 
 }
+
+/* =====================================
+   Timeline Spine
+===================================== */
 
 .timeline-spine{
 
@@ -993,23 +1001,49 @@ footer p {
 
 }
 
+/* =====================================
+   Timeline Items
+===================================== */
+
 .timeline-item{
 
     position:relative;
 
-    width:100%;
+    display:grid;
 
-    min-height:320px;
+    grid-template-columns:1fr 100px 1fr;
+
+    align-items:start;
 
     margin-bottom:5rem;
 
+    min-height:340px;
+
 }
+
+/* =====================================
+   Left & Right Layout
+===================================== */
+
+.timeline-item.left .timeline-card{
+
+    grid-column:1;
+
+}
+
+.timeline-item.right .timeline-card{
+
+    grid-column:3;
+
+}
+
+/* =====================================
+   Timeline Card
+===================================== */
 
 .timeline-card{
 
     position:relative;
-
-    width:40%;
 
     padding:2rem;
 
@@ -1017,7 +1051,22 @@ footer p {
 
     z-index:3;
 
+    transition:
+        transform .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+
 }
+
+.timeline-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+/* =====================================
+   Connector Lines
+===================================== */
 
 .timeline-card::after{
 
@@ -1025,54 +1074,45 @@ footer p {
 
     position:absolute;
 
-    top:48px;
+    top:43px;
 
     height:2px;
 
-    background:linear-gradient(
-    to right,
-    rgba(255,255,255,.08),
-    rgba(187,85,121,.45)
-);
+    background:rgba(255,255,255,.18);
 
 }
+
+/* Left Card Connector */
 
 .timeline-item.left .timeline-card::after{
 
     left:100%;
 
-    width:calc(10% + 1rem);
+    width:50px;
 
 }
+
+/* Right Card Connector */
 
 .timeline-item.right .timeline-card::after{
 
     right:100%;
 
-    width:calc(10% + 1rem);
+    width:50px;
 
 }
 
-
-.timeline-item.left .timeline-card{
-
-    margin-right:6rem;
-
-}
-
-.timeline-item.right .timeline-card{
-
-    margin-left:6rem;
-
-}
+/* =====================================
+   Timeline Node
+===================================== */
 
 .timeline-node{
 
     position:absolute;
 
-    top:2rem;
-
     left:50%;
+
+    top:32px;
 
     transform:translateX(-50%);
 
@@ -1086,10 +1126,13 @@ footer p {
 
     background:#0d0320;
 
-    z-index:10;
+    z-index:5;
 
 }
 
+/* =====================================
+   Node Core
+===================================== */
 
 .node-core{
 
@@ -1105,12 +1148,11 @@ footer p {
 
 }
 
+/* =====================================
+   Research Topic
+===================================== */
 
-/* ==========================
-        Typograpghy 
-============================= */
-
-.research-category{
+.research-topic{
 
     display:inline-block;
 
@@ -1120,28 +1162,82 @@ footer p {
 
     font-weight:600;
 
-    text-transform:uppercase;
-
     letter-spacing:.15em;
 
-    color:#fff;
+    text-transform:uppercase;
+
+    color:#bb5579;
 
 }
+
+/* =====================================
+   Card Heading
+===================================== */
 
 .timeline-card h2{
 
     margin-bottom:1rem;
 
-    color:#bb5579;
+    color:#fff;
 
     font-size:1.8rem;
 
+    line-height:1.2;
+
 }
+
+/* =====================================
+   Card Description
+===================================== */
 
 .timeline-card p{
 
-    color:rgba(255,255,255,.8);
+    color:rgba(255,255,255,.82);
 
     line-height:1.8;
+
+}
+
+/* =====================================
+   Publications
+===================================== */
+
+.publication-list{
+
+    margin-top:2rem;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:1rem;
+
+}
+
+.publication{
+
+    padding-top:1rem;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+.publication h3{
+
+    font-size:1rem;
+
+    color:#fff;
+
+    margin-bottom:.35rem;
+
+}
+
+.publication p{
+
+    margin:0;
+
+    font-size:.9rem;
+
+    color:rgba(255,255,255,.6);
 
 }
