@@ -58,6 +58,8 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
 
+<script src="finisher-header.es5.min.js"></script>
+
 <script src="script.js"></script>
 
 <script>
@@ -105,6 +107,52 @@ VANTA.NET({
     </div>
 
 </section>
+
+<script>
+
+new FinisherHeader({
+
+    count:100,
+
+    size:{
+        min:2,
+        max:13,
+        pulse:0
+    },
+
+    speed:{
+        x:{
+            min:0,
+            max:0.4
+        },
+        y:{
+            min:0,
+            max:0.6
+        }
+    },
+
+    colors:{
+        background:"#0d0320",
+        particles:[
+            "#bb5579",
+            "#ae1249"
+        ]
+    },
+
+    blending:"overlay",
+
+    opacity:{
+        center:1,
+        edge:0
+    },
+
+    skew:-2,
+
+    shapes:["c"]
+
+});
+
+</script>
 
 <!-- recent publication section -->
 <section id="publications">
