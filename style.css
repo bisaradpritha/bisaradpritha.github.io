@@ -973,9 +973,7 @@ footer p {
 
 }
 
-.timeline::before{
-
-    content:"";
+.timeline-spine{
 
     position:absolute;
 
@@ -985,11 +983,13 @@ footer p {
 
     left:50%;
 
-    transform:translateX(-50%);
-
     width:2px;
 
+    transform:translateX(-50%);
+
     background:rgba(255,255,255,.15);
+
+    z-index:1;
 
 }
 
@@ -1007,19 +1007,62 @@ footer p {
 
 .timeline-card{
 
-    width:42%;
+    position:relative;
+
+    width:40%;
+
+    padding:2rem;
+
+    border-radius:24px;
+
+    z-index:3;
 
 }
 
+.timeline-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:48px;
+
+    height:2px;
+
+    background:linear-gradient(
+    to right,
+    rgba(255,255,255,.08),
+    rgba(187,85,121,.45)
+);
+
+}
+
+.timeline-item.left .timeline-card::after{
+
+    left:100%;
+
+    width:calc(10% + 1rem);
+
+}
+
+.timeline-item.right .timeline-card::after{
+
+    right:100%;
+
+    width:calc(10% + 1rem);
+
+}
+
+
 .timeline-item.left .timeline-card{
 
-    margin-right:auto;
+    margin-right:6rem;
 
 }
 
 .timeline-item.right .timeline-card{
 
-    margin-left:auto;
+    margin-left:6rem;
 
 }
 
@@ -1031,7 +1074,7 @@ footer p {
 
     left:50%;
 
-    transform:translate(-50%, 0);
+    transform:translateX(-50%);
 
     width:22px;
 
@@ -1043,7 +1086,7 @@ footer p {
 
     background:#0d0320;
 
-    z-index:5;
+    z-index:10;
 
 }
 
@@ -1062,15 +1105,6 @@ footer p {
 
 }
 
-.timeline-card{
-
-    position:relative;
-
-    padding:2rem;
-
-    border-radius:24px;
-
-}
 
 /* ==========================
         Typograpghy 
