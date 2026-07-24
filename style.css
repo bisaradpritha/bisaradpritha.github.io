@@ -519,18 +519,23 @@ footer p {
 /* ====================================
         About
 ======================================= */
+#about-page{
+
+    position: relative;
+
+    min-height: 100vh;
+
+    padding: 120px 0;
+
+    overflow: hidden;
+
+    background: #0d0320;
+
+}
 
 #about{
 
     position:relative;
-
-    min-height:100vh;
-
-    padding:140px 0 120px;
-
-    overflow:hidden;
-
-    background:#0d0320;
 
 }
 
