@@ -483,6 +483,51 @@ footer p {
 
 }
 
+/* =====================================
+   Overview Section
+===================================== */
+
+#overview{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:8rem 0;
+
+}
+
+
+/* =====================================
+   Finisher Background
+===================================== */
+
+#overview .finisher-header{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:0;
+
+}
+
+
+/* =====================================
+   Overview Content
+===================================== */
+
+#overview .container{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* ====================================
+        About
+======================================= */
 .about-header{
 
     margin-bottom:4rem;
