@@ -1016,3 +1016,60 @@ footer p {
     padding-left:4rem;
 
 }
+
+.timeline-node{
+
+    position:absolute;
+
+    top:2rem;
+
+    width:22px;
+
+    height:22px;
+
+    border:2px solid rgba(187,85,121,.7);
+
+    border-radius:50%;
+
+    background:rgba(13,3,32,.95);
+
+    z-index:5;
+
+}
+
+
+.timeline-item.left .timeline-node{
+
+    right:-11px;
+
+}
+
+.timeline-item.right .timeline-node{
+
+    left:-11px;
+
+}
+
+.node-core{
+
+    position:absolute;
+
+    inset:4px;
+
+    border-radius:50%;
+
+    background:#bb5579;
+
+    box-shadow:0 0 12px rgba(187,85,121,.6);
+
+}
+
+.timeline-card{
+
+    position:relative;
+
+    padding:2rem;
+
+    border-radius:24px;
+
+}
