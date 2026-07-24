@@ -1079,3 +1079,43 @@ footer p {
     border-radius:24px;
 
 }
+
+/* ==========================
+        Typograpghy 
+============================= */
+
+.research-category{
+
+    display:inline-block;
+
+    margin-bottom:.75rem;
+
+    font-size:.85rem;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:.15em;
+
+    color:#fff;
+
+}
+
+.timeline-card h2{
+
+    margin-bottom:1rem;
+
+    color:#bb5579;
+
+    font-size:1.8rem;
+
+}
+
+.timeline-card p{
+
+    color:rgba(255,255,255,.8);
+
+    line-height:1.8;
+
+}
