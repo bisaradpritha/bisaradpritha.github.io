@@ -1241,3 +1241,41 @@ footer p {
     color:rgba(255,255,255,.6);
 
 }
+
+/* =====================================
+   Research CTA
+===================================== */
+
+.research-cta{
+
+    padding:8rem 0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+}
+
+.research-cta h2{
+
+    margin-bottom:1rem;
+
+    max-width:18ch;
+
+}
+
+.research-cta p{
+
+    max-width:700px;
+
+    margin:0 auto 2rem;
+
+    line-height:1.8;
+
+}
