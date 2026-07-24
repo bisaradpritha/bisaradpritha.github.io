@@ -997,23 +997,29 @@ footer p {
 
     position:relative;
 
-    width:50%;
+    width:100%;
+
+    min-height:320px;
 
     margin-bottom:5rem;
 
 }
 
-.timeline-item.left{
+.timeline-card{
 
-    padding-right:4rem;
+    width:42%;
 
 }
 
-.timeline-item.right{
+.timeline-item.left .timeline-card{
 
-    margin-left:50%;
+    margin-right:auto;
 
-    padding-left:4rem;
+}
+
+.timeline-item.right .timeline-card{
+
+    margin-left:auto;
 
 }
 
