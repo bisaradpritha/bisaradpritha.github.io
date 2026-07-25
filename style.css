@@ -1279,3 +1279,52 @@ footer p {
     line-height:1.8;
 
 }
+
+
+/* =====================================
+   Contact Hero
+===================================== */
+
+.contact-hero{
+
+    text-align:center;
+
+    padding:8rem 0 5rem;
+
+}
+
+.contact-hero .container{
+
+    max-width:800px;
+
+    margin:0 auto;
+
+}
+
+.contact-hero h1{
+
+    font-family:"Inter",sans-serif;
+
+    font-size:clamp(3rem,6vw,4.5rem);
+
+    color:#fff;
+
+    margin-bottom:1.5rem;
+
+}
+
+.contact-hero p{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    max-width:700px;
+
+    margin:0 auto;
+
+    font-size:1.15rem;
+
+    line-height:1.9;
+
+    color:rgba(255,255,255,.82);
+
+}
