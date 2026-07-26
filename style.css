@@ -238,6 +238,8 @@ header{
     top:18%;
     left:22%;
 
+    animation-delay:-0.5s;
+
 }
 
 .hub-2{
@@ -257,6 +259,8 @@ header{
 
     top:58%;
     left:38%;
+
+    animation-delay:-2s;
 
 }
 
@@ -278,6 +282,8 @@ header{
     top:28%;
     left:84%;
 
+    animation-delay:-1s;
+
 }
 
 .hub-6{
@@ -287,6 +293,30 @@ header{
 
     top:82%;
     left:18%;
+
+}
+
+.hub-7{
+
+    width:18px;
+    height:18px;
+
+    top:12%;
+    left:10%;
+
+    animation-delay:-1.5s;
+
+}
+
+.hub-8{
+
+    width:20px;
+    height:20px;
+
+    bottom:10%;
+    right:8%;
+
+    animation-delay:-3s;
 
 }
 
