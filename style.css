@@ -1576,7 +1576,7 @@ footer p {
 
 .contact-card h3{
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:"Inter",sans-serif;
 
     font-size:1.25rem;
 
@@ -1588,13 +1588,13 @@ footer p {
 
     margin-bottom:.8rem;
 
-    color:#ffffff;
+    color:#bb5579;
 
 }
 
 .contact-card p{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Space Grotesk",sans-serif;
 
     font-size:.98rem;
 
