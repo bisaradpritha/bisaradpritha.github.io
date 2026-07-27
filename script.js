@@ -279,9 +279,14 @@ function render() {
 
     ctx.clearRect(0, 0, width, height);
 
-    drawEdges();
+    ctx.fillStyle = "red";
 
-    drawNodes();
+    ctx.fillRect(
+        200 + Math.sin(elapsedTime * 3) * 150,
+        200,
+        40,
+        40
+    );
 
 }
 
