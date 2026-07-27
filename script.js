@@ -171,27 +171,27 @@ function generateNodes() {
 
     for (let i = 0; i < NODE_COUNT; i++) {
 
-        const margin = node.baseRadius + 20;
-        
+        const radius = randomRadius();
+    
+        const margin = radius + 20;
+    
         const x =
             margin +
             Math.random() * (width - margin * 2);
-        
+    
         const y =
             margin +
             Math.random() * (height - margin * 2);
-
+    
         nodes.push(
-
             new Node(
                 i,
                 x,
                 y,
-                randomRadius()
+                radius
             )
-
         );
-
+    
     }
 
 }
