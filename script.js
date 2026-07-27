@@ -1,6 +1,26 @@
+window.addEventListener("error", e => {
+    console.error("WINDOW ERROR:", e.error, e.message);
+});
+
+window.addEventListener("unhandledrejection", e => {
+    console.error("PROMISE ERROR:", e.reason);
+});
+
+document.addEventListener("visibilitychange", () => {
+    console.log("visibility:", document.visibilityState);
+});
+
+window.addEventListener("pagehide", () => {
+    console.log("PAGE HIDE");
+});
+
+window.addEventListener("beforeunload", () => {
+    console.log("BEFORE UNLOAD");
+});
 // =====================================
 // Connectome Engine
 // =====================================
+
 console.log("Running script:", document.currentScript?.src);
 const canvas = document.getElementById("connectomeCanvas");
 console.log(canvas);
