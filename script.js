@@ -306,4 +306,4 @@ generateNodes();
 
 buildConnections();
 
-animate();
+requestAnimationFrame(animate);
