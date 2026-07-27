@@ -156,7 +156,7 @@ function buildConnections() {
 
 function drawEdges() {
 
-    ctx.strokeStyle = "rgba(187, 85, 121, 0.18)";
+    ctx.strokeStyle = "rgba(187, 85, 121, 0.3)";
     ctx.lineWidth = 1.2;
 
     for (const edge of edges) {
