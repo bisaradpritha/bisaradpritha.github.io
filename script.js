@@ -273,13 +273,6 @@ function updateNodes(now) {
 
 function drawEdges() {
 
-    const alpha = Math.max(
-        0.08,
-        0.35 - length / 800
-    );
-    ctx.strokeStyle = `rgba(187,85,121,${alpha})`;
-    ctx.lineWidth = 1.2;
-    
     for (const edge of edges) {
 
         const ax = edge.nodeA.x;
@@ -295,34 +288,43 @@ function drawEdges() {
 
         if (length < 1) continue;
 
+        // Thickness depends on connected node sizes
+        ctx.lineWidth =
+            0.8 +
+            (edge.nodeA.radius + edge.nodeB.radius) / 10;
+
+        const alpha = Math.max(
+            0.08,
+            0.35 - length / 800
+        );
+
+        ctx.strokeStyle = `rgba(187,85,121,${alpha})`;
+
         const nx = -dy / length;
         const ny = dx / length;
 
-        const bend = Math.min(length * 0.18, 18);
+        const bend = Math.min(
+            Math.max(length * 0.12, 6),
+            18
+        );
 
         const mx = (ax + bx) / 2;
         const my = (ay + by) / 2;
 
         ctx.beginPath();
-
         ctx.moveTo(ax, ay);
 
         ctx.quadraticCurveTo(
-
             mx + nx * bend,
             my + ny * bend,
-
             bx,
             by
-
         );
 
         ctx.stroke();
-
     }
-
 }
-
+    
 function drawNodes() {
 
     ctx.fillStyle = NODE_COLOR;
