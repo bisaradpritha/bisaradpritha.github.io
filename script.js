@@ -342,6 +342,9 @@ function drawNodes() {
 
     for (const node of nodes) {
 
+        ctx.shadowBlur = node.radius * 3;
+        ctx.shadowColor = NODE_COLOR;
+        
         ctx.beginPath();
 
         ctx.arc(
@@ -355,6 +358,8 @@ function drawNodes() {
         );
 
         ctx.fill();
+
+        ctx.shadowBlur = 0;
 
     }
 
