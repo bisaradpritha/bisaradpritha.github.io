@@ -286,7 +286,7 @@ function render() {
 // =====================================
 // Animation Loop
 // =====================================
-
+console.log("animate is", animate);
 function animate(timestamp) {
 
     console.log("Frame", timestamp);
@@ -295,6 +295,7 @@ function animate(timestamp) {
 
 }
 
+console.log("animate is now", animate);
 // =====================================
 // Initialize
 // =====================================
