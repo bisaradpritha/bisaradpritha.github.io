@@ -176,24 +176,19 @@ function updateNodes() {
 
         node.x =
             node.homeX +
-            node.ampX *
-            Math.sin(
-                elapsedTime * node.freqX * Math.PI * 2
-                + node.phaseX
-            );
+            12 *
+            Math.sin(elapsedTime * 1.6 + node.phaseX);
 
         node.y =
             node.homeY +
-            node.ampY *
-            Math.cos(
-                elapsedTime * node.freqY * Math.PI * 2
-                + node.phaseY
-            );
+            12 *
+            Math.cos(elapsedTime * 1.2 + node.phaseY);
+
+        console.log(nodes[0].x, nodes[0].y);
 
     }
 
 }
-
 // =====================================
 // Draw Edges
 // =====================================
@@ -297,6 +292,7 @@ function render() {
 function animate() {
 
     elapsedTime += 1 / 60;
+    console.log(elapsedTime);
 
     updateNodes();
 
