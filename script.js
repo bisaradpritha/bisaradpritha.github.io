@@ -250,7 +250,7 @@ function drawEdges() {
 
 function drawNodes() {
 
-    ctx.fillStyle = "rgba(187,85,121,0.9)";
+    ctx.fillStyle = "red";
 
     for (const node of nodes) {
 
@@ -259,7 +259,7 @@ function drawNodes() {
         ctx.arc(
             node.x,
             node.y,
-            node.radius,
+            10,          // <-- temporarily huge
             0,
             Math.PI * 2
         );
@@ -269,7 +269,6 @@ function drawNodes() {
     }
 
 }
-
 
 
 // =====================================
