@@ -405,7 +405,7 @@ function drawNodes() {
 
 function drawPulses() {
 
-    ctx.fillStyle = "#ffd6e5";
+    ctx.fillStyle = "#bb5579";
 
     for (const pulse of pulses) {
 
@@ -439,7 +439,7 @@ function drawPulses() {
 
     }
 
-    ctx.shadowBlur = 0;
+    ctx.shadowBlur = 2;
 
 }
 
