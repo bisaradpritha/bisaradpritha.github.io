@@ -21,8 +21,8 @@ const mouse = {
     active: false
 };
 
-const REPULSE_RADIUS = 140;
-const REPULSE_STRENGTH = 18;
+const REPULSE_RADIUS = 220;
+const REPULSE_STRENGTH = 70;
 
 // =====================================
 // Canvas
@@ -357,8 +357,8 @@ function updateNodes(now) {
         // Cursor repulsion goes HERE
         // ============================
 
-        node.offsetX *= 0.88;
-        node.offsetY *= 0.88;
+        node.offsetX *= 0.96;
+        node.offsetY *= 0.96;
 
         if (mouse.active) {
 
