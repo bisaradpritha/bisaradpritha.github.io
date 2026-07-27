@@ -73,9 +73,11 @@ h1,h2,h3,h4,h5,h6{
 
 .hero-content h1{
 
-    font-size:4rem;
+    font-size:clamp(3rem,6vw,4.5rem);
 
     margin-bottom:0.5rem;
+
+    color:#fff;
 
 }
 
@@ -88,7 +90,7 @@ h1,h2,h3,h4,h5,h6{
 }
 h1{
 
-font-size:4rem;
+font-size:clamp(3rem,6vw,4.5rem);
 
 }
 
@@ -700,9 +702,9 @@ footer p {
 
 .about-header h1{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Space Grotesk",sans-serif;
 
-    font-size:3.5rem;
+    font-size:clamp(3rem,6vw,4.5rem);
 
     margin-bottom:.75rem;
 
@@ -1077,7 +1079,7 @@ footer p {
 
 .research-hero h1{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Space Grotesk",sans-serif;
 
     font-size:clamp(3rem,6vw,4.5rem);
 
@@ -1089,7 +1091,7 @@ footer p {
 
 .research-hero p{
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:"Inter",sans-serif;
 
     max-width:700px;
 
@@ -1456,7 +1458,7 @@ footer p {
 
 .contact-hero h1{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Sapce Grotesk",sans-serif;
 
     font-size:clamp(3rem,6vw,4.5rem);
 
@@ -1468,7 +1470,7 @@ footer p {
 
 .contact-hero p{
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:"Inter",sans-serif;
 
     max-width:700px;
 
