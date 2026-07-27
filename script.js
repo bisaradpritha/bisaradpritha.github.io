@@ -74,6 +74,9 @@ class Node {
             Math.random() *
             (DRIFT_MAX_TIME - DRIFT_MIN_TIME);
 
+        this.baseRadius = radius;
+        this.phase = Math.random() * Math.PI * 2;
+
     }
 
 }
@@ -266,6 +269,10 @@ function updateNodes(now) {
         node.y =
             node.startY +
             (node.targetY - node.startY) * e;
+
+        node.radius =
+        node.baseRadius *
+        (1 + 0.06 * Math.sin(now * 0.0012 + node.phase));
 
     }
 
