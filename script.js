@@ -181,21 +181,30 @@ function buildConnections() {
 // Update Nodes
 // =====================================
 
-function updateNodes() {
+//function updateNodes() {
 
-    time += 0.03;
+//    time += 0.03;
+
+//   for (const node of nodes) {
+
+//        node.x =
+//            node.homeX +
+//            Math.cos(time * node.speed + node.phase) *
+//            node.amplitude;
+
+ //       node.y =
+ //           node.homeY +
+ //           Math.sin(time * node.speed + node.phase) *
+ //           node.amplitude;
+
+ //   }
+
+//}
+function updateNodes() {
 
     for (const node of nodes) {
 
-        node.x =
-            node.homeX +
-            Math.cos(time * node.speed + node.phase) *
-            node.amplitude;
-
-        node.y =
-            node.homeY +
-            Math.sin(time * node.speed + node.phase) *
-            node.amplitude;
+        node.x += 1;
 
     }
 
