@@ -278,8 +278,8 @@ function drawEdges() {
         0.35 - length / 800
     );
     ctx.strokeStyle = `rgba(187,85,121,${alpha})`;
-    ctx.lineWidth = 0.8 + (edge.nodeA.radius + edge.nodeB.radius) / 10;
-
+    ctx.lineWidth = 1.2;
+    
     for (const edge of edges) {
 
         const ax = edge.nodeA.x;
