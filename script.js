@@ -90,12 +90,16 @@ class Edge {
         this.nodeB = nodeB;
         const length = distance(nodeA, nodeB);
     
-        this.bend =
-            (Math.random() * 2 - 1) *
+        const maxBend =
             Math.min(
-                Math.max(length * 0.15, 8),
-                30
+                Math.max(length * 0.18, 8),
+                28
             );
+    
+        this.bend =
+            (Math.random() ** 2) *
+            maxBend *
+            (Math.random() < 0.5 ? -1 : 1);
 
     }
 
@@ -145,21 +149,6 @@ function randomRadius() {
 
 }
 
-// Soft center-biased coordinate
-
-function randomCoordinate(max) {
-
-    if (Math.random() < 0.70) {
-
-        return Math.random() * max;
-
-    }
-
-    const center = max / 2;
-
-    return center + (Math.random() - 0.5) * max * 0.55;
-
-}
 
 // =====================================
 // Graph Generation
