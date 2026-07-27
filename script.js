@@ -33,22 +33,21 @@ class Node {
 
         this.id = id;
 
-        // Current position
+       // Current position
         this.x = x;
         this.y = y;
-
+        
         // Home position
         this.homeX = x;
         this.homeY = y;
-
+        
+        // Velocity
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.vy = (Math.random() - 0.5) * 0.8;
+        
         this.radius = radius;
-
+        
         this.neighbors = [];
-
-        // Random motion parameters
-        this.phase = Math.random() * Math.PI * 2;
-        this.speed = 2.0 + Math.random() * 1.0;
-        this.amplitude = 15 + Math.random() * 10;
     }
 
 }
@@ -181,30 +180,29 @@ function buildConnections() {
 // Update Nodes
 // =====================================
 
-//function updateNodes() {
-
-//    time += 0.03;
-
-//   for (const node of nodes) {
-
-//        node.x =
-//            node.homeX +
-//            Math.cos(time * node.speed + node.phase) *
-//            node.amplitude;
-
- //       node.y =
- //           node.homeY +
- //           Math.sin(time * node.speed + node.phase) *
- //           node.amplitude;
-
- //   }
-
-//}
 function updateNodes() {
 
     for (const node of nodes) {
 
-        node.x += 1;
+        // Spring back toward home
+        let fx = (node.homeX - node.x) * 0.003;
+        let fy = (node.homeY - node.y) * 0.003;
+
+        // Tiny random perturbation
+        fx += (Math.random() - 0.5) * 0.03;
+        fy += (Math.random() - 0.5) * 0.03;
+
+        // Integrate force
+        node.vx += fx;
+        node.vy += fy;
+
+        // Damping
+        node.vx *= 0.97;
+        node.vy *= 0.97;
+
+        // Update position
+        node.x += node.vx;
+        node.y += node.vy;
 
     }
 
