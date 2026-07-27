@@ -1,7 +1,7 @@
 // =====================================
 // Connectome Engine
 // =====================================
-
+console.log("Running script:", document.currentScript?.src);
 const canvas = document.getElementById("connectomeCanvas");
 console.log(canvas);
 const ctx = canvas.getContext("2d");
@@ -249,8 +249,9 @@ function drawEdges() {
 // =====================================
 
 function drawNodes() {
+    console.log("DRAW", nodes[0].x, nodes[0].y);
 
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "lime";
 
     for (const node of nodes) {
 
@@ -259,7 +260,7 @@ function drawNodes() {
         ctx.arc(
             node.x,
             node.y,
-            10,          // <-- temporarily huge
+            30,          // <-- temporarily huge
             0,
             Math.PI * 2
         );
