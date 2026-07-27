@@ -273,7 +273,11 @@ function updateNodes(now) {
 
 function drawEdges() {
 
-    ctx.strokeStyle = EDGE_COLOR;
+    const alpha = Math.max(
+        0.08,
+        0.35 - length / 800
+    );
+    ctx.strokeStyle = `rgba(187,85,121,${alpha})`;
     ctx.lineWidth = 1.2;
 
     for (const edge of edges) {
