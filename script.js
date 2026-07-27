@@ -15,6 +15,15 @@ const DRIFT_RADIUS = 12;
 const DRIFT_MIN_TIME = 3000;
 const DRIFT_MAX_TIME = 6000;
 
+const mouse = {
+    x: -1000,
+    y: -1000,
+    active: false
+};
+
+const REPULSE_RADIUS = 140;
+const REPULSE_STRENGTH = 18;
+
 // =====================================
 // Canvas
 // =====================================
@@ -36,7 +45,43 @@ function resizeCanvas() {
 
 }
 
+
 window.addEventListener("resize", resizeCanvas);
+
+canvas.addEventListener("mousemove", e => {
+
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.active = true;
+
+});
+
+canvas.addEventListener("mouseleave", () => {
+
+    mouse.active = false;
+
+});
+
+canvas.addEventListener("touchstart", e => {
+
+    mouse.x = e.touches[0].clientX;
+    mouse.y = e.touches[0].clientY;
+    mouse.active = true;
+
+}, { passive: true });
+
+canvas.addEventListener("touchmove", e => {
+
+    mouse.x = e.touches[0].clientX;
+    mouse.y = e.touches[0].clientY;
+
+}, { passive: true });
+
+canvas.addEventListener("touchend", () => {
+
+    mouse.active = false;
+
+});
 
 // =====================================
 // Classes
@@ -77,6 +122,10 @@ class Node {
 
         this.baseRadius = radius;
         this.phase = Math.random() * Math.PI * 2;
+        
+        // Offset params
+        this.offsetX = 0;
+        this.offsetY = 0;
 
     }
 
@@ -304,9 +353,47 @@ function updateNodes(now) {
             node.startY +
             (node.targetY - node.startY) * e;
 
+        // ============================
+        // Cursor repulsion goes HERE
+        // ============================
+
+        node.offsetX *= 0.88;
+        node.offsetY *= 0.88;
+
+        if (mouse.active) {
+
+            const dx = node.x - mouse.x;
+            const dy = node.y - mouse.y;
+
+            const d = Math.hypot(dx, dy);
+
+            if (d < REPULSE_RADIUS && d > 0.001) {
+
+                const sizeFactor =
+                    1.4 - node.baseRadius / 8;
+
+                const strength =
+                    (1 - d / REPULSE_RADIUS) *
+                    REPULSE_STRENGTH *
+                    sizeFactor;
+
+                node.offsetX += dx / d * strength;
+                node.offsetY += dy / d * strength;
+
+            }
+
+        }
+
+        node.x += node.offsetX;
+        node.y += node.offsetY;
+
+        // ============================
+        // Existing breathing animation
+        // ============================
+
         node.radius =
-        node.baseRadius *
-        (1 + 0.06 * Math.sin(now * 0.0012 + node.phase));
+            node.baseRadius *
+            (1 + 0.06 * Math.sin(now * 0.0012 + node.phase));
 
     }
 
