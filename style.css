@@ -1683,3 +1683,8 @@ footer p {
     padding-bottom:6rem;
 
 }
+
+@keyframes testAnim{
+    from{opacity:1;}
+    to{opacity:.99;}
+}
