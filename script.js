@@ -12,6 +12,13 @@ function resizeCanvas() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 
+    if (nodes.length > 0) {
+
+        generateNodes();
+        buildConnections();
+
+    }
+
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -184,6 +191,18 @@ function render() {
 }
 
 // =====================================
+// Animation Loop
+// =====================================
+
+function animate() {
+
+    render();
+
+    requestAnimationFrame(animate);
+
+}
+
+// =====================================
 // Initialize
 // =====================================
 
@@ -193,4 +212,4 @@ generateNodes();
 
 buildConnections();
 
-render();
+animate();
