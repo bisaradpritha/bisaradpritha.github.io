@@ -27,6 +27,7 @@ let height;
 
 const nodes = [];
 const edges = [];
+const pulses = [];
 
 function resizeCanvas() {
 
@@ -87,6 +88,25 @@ class Edge {
 
         this.nodeA = nodeA;
         this.nodeB = nodeB;
+
+    }
+
+}
+
+class Pulse {
+
+    constructor(edge, direction = 1) {
+
+        this.edge = edge;
+
+        this.direction = direction;
+
+        this.progress = 0;
+
+        this.speed =
+            0.35 + Math.random() * 0.25;
+
+        this.radius = 3.5;
 
     }
 
@@ -278,6 +298,24 @@ function updateNodes(now) {
 
 }
 
+function updatePulses() {
+
+    for (let i = pulses.length - 1; i >= 0; i--) {
+
+        const pulse = pulses[i];
+
+        pulse.progress += pulse.speed / 100;
+
+        if (pulse.progress >= 1) {
+
+            pulses.splice(i, 1);
+
+        }
+
+    }
+
+}
+
 // =====================================
 // Rendering
 // =====================================
@@ -365,12 +403,54 @@ function drawNodes() {
 
 }
 
+function drawPulses() {
+
+    ctx.fillStyle = "#ffd6e5";
+
+    for (const pulse of pulses) {
+
+        const a = pulse.edge.nodeA;
+        const b = pulse.edge.nodeB;
+
+        const t = pulse.progress;
+
+        const x =
+            a.x +
+            (b.x - a.x) * t;
+
+        const y =
+            a.y +
+            (b.y - a.y) * t;
+
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = "#ffd6e5";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            pulse.radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+    }
+
+    ctx.shadowBlur = 0;
+
+}
+
+
 function render() {
 
     ctx.fillStyle = "#0d0320";
     ctx.fillRect(0, 0, width, height);
 
     drawEdges();
+    drawPulses();
     drawNodes();
 
 }
@@ -383,7 +463,18 @@ function animate(now) {
 
     updateNodes(now);
 
+    updatePulses();
+
     render();
+
+    if (Math.random() < 0.015 && edges.length) {
+
+        const edge =
+            edges[Math.floor(Math.random() * edges.length)];
+    
+        pulses.push(new Pulse(edge));
+    
+    }
 
     requestAnimationFrame(animate);
 
