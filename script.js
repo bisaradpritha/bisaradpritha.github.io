@@ -12,6 +12,10 @@ function resizeCanvas() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 
+    generateNodes();
+    buildConnections();
+    render();
+
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -92,8 +96,6 @@ function generateNodes() {
 
 }
 
-generateNodes();
-
 // =====================================
 // Distance Helper
 // =====================================
@@ -146,8 +148,6 @@ function buildConnections() {
     }
 
 }
-
-buildConnections();
 
 // =====================================
 // Draw Nodes
