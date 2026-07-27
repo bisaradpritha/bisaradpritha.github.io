@@ -12,15 +12,9 @@ function resizeCanvas() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 
-    generateNodes();
-    buildConnections();
-    render();
-
 }
 
 window.addEventListener("resize", resizeCanvas);
-
-resizeCanvas();
 
 // =====================================
 // Node Class
@@ -188,5 +182,15 @@ function render() {
     drawNodes();
 
 }
+
+// =====================================
+// Initialize
+// =====================================
+
+resizeCanvas();
+
+generateNodes();
+
+buildConnections();
 
 render();
