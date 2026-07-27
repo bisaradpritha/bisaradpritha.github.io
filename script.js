@@ -289,20 +289,21 @@ function render() {
 
 function animate() {
 
-    console.log("Frame start");
+    try {
 
-    elapsedTime += 1/60;
+        elapsedTime += 1/60;
 
-    console.log("Before update");
+        updateNodes();
 
-    updateNodes();
+        render();
 
-    console.log("Before render");
+    }
+    catch(err){
 
-    render();
+        console.error(err);
 
-    console.log("Before RAF");
-
+    }
+    console.log("Scheduling next frame");
     requestAnimationFrame(animate);
 
 }
