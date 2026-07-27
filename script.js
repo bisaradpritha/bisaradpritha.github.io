@@ -55,6 +55,22 @@ class Edge {
         this.nodeA = nodeA;
         this.nodeB = nodeB;
 
+        const midX = (nodeA.x + nodeB.x) / 2;
+        const midY = (nodeA.y + nodeB.y) / 2;
+
+        const dx = nodeB.x - nodeA.x;
+        const dy = nodeB.y - nodeA.y;
+
+        const length = Math.sqrt(dx * dx + dy * dy);
+
+        const nx = -dy / length;
+        const ny = dx / length;
+
+        const bend = (Math.random() - 0.5) * length * 0.35;
+
+        this.controlX = midX + nx * bend;
+        this.controlY = midY + ny * bend;
+
     }
 
 }
@@ -168,9 +184,14 @@ function drawEdges() {
             edge.nodeA.y
         );
 
-        ctx.lineTo(
+        ctx.quadraticCurveTo(
+
+            edge.controlX,
+            edge.controlY,
+        
             edge.nodeB.x,
             edge.nodeB.y
+        
         );
 
         ctx.stroke();
