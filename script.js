@@ -33,21 +33,27 @@ class Node {
 
         this.id = id;
 
-       // Current position
-        this.x = x;
-        this.y = y;
-        
-        // Home position
+       // Home position
         this.homeX = x;
         this.homeY = y;
         
-        // Velocity
-        this.vx = (Math.random() - 0.5) * 0.8;
-        this.vy = (Math.random() - 0.5) * 0.8;
+        // Current position
+        this.x = x;
+        this.y = y;
         
         this.radius = radius;
         
         this.neighbors = [];
+        
+        // Motion parameters
+        this.phaseX = Math.random() * Math.PI * 2;
+        this.phaseY = Math.random() * Math.PI * 2;
+        
+        this.freqX = 0.18 + Math.random() * 0.08;
+        this.freqY = 0.18 + Math.random() * 0.08;
+        
+        this.ampX = 4 + Math.random() * 2;
+        this.ampY = 4 + Math.random() * 2;
     }
 
 }
@@ -58,28 +64,12 @@ class Node {
 
 class Edge {
 
-    constructor(nodeA, nodeB) {
+ constructor(nodeA, nodeB){
 
-        this.nodeA = nodeA;
-        this.nodeB = nodeB;
+    this.nodeA = nodeA;
+    this.nodeB = nodeB;
 
-        const midX = (nodeA.x + nodeB.x) / 2;
-        const midY = (nodeA.y + nodeB.y) / 2;
-
-        const dx = nodeB.x - nodeA.x;
-        const dy = nodeB.y - nodeA.y;
-
-        const length = Math.sqrt(dx * dx + dy * dy);
-
-        const nx = -dy / length;
-        const ny = dx / length;
-
-        const bend = (Math.random() - 0.5) * length * 0.35;
-
-        this.controlX = midX + nx * bend;
-        this.controlY = midY + ny * bend;
-
-    }
+}
 
 }
 
@@ -91,7 +81,7 @@ const nodes = [];
 
 const edges = [];
 
-let time = 0;
+let elapsedTime = 0;
 
 const NODE_COUNT = 70;
 
@@ -184,25 +174,21 @@ function updateNodes() {
 
     for (const node of nodes) {
 
-        // Spring back toward home
-        let fx = (node.homeX - node.x) * 0.003;
-        let fy = (node.homeY - node.y) * 0.003;
+        node.x =
+            node.homeX +
+            node.ampX *
+            Math.sin(
+                elapsedTime * node.freqX * Math.PI * 2
+                + node.phaseX
+            );
 
-        // Tiny random perturbation
-        fx += (Math.random() - 0.5) * 0.03;
-        fy += (Math.random() - 0.5) * 0.03;
-
-        // Integrate force
-        node.vx += fx;
-        node.vy += fy;
-
-        // Damping
-        node.vx *= 0.97;
-        node.vy *= 0.97;
-
-        // Update position
-        node.x += node.vx;
-        node.y += node.vy;
+        node.y =
+            node.homeY +
+            node.ampY *
+            Math.cos(
+                elapsedTime * node.freqY * Math.PI * 2
+                + node.phaseY
+            );
 
     }
 
@@ -226,13 +212,33 @@ function drawEdges() {
             edge.nodeA.y
         );
 
-        ctx.quadraticCurveTo(
-
-            edge.controlX,
-            edge.controlY,
+        const ax = edge.nodeA.x;
+        const ay = edge.nodeA.y;
         
-            edge.nodeB.x,
-            edge.nodeB.y
+        const bx = edge.nodeB.x;
+        const by = edge.nodeB.y;
+        
+        const midX = (ax + bx) / 2;
+        const midY = (ay + by) / 2;
+        
+        const dx = bx - ax;
+        const dy = by - ay;
+        
+        const length = Math.hypot(dx, dy);
+        
+        const nx = -dy / length;
+        const ny = dx / length;
+        
+        // gentle curve
+        const bend = length * 0.18;
+        
+        ctx.quadraticCurveTo(
+        
+            midX + nx * bend,
+            midY + ny * bend,
+        
+            bx,
+            by
         
         );
 
@@ -289,6 +295,8 @@ function render() {
 // =====================================
 
 function animate() {
+
+    elapsedTime += 1 / 60;
 
     updateNodes();
 
