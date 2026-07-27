@@ -24,11 +24,31 @@ resizeCanvas();
 
 class Node {
 
-    constructor(x, y, radius) {
+    constructor(id, x, y, radius) {
+
+        this.id = id;
 
         this.x = x;
         this.y = y;
+
         this.radius = radius;
+
+        this.neighbors = [];
+
+    }
+
+}
+
+// =====================================
+// Edge Class
+// =====================================
+
+class Edge {
+
+    constructor(nodeA, nodeB) {
+
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
 
     }
 
@@ -39,6 +59,8 @@ class Node {
 // =====================================
 
 const nodes = [];
+
+const edges = [];
 
 const NODE_COUNT = 70;
 
@@ -64,13 +86,68 @@ function generateNodes() {
         else
             radius = 7;
 
-        nodes.push(new Node(x, y, radius));
+        nodes.push(new Node(i, x, y, radius));
 
     }
 
 }
 
 generateNodes();
+
+// =====================================
+// Distance Helper
+// =====================================
+
+function distance(nodeA, nodeB) {
+
+    const dx = nodeA.x - nodeB.x;
+    const dy = nodeA.y - nodeB.y;
+
+    return Math.sqrt(dx * dx + dy * dy);
+
+}
+
+// =====================================
+// Build Connections
+// =====================================
+
+function buildConnections() {
+
+    edges.length = 0;
+
+    const edgeSet = new Set();
+
+    for (const node of nodes) {
+
+        const sorted = [...nodes]
+            .filter(other => other.id !== node.id)
+            .sort((a, b) =>
+                distance(node, a) - distance(node, b)
+            );
+
+        const neighbors = sorted.slice(0, 3);
+
+        for (const neighbor of neighbors) {
+
+            const key = [node.id, neighbor.id]
+                .sort((a, b) => a - b)
+                .join("-");
+
+            if (!edgeSet.has(key)) {
+
+                edgeSet.add(key);
+
+                edges.push(new Edge(node, neighbor));
+
+            }
+
+        }
+
+    }
+
+}
+
+buildConnections();
 
 // =====================================
 // Draw Nodes
@@ -97,6 +174,8 @@ function drawNodes() {
     }
 
 }
+
+
 
 // =====================================
 // Render
