@@ -88,6 +88,14 @@ class Edge {
 
         this.nodeA = nodeA;
         this.nodeB = nodeB;
+        const length = distance(nodeA, nodeB);
+    
+        this.bend =
+            (Math.random() * 2 - 1) *
+            Math.min(
+                Math.max(length * 0.15, 8),
+                30
+            );
 
     }
 
@@ -163,8 +171,15 @@ function generateNodes() {
 
     for (let i = 0; i < NODE_COUNT; i++) {
 
-        const x = randomCoordinate(width);
-        const y = randomCoordinate(height);
+        const margin = node.baseRadius + 20;
+        
+        const x =
+            margin +
+            Math.random() * (width - margin * 2);
+        
+        const y =
+            margin +
+            Math.random() * (height - margin * 2);
 
         nodes.push(
 
@@ -238,13 +253,23 @@ function chooseNewTarget(node, now) {
     node.startX = node.x;
     node.startY = node.y;
 
-    node.targetX =
-        node.homeX +
-        (Math.random() * 2 - 1) * DRIFT_RADIUS;
+    node.targetX = Math.max(
+        30,
+        Math.min(
+            width - 30,
+            node.homeX +
+            (Math.random()*2-1)*DRIFT_RADIUS
+        )
+    );
 
-    node.targetY =
-        node.homeY +
-        (Math.random() * 2 - 1) * DRIFT_RADIUS;
+    node.targetY = Math.max(
+        30,
+        Math.min(
+            height - 30,
+            node.homeY +
+            (Math.random()*2-1)*DRIFT_RADIUS
+        )
+    );
 
     node.moveStart = now;
 
@@ -343,8 +368,8 @@ function drawEdges() {
             (edge.nodeA.radius + edge.nodeB.radius) / 10;
 
         const alpha = Math.max(
-            0.08,
-            0.35 - length / 800
+            0.1,
+            0.5 - length / 800
         );
 
         ctx.strokeStyle = `rgba(187,85,121,${alpha})`;
@@ -352,10 +377,7 @@ function drawEdges() {
         const nx = -dy / length;
         const ny = dx / length;
 
-        const bend = Math.min(
-            Math.max(length * 0.12, 6),
-            18
-        );
+        const bend = edge.bend;
 
         const mx = (ax + bx) / 2;
         const my = (ay + by) / 2;
