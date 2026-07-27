@@ -3,6 +3,7 @@
 // =====================================
 
 const canvas = document.getElementById("connectomeCanvas");
+console.log(canvas);
 const ctx = canvas.getContext("2d");
 
 let width, height;
@@ -291,12 +292,19 @@ function render() {
 
 function animate() {
 
-    elapsedTime += 1 / 60;
-    console.log(elapsedTime);
+    console.log("Frame start");
+
+    elapsedTime += 1/60;
+
+    console.log("Before update");
 
     updateNodes();
 
+    console.log("Before render");
+
     render();
+
+    console.log("Before RAF");
 
     requestAnimationFrame(animate);
 
