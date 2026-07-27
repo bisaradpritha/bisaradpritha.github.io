@@ -172,7 +172,14 @@ function buildConnections() {
 
             .sort((a, b) => distance(node, a) - distance(node, b))
 
-            .slice(0, CONNECTIONS_PER_NODE);
+            const nConnections =
+                node.radius === 7 ? 7 :
+                node.radius === 4 ? 4 : 2;
+            
+            const nearest = [...nodes]
+                .filter(other => other.id !== node.id)
+                .sort((a,b)=>distance(node,a)-distance(node,b))
+                .slice(0,nConnections);
 
         for (const neighbor of nearest) {
 
@@ -273,8 +280,16 @@ function updateNodes(now) {
 
 function drawEdges() {
 
-    ctx.strokeStyle = EDGE_COLOR;
-    ctx.lineWidth = 1.2;
+    const alpha = Math.max(
+        0.08,
+        0.35 - length / 800
+    );
+        
+    ctx.strokeStyle =
+        `rgba(187,85,121,${alpha})`;
+    ctx.lineWidth = 0.8 +
+        (edge.nodeA.radius +
+         edge.nodeB.radius)/10;
 
     for (const edge of edges) {
 
@@ -294,7 +309,7 @@ function drawEdges() {
         const nx = -dy / length;
         const ny = dx / length;
 
-        const bend = Math.min(length * 0.18, 18);
+        const bend = Math.min(Math.max(length*0.12,6),18);
 
         const mx = (ax + bx) / 2;
         const my = (ay + by) / 2;
