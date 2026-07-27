@@ -33,12 +33,22 @@ class Node {
 
         this.id = id;
 
+        // Current position
         this.x = x;
         this.y = y;
+
+        // Home position
+        this.homeX = x;
+        this.homeY = y;
 
         this.radius = radius;
 
         this.neighbors = [];
+
+        // Random motion parameters
+        this.phase = Math.random() * Math.PI * 2;
+        this.speed = 0.2 + Math.random() * 0.3;
+        this.amplitude = 2 + Math.random() * 3;
 
     }
 
@@ -82,6 +92,8 @@ class Edge {
 const nodes = [];
 
 const edges = [];
+
+let time = 0;
 
 const NODE_COUNT = 70;
 
@@ -161,6 +173,30 @@ function buildConnections() {
             }
 
         }
+
+    }
+
+}
+
+// =====================================
+// Update Nodes
+// =====================================
+
+function updateNodes() {
+
+    time += 0.01;
+
+    for (const node of nodes) {
+
+        node.x =
+            node.homeX +
+            Math.cos(time * node.speed + node.phase) *
+            node.amplitude;
+
+        node.y =
+            node.homeY +
+            Math.sin(time * node.speed + node.phase) *
+            node.amplitude;
 
     }
 
@@ -247,6 +283,8 @@ function render() {
 // =====================================
 
 function animate() {
+
+    updateNodes();
 
     render();
 
