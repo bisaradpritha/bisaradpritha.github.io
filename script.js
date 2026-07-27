@@ -1,51 +1,44 @@
-window.addEventListener("error", e => {
-    console.error("WINDOW ERROR:", e.error, e.message);
-});
 
-window.addEventListener("unhandledrejection", e => {
-    console.error("PROMISE ERROR:", e.reason);
-});
+(() => {
 
-document.addEventListener("visibilitychange", () => {
-    console.log("visibility:", document.visibilityState);
-});
-
-window.addEventListener("pagehide", () => {
-    console.log("PAGE HIDE");
-});
-
-window.addEventListener("beforeunload", () => {
-    console.log("BEFORE UNLOAD");
-});
 // =====================================
-// Connectome Engine
+// Configuration
 // =====================================
 
-console.log("Running script:", document.currentScript?.src);
+const NODE_COUNT = 70;
+const CONNECTIONS_PER_NODE = 3;
+
+const NODE_COLOR = "#bb5579";
+const EDGE_COLOR = "rgba(187,85,121,0.28)";
+
+const DRIFT_RADIUS = 12;
+const DRIFT_MIN_TIME = 3000;
+const DRIFT_MAX_TIME = 6000;
+
+// =====================================
+// Canvas
+// =====================================
+
 const canvas = document.getElementById("connectomeCanvas");
-console.log(canvas);
 const ctx = canvas.getContext("2d");
 
-let width, height;
+let width;
+let height;
+
+const nodes = [];
+const edges = [];
 
 function resizeCanvas() {
 
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 
-    if (nodes.length > 0) {
-
-        generateNodes();
-        buildConnections();
-
-    }
-
 }
 
 window.addEventListener("resize", resizeCanvas);
 
 // =====================================
-// Node Class
+// Classes
 // =====================================
 
 class Node {
@@ -54,57 +47,92 @@ class Node {
 
         this.id = id;
 
-       // Home position
+        this.radius = radius;
+
+        // Home position
+
         this.homeX = x;
         this.homeY = y;
-        
+
         // Current position
+
         this.x = x;
         this.y = y;
-        
-        this.radius = radius;
-        
-        this.neighbors = [];
-        
-        // Motion parameters
-        this.phaseX = Math.random() * Math.PI * 2;
-        this.phaseY = Math.random() * Math.PI * 2;
-        
-        this.freqX = 0.18 + Math.random() * 0.08;
-        this.freqY = 0.18 + Math.random() * 0.08;
-        
-        this.ampX = 4 + Math.random() * 2;
-        this.ampY = 4 + Math.random() * 2;
+
+        // Motion
+
+        this.startX = x;
+        this.startY = y;
+
+        this.targetX = x;
+        this.targetY = y;
+
+        this.moveStart = performance.now();
+
+        this.moveDuration =
+            DRIFT_MIN_TIME +
+            Math.random() *
+            (DRIFT_MAX_TIME - DRIFT_MIN_TIME);
+
+    }
+
+}
+
+class Edge {
+
+    constructor(nodeA, nodeB) {
+
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
+
     }
 
 }
 
 // =====================================
-// Edge Class
+// Helpers
 // =====================================
 
-class Edge {
+function distance(a, b) {
 
- constructor(nodeA, nodeB){
+    const dx = a.homeX - b.homeX;
+    const dy = a.homeY - b.homeY;
 
-    this.nodeA = nodeA;
-    this.nodeB = nodeB;
+    return Math.hypot(dx, dy);
 
 }
 
+function randomRadius() {
+
+    const r = Math.random();
+
+    if (r < 0.65) return 2;
+
+    if (r < 0.90) return 4;
+
+    return 7;
+
+}
+
+// Soft center-biased coordinate
+
+function randomCoordinate(max) {
+
+    if (Math.random() < 0.70) {
+
+        return Math.random() * max;
+
+    }
+
+    const center = max / 2;
+
+    return center + (Math.random() - 0.5) * max * 0.55;
+
 }
 
 // =====================================
-// Generate Nodes
+// Graph Generation
 // =====================================
-
-const nodes = [];
-
-const edges = [];
-
-let elapsedTime = 0;
-
-const NODE_COUNT = 70;
 
 function generateNodes() {
 
@@ -112,44 +140,23 @@ function generateNodes() {
 
     for (let i = 0; i < NODE_COUNT; i++) {
 
-        const x = Math.random() * width;
-        const y = Math.random() * height;
+        const x = randomCoordinate(width);
+        const y = randomCoordinate(height);
 
-        let radius;
+        nodes.push(
 
-        const r = Math.random();
+            new Node(
+                i,
+                x,
+                y,
+                randomRadius()
+            )
 
-        if (r < 0.65)
-            radius = 2;
-
-        else if (r < 0.90)
-            radius = 4;
-
-        else
-            radius = 7;
-
-        nodes.push(new Node(i, x, y, radius));
+        );
 
     }
 
 }
-
-// =====================================
-// Distance Helper
-// =====================================
-
-function distance(nodeA, nodeB) {
-
-    const dx = nodeA.x - nodeB.x;
-    const dy = nodeA.y - nodeB.y;
-
-    return Math.sqrt(dx * dx + dy * dy);
-
-}
-
-// =====================================
-// Build Connections
-// =====================================
 
 function buildConnections() {
 
@@ -159,27 +166,34 @@ function buildConnections() {
 
     for (const node of nodes) {
 
-        const sorted = [...nodes]
+        const nearest = [...nodes]
+
             .filter(other => other.id !== node.id)
-            .sort((a, b) =>
-                distance(node, a) - distance(node, b)
+
+            .sort((a, b) => distance(node, a) - distance(node, b))
+
+            .slice(0, CONNECTIONS_PER_NODE);
+
+        for (const neighbor of nearest) {
+
+            const key =
+
+                node.id < neighbor.id
+
+                ? `${node.id}-${neighbor.id}`
+
+                : `${neighbor.id}-${node.id}`;
+
+            if (edgeSet.has(key))
+                continue;
+
+            edgeSet.add(key);
+
+            edges.push(
+
+                new Edge(node, neighbor)
+
             );
-
-        const neighbors = sorted.slice(0, 3);
-
-        for (const neighbor of neighbors) {
-
-            const key = [node.id, neighbor.id]
-                .sort((a, b) => a - b)
-                .join("-");
-
-            if (!edgeSet.has(key)) {
-
-                edgeSet.add(key);
-
-                edges.push(new Edge(node, neighbor));
-
-            }
 
         }
 
@@ -187,69 +201,116 @@ function buildConnections() {
 
 }
 
+    
 // =====================================
-// Update Nodes
+// Animation
 // =====================================
 
-function updateNodes() {
+function chooseNewTarget(node, now) {
+
+    node.startX = node.x;
+    node.startY = node.y;
+
+    node.targetX =
+        node.homeX +
+        (Math.random() * 2 - 1) * DRIFT_RADIUS;
+
+    node.targetY =
+        node.homeY +
+        (Math.random() * 2 - 1) * DRIFT_RADIUS;
+
+    node.moveStart = now;
+
+    node.moveDuration =
+        DRIFT_MIN_TIME +
+        Math.random() *
+        (DRIFT_MAX_TIME - DRIFT_MIN_TIME);
+
+}
+
+function smoothstep(t) {
+
+    return t * t * (3 - 2 * t);
+
+}
+
+function updateNodes(now) {
 
     for (const node of nodes) {
 
-        node.x = node.homeX;
-        node.y = node.homeY;
+        let t =
+            (now - node.moveStart) /
+            node.moveDuration;
+
+        if (t >= 1) {
+
+            node.x = node.targetX;
+            node.y = node.targetY;
+
+            chooseNewTarget(node, now);
+
+            t = 0;
+
+        }
+
+        const e = smoothstep(t);
+
+        node.x =
+            node.startX +
+            (node.targetX - node.startX) * e;
+
+        node.y =
+            node.startY +
+            (node.targetY - node.startY) * e;
 
     }
 
-    // Move ONLY the first node dramatically
-    nodes[0].x = nodes[0].homeX + 150 * Math.sin(elapsedTime * 3);
-
 }
+
 // =====================================
-// Draw Edges
+// Rendering
 // =====================================
 
 function drawEdges() {
 
-    ctx.strokeStyle = "rgba(187, 85, 121, 0.3)";
+    ctx.strokeStyle = EDGE_COLOR;
     ctx.lineWidth = 1.2;
 
     for (const edge of edges) {
 
-        ctx.beginPath();
-
-        ctx.moveTo(
-            edge.nodeA.x,
-            edge.nodeA.y
-        );
-
         const ax = edge.nodeA.x;
         const ay = edge.nodeA.y;
-        
+
         const bx = edge.nodeB.x;
         const by = edge.nodeB.y;
-        
-        const midX = (ax + bx) / 2;
-        const midY = (ay + by) / 2;
-        
+
         const dx = bx - ax;
         const dy = by - ay;
-        
+
         const length = Math.hypot(dx, dy);
-        
+
+        if (length < 1) continue;
+
         const nx = -dy / length;
         const ny = dx / length;
-        
-        // gentle curve
-        const bend = length * 0.18;
-        
+
+        const bend = Math.min(length * 0.18, 18);
+
+        const mx = (ax + bx) / 2;
+        const my = (ay + by) / 2;
+
+        ctx.beginPath();
+
+        ctx.moveTo(ax, ay);
+
         ctx.quadraticCurveTo(
-        
-            midX + nx * bend,
-            midY + ny * bend,
-        
+
+            mx + nx * bend,
+            my + ny * bend,
+
             bx,
             by
-        
+
         );
 
         ctx.stroke();
@@ -258,30 +319,22 @@ function drawEdges() {
 
 }
 
-// =====================================
-// Draw Nodes
-// =====================================
-
 function drawNodes() {
-    console.log("DRAW", nodes[0].x, nodes[0].y);
 
-    ctx.fillStyle = "red";
+    ctx.fillStyle = NODE_COLOR;
 
     for (const node of nodes) {
 
         ctx.beginPath();
-        if (node === nodes[0]) {
-            ctx.fillStyle = "lime";
-        } else {
-            ctx.fillStyle = "red";
-        }
 
         ctx.arc(
+
             node.x,
             node.y,
-            10,          // <-- temporarily huge
+            node.radius,
             0,
             Math.PI * 2
+
         );
 
         ctx.fill();
@@ -290,32 +343,30 @@ function drawNodes() {
 
 }
 
-
-// =====================================
-// Render
-// =====================================
-
 function render() {
 
-    ctx.fillStyle = `hsl(${elapsedTime * 200}, 100%, 50%)`;
+    ctx.fillStyle = "#0d0320";
+    ctx.fillRect(0, 0, width, height);
 
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawEdges();
+    drawNodes();
 
 }
 
 // =====================================
-// Animation Loop
+// Main Loop
 // =====================================
-console.log("animate is", animate);
-function animate(timestamp) {
 
-    console.log("Frame", timestamp);
+function animate(now) {
+
+    updateNodes(now);
+
+    render();
 
     requestAnimationFrame(animate);
 
 }
 
-console.log("animate is now", animate);
 // =====================================
 // Initialize
 // =====================================
@@ -326,4 +377,14 @@ generateNodes();
 
 buildConnections();
 
+const now = performance.now();
+
+for (const node of nodes) {
+
+    chooseNewTarget(node, now);
+
+}
+
 requestAnimationFrame(animate);
+
+})();
