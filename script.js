@@ -151,6 +151,35 @@ function buildConnections() {
 }
 
 // =====================================
+// Draw Edges
+// =====================================
+
+function drawEdges() {
+
+    ctx.strokeStyle = "rgba(187, 85, 121, 0.18)";
+    ctx.lineWidth = 1.2;
+
+    for (const edge of edges) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            edge.nodeA.x,
+            edge.nodeA.y
+        );
+
+        ctx.lineTo(
+            edge.nodeB.x,
+            edge.nodeB.y
+        );
+
+        ctx.stroke();
+
+    }
+
+}
+
+// =====================================
 // Draw Nodes
 // =====================================
 
@@ -185,6 +214,8 @@ function drawNodes() {
 function render() {
 
     ctx.clearRect(0, 0, width, height);
+
+    drawEdges();
 
     drawNodes();
 
