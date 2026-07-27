@@ -47,9 +47,8 @@ class Node {
 
         // Random motion parameters
         this.phase = Math.random() * Math.PI * 2;
-        this.speed = 0.2 + Math.random() * 0.3;
-        this.amplitude = 2 + Math.random() * 3;
-
+        this.speed = 2.0 + Math.random() * 1.0;
+        this.amplitude = 15 + Math.random() * 10;
     }
 
 }
@@ -184,7 +183,7 @@ function buildConnections() {
 
 function updateNodes() {
 
-    time += 0.01;
+    time += 0.03;
 
     for (const node of nodes) {
 
