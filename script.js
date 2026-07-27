@@ -175,19 +175,13 @@ function updateNodes() {
 
     for (const node of nodes) {
 
-        node.x =
-            node.homeX +
-            12 *
-            Math.sin(elapsedTime * 1.6 + node.phaseX);
-
-        node.y =
-            node.homeY +
-            12 *
-            Math.cos(elapsedTime * 1.2 + node.phaseY);
-
-        console.log(nodes[0].x, nodes[0].y);
+        node.x = node.homeX;
+        node.y = node.homeY;
 
     }
+
+    // Move ONLY the first node dramatically
+    nodes[0].x = nodes[0].homeX + 150 * Math.sin(elapsedTime * 3);
 
 }
 // =====================================
@@ -251,16 +245,21 @@ function drawEdges() {
 function drawNodes() {
     console.log("DRAW", nodes[0].x, nodes[0].y);
 
-    ctx.fillStyle = "lime";
+    ctx.fillStyle = "red";
 
     for (const node of nodes) {
 
         ctx.beginPath();
+        if (node === nodes[0]) {
+            ctx.fillStyle = "lime";
+        } else {
+            ctx.fillStyle = "red";
+        }
 
         ctx.arc(
             node.x,
             node.y,
-            30,          // <-- temporarily huge
+            10,          // <-- temporarily huge
             0,
             Math.PI * 2
         );
