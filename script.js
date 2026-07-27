@@ -287,23 +287,10 @@ function render() {
 // Animation Loop
 // =====================================
 
-function animate() {
+function animate(timestamp) {
 
-    try {
+    console.log("Frame", timestamp);
 
-        elapsedTime += 1/60;
-
-        updateNodes();
-
-        render();
-
-    }
-    catch(err){
-
-        console.error(err);
-
-    }
-    console.log("Scheduling next frame");
     requestAnimationFrame(animate);
 
 }
