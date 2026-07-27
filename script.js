@@ -373,7 +373,7 @@ function updateNodes(now) {
                     1.4 - node.baseRadius / 8;
 
                 const strength =
-                    (1 - d / REPULSE_RADIUS) *
+                    Math.pow(1 - d / REPULSE_RADIUS, 3) *
                     REPULSE_STRENGTH *
                     sizeFactor;
 
