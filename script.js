@@ -277,16 +277,9 @@ function drawNodes() {
 
 function render() {
 
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = `hsl(${elapsedTime * 200}, 100%, 50%)`;
 
-    ctx.fillStyle = "red";
-
-    ctx.fillRect(
-        200 + Math.sin(elapsedTime * 3) * 150,
-        200,
-        40,
-        40
-    );
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 }
 
