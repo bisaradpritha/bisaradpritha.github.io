@@ -172,7 +172,14 @@ function buildConnections() {
 
             .sort((a, b) => distance(node, a) - distance(node, b))
 
-            .slice(0, CONNECTIONS_PER_NODE);
+            const nConnections =
+                node.radius === 7 ? 7 :
+                node.radius === 4 ? 4 : 2;
+            
+            const nearest = [...nodes]
+                .filter(other => other.id !== node.id)
+                .sort((a,b)=>distance(node,a)-distance(node,b))
+                .slice(0,nConnections);
 
         for (const neighbor of nearest) {
 
