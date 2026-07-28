@@ -22,7 +22,7 @@ const mouse = {
 };
 
 const REPULSE_RADIUS = 220;
-const REPULSE_STRENGTH = 10;
+const REPULSE_STRENGTH = 50;
 
 // =====================================
 // Canvas
