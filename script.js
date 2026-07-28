@@ -22,7 +22,7 @@ const mouse = {
 };
 
 const REPULSE_RADIUS = 220;
-const REPULSE_STRENGTH = 50;
+const REPULSE_STRENGTH = 10;
 
 // =====================================
 // Canvas
@@ -582,13 +582,6 @@ function animate(now) {
     
         pulses.push(new Pulse(edge));
     
-    }
-
-    if (mouse.active) {
-        ctx.fillStyle = "red";
-        ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, 10, 0, Math.PI * 2);
-        ctx.fill();
     }
 
     requestAnimationFrame(animate);
