@@ -584,6 +584,13 @@ function animate(now) {
     
     }
 
+    if (mouse.active) {
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
     requestAnimationFrame(animate);
 
 }
