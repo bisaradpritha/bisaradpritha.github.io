@@ -5,7 +5,7 @@
 // Configuration
 // =====================================
 
-const NODE_COUNT = 70;
+const NODE_COUNT = 80;
 const CONNECTIONS_PER_NODE = 3;
 
 const NODE_COLOR = "#bb5579";
