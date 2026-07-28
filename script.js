@@ -22,7 +22,7 @@ const mouse = {
 };
 
 const REPULSE_RADIUS = 220;
-const REPULSE_STRENGTH = 70;
+const REPULSE_STRENGTH = 10;
 
 // =====================================
 // Canvas
@@ -126,6 +126,9 @@ class Node {
         // Offset params
         this.offsetX = 0;
         this.offsetY = 0;
+        
+        this.vx = 0;
+        this.vy = 0;
 
     }
 
@@ -357,36 +360,43 @@ function updateNodes(now) {
         // Cursor repulsion goes HERE
         // ============================
 
+        // Decay the displayed offset
         node.offsetX *= 0.96;
         node.offsetY *= 0.96;
-
+        
+        // Mouse force
         if (mouse.active) {
-
+        
             const dx = node.x - mouse.x;
             const dy = node.y - mouse.y;
-
+        
             const d = Math.hypot(dx, dy);
-
-            if (d < REPULSE_RADIUS && d > 0.001) {
-
-                const sizeFactor =
-                    1.4 - node.baseRadius / 8;
-
+        
+            if (d < REPULSE_RADIUS && d > 1) {
+        
                 const strength =
-                    Math.pow(1 - d / REPULSE_RADIUS, 3) *
-                    REPULSE_STRENGTH *
-                    sizeFactor;
-
-                node.offsetX += dx / d * strength;
-                node.offsetY += dy / d * strength;
-
+                    Math.pow(1 - d / REPULSE_RADIUS, 2) *
+                    REPULSE_STRENGTH;
+        
+                node.vx += dx / d * strength;
+                node.vy += dy / d * strength;
+        
             }
-
+        
         }
-
+        
+        // Velocity damping
+        node.vx *= 0.82;
+        node.vy *= 0.82;
+        
+        // Apply velocity
+        node.offsetX += node.vx;
+        node.offsetY += node.vy;
+        
+        // Draw position
         node.x += node.offsetX;
         node.y += node.offsetY;
-
+        
         // ============================
         // Existing breathing animation
         // ============================
