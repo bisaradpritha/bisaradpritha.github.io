@@ -237,32 +237,6 @@ function generateNodes() {
         const y =
             centerY +
             r * Math.sin(theta);
-
-        const minSpacing =
-        radius + other.baseRadius + 8;
-
-        let valid = true;
-        
-        for (const other of nodes) {
-        
-            const dx = x - other.homeX;
-            const dy = y - other.homeY;
-        
-            if (Math.hypot(dx, dy) < minSpacing) {
-        
-                valid = false;
-                break;
-        
-            }
-        
-        }
-        
-        if (!valid) {
-        
-            i--;
-            continue;
-        
-        }
         
         nodes.push(
             new Node(
