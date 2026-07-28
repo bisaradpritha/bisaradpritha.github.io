@@ -22,7 +22,7 @@ const mouse = {
 };
 
 const REPULSE_RADIUS = 220;
-const REPULSE_STRENGTH = 6;
+const REPULSE_STRENGTH = 3;
 const NETWORK_RADIUS_FACTOR = 0.38;
 
 // =====================================
