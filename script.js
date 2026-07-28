@@ -48,7 +48,7 @@ function resizeCanvas() {
 
 window.addEventListener("resize", resizeCanvas);
 
-canvas.addEventListener("mousemove", e => {
+window.addEventListener("mousemove", e => {
 
     mouse.x = e.clientX;
     mouse.y = e.clientY;
