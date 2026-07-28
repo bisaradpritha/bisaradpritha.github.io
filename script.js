@@ -56,13 +56,13 @@ canvas.addEventListener("mousemove", e => {
 
 });
 
-canvas.addEventListener("mouseleave", () => {
+window.addEventListener("mouseleave", () => {
 
     mouse.active = false;
 
 });
 
-canvas.addEventListener("touchstart", e => {
+window.addEventListener("touchstart", e => {
 
     mouse.x = e.touches[0].clientX;
     mouse.y = e.touches[0].clientY;
@@ -70,14 +70,14 @@ canvas.addEventListener("touchstart", e => {
 
 }, { passive: true });
 
-canvas.addEventListener("touchmove", e => {
+window.addEventListener("touchmove", e => {
 
     mouse.x = e.touches[0].clientX;
     mouse.y = e.touches[0].clientY;
 
 }, { passive: true });
 
-canvas.addEventListener("touchend", () => {
+window.addEventListener("touchend", () => {
 
     mouse.active = false;
 
