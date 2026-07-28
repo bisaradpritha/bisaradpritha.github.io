@@ -23,6 +23,7 @@ const mouse = {
 
 const REPULSE_RADIUS = 220;
 const REPULSE_STRENGTH = 6;
+const NETWORK_RADIUS_FACTOR = 0.38;
 
 // =====================================
 // Canvas
@@ -214,16 +215,29 @@ function generateNodes() {
 
         const radius = randomRadius();
     
-        const margin = radius + 20;
-    
+        const centerX = width / 2;
+        const centerY = height / 2;
+        
+        const networkRadius =
+            Math.min(width, height) *
+            NETWORK_RADIUS_FACTOR;
+        
+        const theta =
+            Math.random() * Math.PI * 2;
+        
+        // 0.5 exponent = uniform circular cloud
+        const r =
+            Math.sqrt(Math.random()) *
+            networkRadius;
+        
         const x =
-            margin +
-            Math.random() * (width - margin * 2);
-    
+            centerX +
+            r * Math.cos(theta);
+        
         const y =
-            margin +
-            Math.random() * (height - margin * 2);
-    
+            centerY +
+            r * Math.sin(theta);
+        
         nodes.push(
             new Node(
                 i,
@@ -294,23 +308,43 @@ function chooseNewTarget(node, now) {
     node.startX = node.x;
     node.startY = node.y;
 
-    node.targetX = Math.max(
-        30,
-        Math.min(
-            width - 30,
-            node.homeX +
-            (Math.random()*2-1)*DRIFT_RADIUS
-        )
-    );
-
-    node.targetY = Math.max(
-        30,
-        Math.min(
-            height - 30,
-            node.homeY +
-            (Math.random()*2-1)*DRIFT_RADIUS
-        )
-    );
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    const networkRadius =
+        Math.min(width, height) *
+        NETWORK_RADIUS_FACTOR;
+    
+    // Candidate destination
+    let tx =
+        node.homeX +
+        (Math.random() * 2 - 1) * DRIFT_RADIUS;
+    
+    let ty =
+        node.homeY +
+        (Math.random() * 2 - 1) * DRIFT_RADIUS;
+    
+    // Distance from center
+    const dx = tx - centerX;
+    const dy = ty - centerY;
+    
+    const d = Math.hypot(dx, dy);
+    
+    // If outside the circle, project back onto the edge
+    if (d > networkRadius) {
+    
+        tx =
+            centerX +
+            dx / d * networkRadius;
+    
+        ty =
+            centerY +
+            dy / d * networkRadius;
+    
+    }
+    
+    node.targetX = tx;
+    node.targetY = ty;
 
     node.moveStart = now;
 
