@@ -36,17 +36,38 @@ h1,h2,h3,h4,h5,h6{
     font-family:'Space Grotesk',sans-serif;
 }
 
-#hero{
+/* =====================================
+   Connectome Hero
+===================================== */
+
+#connectome-hero{
+
+    position:relative;
 
     width:100vw;
-    min-height:100vh;
+    height:100vh;
+
+    overflow:hidden;
 
     display:flex;
     justify-content:center;
     align-items:center;
 
+}
+
+#hero-intro{
+
     position:relative;
+
+    width:100vw;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
     overflow:hidden;
+
     padding-top:70px;
 
 }
@@ -55,7 +76,7 @@ h1,h2,h3,h4,h5,h6{
 
     position:relative;
 
-    z-index:10;
+    z-index:5;
 
     color:white;
 
@@ -68,6 +89,18 @@ h1,h2,h3,h4,h5,h6{
     width:min(90%,900px);
 
     padding:0 24px;
+
+    gap:2rem;
+
+    opacity:0;
+
+    transform:translateY(60px);
+
+    transition:
+
+        opacity .8s ease,
+
+        transform .8s ease;
 
 }
 
@@ -94,6 +127,13 @@ font-size:clamp(3rem,6vw,4.5rem);
 
 }
 
+.hero-content.visible{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
 
 #connectomeCanvas{
 
@@ -111,13 +151,6 @@ font-size:clamp(3rem,6vw,4.5rem);
 
 }
 
-.hero-content{
-
-    position:relative;
-
-    z-index:2;
-
-}
 
 .nav-links{
     display:flex;
@@ -208,119 +241,6 @@ header{
 
 }
 
-/* =====================================
-   Biological Hub Nodes
-===================================== */
-
-.hub{
-
-    position:absolute;
-
-    border-radius:50%;
-
-    background:#bb5579;
-
-    opacity:.85;
-
-    box-shadow:
-        0 0 10px rgba(187,85,121,.35),
-        0 0 20px rgba(187,85,121,.18);
-
-    animation:hubPulse 5s ease-in-out infinite;
-
-}
-
-/* Individual node sizes */
-
-.hub-1{
-
-    width:7px;
-    height:7px;
-
-    top:18%;
-    left:22%;
-
-    animation-delay:-0.5s;
-
-}
-
-.hub-2{
-
-    width:13px;
-    height:13px;
-
-    top:36%;
-    left:70%;
-
-}
-
-.hub-3{
-
-    width:10px;
-    height:10px;
-
-    top:58%;
-    left:38%;
-
-    animation-delay:-2s;
-
-}
-
-.hub-4{
-
-    width:16px;
-    height:16px;
-
-    top:74%;
-    left:78%;
-
-}
-
-.hub-5{
-
-    width:8px;
-    height:8px;
-
-    top:28%;
-    left:84%;
-
-    animation-delay:-1s;
-
-}
-
-.hub-6{
-
-    width:12px;
-    height:12px;
-
-    top:82%;
-    left:18%;
-
-}
-
-.hub-7{
-
-    width:18px;
-    height:18px;
-
-    top:12%;
-    left:10%;
-
-    animation-delay:-1.5s;
-
-}
-
-.hub-8{
-
-    width:20px;
-    height:20px;
-
-    bottom:10%;
-    right:8%;
-
-    animation-delay:-3s;
-
-}
 
 /* =====================================
    Pulse Animation
