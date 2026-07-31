@@ -668,22 +668,15 @@ for (const node of nodes) {
 
 requestAnimationFrame(animate);
 
-
-}
-
-    // =====================================
-    // Hero Scroll Animation
-    // =====================================
+// =====================================
+// Hero Scroll Animation
+// =====================================
 
 const connectomeHero =
     document.getElementById("connectome-hero");
 
 const heroIntro =
     document.getElementById("hero-intro");
-
-window.addEventListener("scroll", updateHeroScroll);
-
-updateHeroScroll();
 
 function updateHeroScroll(){
 
@@ -694,18 +687,12 @@ function updateHeroScroll(){
     const progress =
         Math.min(scroll / heroHeight, 1);
 
-    console.log(scroll, progress);
-
-    // Connectome fades out
-
     connectomeHero.style.opacity =
         1 - progress;
 
     connectomeHero.style.transform =
         `scale(${1 + progress * 0.06})
          translateY(${-30 * progress}px)`;
-
-    // Welcome fades in
 
     const intro =
         Math.max(0, (progress - 0.25) / 0.75);
@@ -717,26 +704,28 @@ function updateHeroScroll(){
 
 }
 
+window.addEventListener("scroll", updateHeroScroll);
 
-    // =====================================
-    // Initialize
-    // =====================================
+// =====================================
+// Initialize
+// =====================================
 
-    resizeCanvas();
+resizeCanvas();
 
-    generateNodes();
+generateNodes();
 
-    buildConnections();
+buildConnections();
 
-    const now = performance.now();
+const now = performance.now();
 
-    for(const node of nodes){
+for (const node of nodes) {
 
-        chooseNewTarget(node, now);
+    chooseNewTarget(node, now);
 
-    }
+}
 
-    updateHeroScroll();
+updateHeroScroll();
 
-    requestAnimationFrame(animate); 
+requestAnimationFrame(animate);
+
 })();
