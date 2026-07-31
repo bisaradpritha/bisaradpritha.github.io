@@ -1608,3 +1608,28 @@ footer p {
     from{opacity:1;}
     to{opacity:.99;}
 }
+
+
+/* =====================================
+   Scroll Animation States
+===================================== */
+
+#connectome-hero{
+
+    opacity:1;
+
+    transform:scale(1);
+
+    will-change:transform,opacity;
+
+}
+
+#hero-intro{
+
+    opacity:0;
+
+    transform:translateY(60px);
+
+    will-change:transform,opacity;
+
+}
