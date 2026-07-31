@@ -663,7 +663,13 @@ const connectomeCanvas =
 
 window.addEventListener("scroll", () => {
 
-    console.log(window.scrollY);
+    const progress = Math.min(
+        window.scrollY / window.innerHeight,
+        1
+    );
+
+    connectomeCanvas.style.opacity =
+        1 - progress;
 
 });
 
