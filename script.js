@@ -668,48 +668,4 @@ for (const node of nodes) {
 
 requestAnimationFrame(animate);
 
-}
-
-// =====================================
-// Hero Scroll Animation
-// =====================================
-
-const connectomeHero =
-    document.getElementById("connectome-hero");
-
-const heroIntro =
-    document.getElementById("hero-intro");
-
-window.addEventListener("scroll", updateHeroScroll);
-
-updateHeroScroll();
-
-function updateHeroScroll(){
-
-    const scroll = window.scrollY;
-
-    const heroHeight = window.innerHeight;
-
-    const progress =
-        Math.min(scroll / heroHeight, 1);
-
-    // Connectome fades out
-
-    connectomeHero.style.opacity =
-        1 - progress;
-
-    connectomeHero.style.transform =
-        `scale(${1 + progress * 0.06})
-         translateY(${-30 * progress}px)`;
-
-    // Welcome fades in
-
-    const intro =
-        Math.max(0, (progress - 0.25) / 0.75);
-
-    heroIntro.style.opacity = intro;
-
-    heroIntro.style.transform =
-        `translateY(${60 * (1 - intro)}px)`;
-
 })();
