@@ -649,6 +649,19 @@ function animate(now) {
 }
 
 // =====================================
+// Hero Elements
+// =====================================
+
+const connectomeHero =
+    document.getElementById("connectome-hero");
+
+const heroIntro =
+    document.getElementById("hero-intro");
+
+const connectomeCanvas =
+    document.getElementById("connectomeCanvas");
+
+// =====================================
 // Initialize
 // =====================================
 
