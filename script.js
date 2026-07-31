@@ -674,9 +674,9 @@ window.addEventListener("scroll", () => {
     connectomeCanvas.style.transform =
         `scale(${1 + progress * 0.05})`;
 
-    const introProgress = Math.max(
-        0,
-        Math.min((progress - 0.25) / 0.75, 1)
+    const introProgress = Math.min(
+        progress * 2,
+        1
     );
     
     const heroContent =
