@@ -661,6 +661,12 @@ const heroIntro =
 const connectomeCanvas =
     document.getElementById("connectomeCanvas");
 
+window.addEventListener("scroll", () => {
+
+    console.log(window.scrollY);
+
+});
+
 // =====================================
 // Initialize
 // =====================================
