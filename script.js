@@ -674,6 +674,20 @@ window.addEventListener("scroll", () => {
     connectomeCanvas.style.transform =
         `scale(${1 + progress * 0.05})`;
 
+    const introProgress = Math.max(
+        0,
+        Math.min((progress - 0.25) / 0.75, 1)
+    );
+    
+    const heroContent =
+        document.querySelector(".hero-content");
+    
+    heroContent.style.opacity =
+        introProgress;
+    
+    heroContent.style.transform =
+        `translateY(${80*(1-introProgress)}px)`;
+
 });
 
 // =====================================
