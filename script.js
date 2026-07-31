@@ -668,4 +668,47 @@ for (const node of nodes) {
 
 requestAnimationFrame(animate);
 
+
+}
+
+    // =====================================
+    // Hero Scroll Animation
+    // =====================================
+
+    const connectomeHero =
+        document.getElementById("connectome-hero");
+
+    const heroIntro =
+        document.getElementById("hero-intro");
+
+    function updateHeroScroll(){
+
+        ...
+
+    }
+
+    window.addEventListener("scroll", updateHeroScroll);
+
+
+    // =====================================
+    // Initialize
+    // =====================================
+
+    resizeCanvas();
+
+    generateNodes();
+
+    buildConnections();
+
+    const now = performance.now();
+
+    for(const node of nodes){
+
+        chooseNewTarget(node, now);
+
+    }
+
+    updateHeroScroll();
+
+    requestAnimationFrame(animate); 
 })();
