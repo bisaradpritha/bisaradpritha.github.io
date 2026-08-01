@@ -355,7 +355,7 @@ Recent Publication Section
 
     background:rgba(255,255,255,.025);
 
-    border:1px solid rgba(187,85,121,.18);
+    border:2px solid rgba(187,85,121,.18);
 
     backdrop-filter:blur(18px);
     -webkit-backdrop-filter:blur(18px);
@@ -370,6 +370,8 @@ Recent Publication Section
         box-shadow .35s ease;
 
     border-radius:18px;
+
+    padding:32px;
 
     overflow:hidden
 
