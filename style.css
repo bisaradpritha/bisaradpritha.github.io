@@ -12,24 +12,7 @@ body{
 
 body{
     font-family:'Inter', sans-serif;
-    color: #f4f5fb;
     overflow-x:hidden;
-
-    background:
-        radial-gradient(circle at top right,
-            rgba(71,216,255,0.05) 0%,
-            transparent 30%),
-
-        radial-gradient(circle at bottom left,
-            rgba(187,85,121,0.08) 0%,
-            transparent 35%),
-
-        linear-gradient(
-            180deg,
-            #0d0320 0%,
-            #12062b 45%,
-            #090018 100%
-        );
 }
 
 h1,h2,h3,h4,h5,h6{
