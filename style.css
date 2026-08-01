@@ -330,9 +330,15 @@ Recent Publication Section
 
 #publications .container{
 
-    width:min(900px, 90%);
+    width:min(900px,90%);
 
     margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:28px;     /* <-- controls spacing */
 
 }
 
@@ -362,6 +368,10 @@ Recent Publication Section
         transform .35s ease,
         border-color .35s ease,
         box-shadow .35s ease;
+
+    border-radius:18px;
+
+    overflow:hidden
 
 }
 
