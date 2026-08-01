@@ -41,7 +41,7 @@ h1,h2,h3,h4,h5,h6{
 
 #connectome-hero{
 
-    position:relative;
+    position:sticky;
     top:0;
 
     width:100vw;
@@ -131,7 +131,7 @@ font-size:clamp(3rem,6vw,4.5rem);
 
 #connectomeCanvas{
 
-    position:sticky;
+    position:absolute;
 
     inset:0;
 
@@ -1621,10 +1621,6 @@ footer p {
 }
 
 #hero-intro{
-
-    opacity:1;
-
-    transform:translateY(60px);
 
     will-change:transform,opacity;
 
