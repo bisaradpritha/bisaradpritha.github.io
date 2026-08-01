@@ -74,27 +74,25 @@ h1,h2,h3,h4,h5,h6{
 
 .hero-content{
 
-    display:flex !important;
+    position:relative;
 
-    flex-direction:column !important;
+    z-index:5;
 
-    justify-content:center !important;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
 
-    align-items:center !important;
+    width:min(900px,90%);
 
-    width:600px !important;
+    text-align:center;
 
-    height:300px !important;
+    color:white;
 
-    background:red !important;
+    opacity:0;
+    transform:translateY(60px);
 
-    color:white !important;
-
-    opacity:1 !important;
-
-    z-index:9999 !important;
-
-    position:relative !important;
+    will-change:opacity, transform;
 
 }
 
