@@ -686,7 +686,7 @@ window.addEventListener("scroll", () => {
         introProgress;
     
     heroContent.style.transform =
-        `translateY(${80*(1-introProgress)}px)`;
+        `translateY(${60*(1-introProgress)}px)`;
 
 });
 
