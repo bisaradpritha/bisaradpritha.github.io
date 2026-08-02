@@ -8,8 +8,8 @@
 const NODE_COUNT = 80;
 const CONNECTIONS_PER_NODE = 3;
 
-const NODE_COLOR = "#bb5579";
-const EDGE_COLOR = "rgba(187,85,121,0.28)";
+const NODE_COLOR = "#ffcb74";
+const EDGE_COLOR = "rgba(255,204,116,0.28)";
 
 const DRIFT_RADIUS = 12;
 const DRIFT_MIN_TIME = 3000;
@@ -518,7 +518,7 @@ function drawEdges() {
             0.5 - length / 800
         );
 
-        ctx.strokeStyle = `rgba(187,85,121,${alpha})`;
+        ctx.strokeStyle = `rgba(255,204,116,${alpha})`;
 
         const nx = -dy / length;
         const ny = dx / length;
@@ -573,7 +573,7 @@ function drawNodes() {
 
 function drawPulses() {
 
-    ctx.fillStyle = "#bb5579";
+    ctx.fillStyle = "#ffcb74";
 
     for (const pulse of pulses) {
 
@@ -591,7 +591,7 @@ function drawPulses() {
             (b.y - a.y) * t;
 
         ctx.shadowBlur = 18;
-        ctx.shadowColor = "#ffd6e5";
+        ctx.shadowColor = "#f6f6f6";
 
         ctx.beginPath();
 
@@ -614,7 +614,7 @@ function drawPulses() {
 
 function render() {
 
-    ctx.fillStyle = "#0d0320";
+    ctx.fillStyle = "#111111";
     ctx.fillRect(0, 0, width, height);
 
     drawEdges();
