@@ -334,6 +334,59 @@ header{
 
 }
 
+/* =====================================
+   Research Interest Cards
+===================================== */
+
+.interest-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:28px;
+
+    margin-top:56px;
+
+}
+
+.interest-card{
+
+    background:rgba(47,47,47,.45);
+
+    border:1px solid rgba(255,203,116,.15);
+
+    border-radius:22px;
+
+    padding:36px 28px;
+
+    min-height:260px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+
+}
+
+.interest-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:var(--accent);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.35);
+
+}
+
 
 /* =============================
 Recent Publication Section 
