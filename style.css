@@ -642,7 +642,7 @@ footer p {
 
     margin-bottom:.75rem;
 
-    color:#f6f6f6;
+    color:#fff;
 
 }
 
@@ -1211,11 +1211,11 @@ footer p {
 
     height:22px;
 
-    border:2px solid rgba(187,85,121,.7);
+    border:2px solid rgba(255,203,116,.7);
 
     border-radius:50%;
 
-    background:#0d0320;
+    background:#111111;
 
     z-index:5;
 
@@ -1233,9 +1233,9 @@ footer p {
 
     border-radius:50%;
 
-    background:#bb5579;
+    background:#ffcb74;
 
-    box-shadow:0 0 12px rgba(187,85,121,.6);
+    box-shadow:0 0 12px rgba(255,203,116,.6);
 
 }
 
@@ -1269,7 +1269,7 @@ footer p {
 
     margin-bottom:1rem;
 
-    color:#bb5579;
+    color:#ffcb74;
 
     font-size:1.8rem;
 
@@ -1359,6 +1359,8 @@ footer p {
 
     max-width:18ch;
 
+    color:#fff
+
 }
 
 .research-cta p{
@@ -1368,6 +1370,8 @@ footer p {
     margin:0 auto 2rem;
 
     line-height:1.8;
+
+    color:#f6f6f6
 
 }
 
