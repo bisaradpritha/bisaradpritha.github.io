@@ -421,8 +421,8 @@ header{
 
 .interest-icon{
 
-    width:90px;
-    height:90px;
+    width:120px;
+    height:120px;
 
     margin:0 auto 24px;
 
@@ -439,8 +439,8 @@ header{
 
 .interest-icon img{
 
-    width:64px;
-    height:64px;
+    width:84px;
+    height:84px;
 
     object-fit:contain;
 
