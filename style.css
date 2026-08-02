@@ -708,8 +708,8 @@ footer p {
 
 .journey-card{
 
-    background: rgba(187,85,121,.12);
-    border: 2px solid rgba(187,85,121,.18);
+    background: rgba(255,204,116,.12);
+    border: 2px solid rgba(255,204,116,.18);
     border-radius: 24px;
     padding: 2.5rem;
     backdrop-filter: blur(16px);
@@ -739,15 +739,15 @@ footer p {
 
 .journey-card:hover{
 
-    border-color:#bb5579;
+    border-color:#ffcb74;
 
-    box-shadow:0 0 30px rgba(187,85,121,.20);
+    box-shadow:0 0 30px rgba(255,204,116,.20);
 
 }
 
 .journey-card h2{
 
-    color:#bb5579;
+    color:#ffcb74;
 
     margin-bottom:1rem;
 
@@ -796,7 +796,7 @@ footer p {
 
     border-radius:50%;
 
-    background:rgba(187,85,121,.12);
+    background:rgba(255,204,116,.12);
 
     color:var(--text);
 
@@ -811,7 +811,7 @@ footer p {
 #prev:hover,
 #next:hover{
 
-    background:#bb5579;
+    background:#ffcb74;
 
     transform:scale(1.08);
 
@@ -835,7 +835,7 @@ footer p {
 
 .dot.active{
 
-    background:#bb5579;
+    background:#ffcb74;
 
 }
 
@@ -872,7 +872,7 @@ footer p {
 
     --glass-bg:rgba(18, 8, 40, 0.55);
 
-    --glass-bg-hover:rgba(22, 10, 48, 0.65);
+    --glass-bg-hover:rgba(47, 47, 47, 0.65);
 
     --glass-border:rgba(255,255,255,0.08);
 
@@ -968,7 +968,7 @@ footer p {
 
     background:var(--glass-bg-hover);
 
-    border-color:rgba(187,85,121,0.22);
+    border-color:rgba(255,204,116,0.22);
 
     box-shadow:var(--glass-shadow-hover);
 
