@@ -350,7 +350,7 @@ header{
 
     grid-template-columns:repeat(4, 1fr);
 
-    gap:32px;
+    gap:64px;
 
     margin-top:72px;
 
