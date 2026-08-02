@@ -1,3 +1,17 @@
+:root{
+
+    --bg: #111111;
+
+    --surface: #2f2f2f;
+
+    --accent: #ffcb74;
+
+    --text: #f6f6f6;
+
+    --text-muted: rgba(246,246,246,.72);
+
+}
+
 html{
     margin:0;
     padding:0;
