@@ -342,9 +342,9 @@ header{
 
     display:grid;
 
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(4, minmax(240px, 1fr));
 
-    gap:28px;
+    gap:32px;
 
     margin-top:56px;
 
@@ -360,7 +360,7 @@ header{
 
     padding:36px 28px;
 
-    min-height:260px;
+    min-height:180px;
 
     position:relative;
 
@@ -373,6 +373,14 @@ header{
         transform .35s ease,
         border-color .35s ease,
         box-shadow .35s ease;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    text-align:center;
 
 }
 
