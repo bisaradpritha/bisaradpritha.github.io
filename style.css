@@ -642,6 +642,8 @@ footer p {
 
     margin-bottom:.75rem;
 
+    color:#f6f6f6;
+
 }
 
 .subtitle{
@@ -759,7 +761,7 @@ footer p {
 
     line-height:1.9;
 
-    color:var(--text);
+    color:#f6f6f6;;
 
 }
 
