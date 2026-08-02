@@ -1156,6 +1156,8 @@ footer p {
 .timeline-card:hover{
 
     transform:translateY(-6px);
+    border:2px
+    border-color:rgba(255,203,116,.65)
 
 }
 
@@ -1522,7 +1524,7 @@ footer p {
 
 .contact-card h3{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Space Grotesk",sans-serif;
 
     font-size:1.25rem;
 
@@ -1540,7 +1542,7 @@ footer p {
 
 .contact-card p{
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:"Inter",sans-serif;
 
     font-size:.98rem;
 
