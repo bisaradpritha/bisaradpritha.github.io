@@ -3,11 +3,11 @@
 const trail = document.getElementById("cursor-trail");
 
 const colors = [
-    "#bb5579",
-    "#bb5579",
-    "#bb5579",
-    "#bb5579",
-    "#bb5579"
+    "#ffcb74",
+    "#ffcb74",
+    "#ffcb74",
+    "#ffcb74",
+    "#ffcb74"
 ];
 
 let mouseX = 0;
