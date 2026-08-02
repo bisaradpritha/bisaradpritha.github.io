@@ -356,7 +356,38 @@ header{
 
     justify-items:center;
 
+    position:relative;
+
+    z-index:1;
+
 }
+
+.interest-grid::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:12%;
+
+    right:12%;
+
+    top:80px;
+
+    height:2px;
+
+    background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,203,116,.18) 12%,
+    rgba(255,203,116,.18) 88%,
+    transparent);
+
+    z-index:0;
+
+}
+
+
 
 .interest-card{
 
@@ -446,6 +477,10 @@ header{
     border-radius:50%;
 
     background:rgba(255,255,255,.02);
+
+    position:relative;
+
+    z-index:2;
 
 }
 
