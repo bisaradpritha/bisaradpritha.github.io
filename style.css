@@ -16,18 +16,18 @@ body{
 
     background:
         radial-gradient(circle at top right,
-            rgba(71,216,255,0.05) 0%,
+            rgba(17,17,17,0.05) 0%,
             transparent 30%),
 
         radial-gradient(circle at bottom left,
-            rgba(187,85,121,0.08) 0%,
+            rgba(255,204,116,0.08) 0%,
             transparent 35%),
 
         linear-gradient(
             180deg,
-            #0d0320 0%,
-            #12062b 45%,
-            #090018 100%
+            #111111 0%,
+            #2f2f2f 45%,
+            #ffcb74 100%
         );
 }
 
@@ -102,7 +102,7 @@ h1,h2,h3,h4,h5,h6{
 
     margin-bottom:0.5rem;
 
-    color:#fff;
+    color:#f6f6f6;
 
 }
 
@@ -193,7 +193,7 @@ header{
 
 .logo{
 
-    color:white;
+    color:#f6f6f6;
 
     text-decoration:none;
 
@@ -206,7 +206,7 @@ header{
 
 .nav-links a{
 
-    color:rgba(255,255,255,.8);
+    color:rgba(246,246,246,.8);
 
     text-decoration:none;
 
@@ -217,7 +217,7 @@ header{
 
 .nav-links a:hover{
 
-    color:rgba(187,85,121,1.0);
+    color:rgba(255,204,116,1.0);
 }
 /* =====================================
    Hero Network Overlay
@@ -273,7 +273,7 @@ header{
 
     overflow:hidden;
 
-    background:#0d0320;
+    background:#111111;
 
 }
 
@@ -306,7 +306,7 @@ header{
 
 #overview p{
 
-    color:rgba(255,255,255,.75);
+    color:rgba(246,246,246,.75);
 
     font-size:1.15rem;
 
@@ -324,7 +324,7 @@ Recent Publication Section
 
     padding:120px 0;
 
-    background:#0d0320;
+    background:#111111;
 
 }
 
@@ -344,7 +344,7 @@ Recent Publication Section
 
 #publications h2{
 
-    color:#f5f5f5;
+    color:#f6f6f6;
 
     margin-bottom:30px;
 
@@ -355,7 +355,7 @@ Recent Publication Section
 
     background:rgba(255,255,255,.025);
 
-    border:2px solid rgba(187,85,121,.18);
+    border:2px solid rgba(255,204,116,.18);
 
     backdrop-filter:blur(18px);
     -webkit-backdrop-filter:blur(18px);
@@ -381,17 +381,17 @@ Recent Publication Section
 
     transform:translateY(-6px);
 
-    border-color:rgba(187,85,121,.6);
+    border-color:rgba(255,204,116,.6);
 
     box-shadow:
-        0 0 30px rgba(187,85,121,.15),
+        0 0 30px rgba(255,204,116,.15),
         0 25px 60px rgba(0,0,0,.45);
 
 }
 
 .publication-card h3{
 
-    color:white;
+    color:#f6f6f6;
 
     margin-bottom:15px;
 
@@ -399,7 +399,7 @@ Recent Publication Section
 
 .publication-card p{
 
-    color:rgba(255,255,255,.7);
+    color:rgba(246,246,246,.7);
 
     line-height:1.8;
 
@@ -421,7 +421,7 @@ footer {
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
 
-    background: rgba(13,3,32,.55);
+    background: rgba(17,17,17,.55);
 
     border-top: 1px solid rgba(71,216,255,.12);
 }
@@ -501,7 +501,7 @@ footer p {
 
     background:
         radial-gradient(circle,
-        rgba(187,85,121,.18),
+        rgba(255,204,116,.18),
         transparent 70%);
 
     transform:translate(-50%,-50%);
@@ -528,7 +528,7 @@ footer p {
 
     padding:0.9rem 2.3rem;
 
-    border:2px solid #bb5579;
+    border:2px solid #ffcb74;
     border-radius:999px;
 
     color:#ffffff;
@@ -548,7 +548,7 @@ footer p {
         box-shadow .35s ease;
 
     box-shadow:
-        0 0 10px rgba(187,85,121,.18);
+        0 0 10px rgba(255,204,116,.18);
 
 }
 .cta-btn::before{
@@ -559,7 +559,7 @@ footer p {
 
     inset:0;
 
-    background:#bb5579;
+    background:#ffcb74;
 
     transform:scaleX(0);
     transform-origin:left;
@@ -577,7 +577,7 @@ footer p {
     transform:translateY(-3px);
 
     box-shadow:
-        0 0 22px rgba(187,85,121,.45);
+        0 0 22px rgba(255,204,116,.45);
 
 }
 
@@ -599,7 +599,7 @@ footer p {
 }
 .cta-btn:active{
 
-    transform:translateY(-1px);
+    transform:translateY(-3px);
 
 }
 
@@ -618,7 +618,7 @@ footer p {
 
     overflow: hidden;
 
-    background: #0d0320;
+    background: #111111;
 
 }
 
