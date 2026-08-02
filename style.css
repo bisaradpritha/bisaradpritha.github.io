@@ -14,7 +14,21 @@ body{
     font-family:'Inter', sans-serif;
     overflow-x:hidden;
 
-    color:#f6f6f6
+    background:
+    radial-gradient(circle at top right,
+        rgba(17,17,17,0.05) 0%,
+        transparent 30%),
+    
+    radial-gradient(circle at bottom left,
+        rgba(255,204,116,0.08) 0%,
+        transparent 35%),
+    
+    linear-gradient(
+        180deg,
+        #111111 0%,
+        #2f2f2f 45%,
+        #ffcb74 100%
+    );
 
 }
 
