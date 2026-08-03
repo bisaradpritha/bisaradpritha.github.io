@@ -486,6 +486,18 @@ header{
 
 }
 
+.interest-card:hover::before{
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,.14) 0%,
+        rgba(255,255,255,.06) 18%,
+        rgba(255,255,255,.02) 34%,
+        transparent 52%
+    );
+
+}
+
 .interest-card h3{
 
     color:var(--text);
