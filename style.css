@@ -696,7 +696,15 @@ Recent Publication Section
 
     padding:32px;
 
-    overflow:hidden
+    overflow:hidden;
+
+    display:flex;
+
+    align-items:flex-start;
+    
+    gap:28px;
+    
+    position:relative;
 
 }
 
@@ -704,27 +712,82 @@ Recent Publication Section
 
     transform:translateY(-6px);
 
-    border-color:rgba(255,204,116,.6);
+    border-color:rgba(255,203,116,.6);
 
     box-shadow:
-        0 0 30px rgba(255,204,116,.15),
+        0 0 30px rgba(255,203,116,.15),
         0 25px 60px rgba(0,0,0,.45);
 
 }
 
-.publication-card h3{
+.publication-thumbnail{
 
-    color:#f6f6f6;
+    flex-shrink:0;
 
-    margin-bottom:15px;
+    width:72px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:flex-start;
 
 }
 
-.publication-card p{
+.publication-thumbnail img{
 
-    color:rgba(246,246,246,.7);
+    width:64px;
 
-    line-height:1.8;
+    height:auto;
+
+    display:block;
+
+    transition:transform .35s ease;
+
+}
+
+.publication-info{
+
+    flex:1;
+
+}
+
+.publication-info a{
+
+    text-decoration:none;
+
+}
+
+.publication-info h3{
+
+    margin:0 0 12px;
+
+    color:var(--text);
+
+    transition:color .3s ease;
+
+}
+
+.publication-info p{
+
+    margin:0;
+
+    color:var(--text-muted);
+
+}
+
+.publication-card:hover .publication-thumbnail img{
+
+    transform:
+        rotate(-3deg)
+        translateY(-2px)
+        scale(1.04);
+
+}
+
+.publication-card:hover .publication-info h3{
+
+    color:var(--accent);
 
 }
 
