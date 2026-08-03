@@ -5,8 +5,8 @@
 // Configuration
 // =====================================
 
-const NODE_COUNT = 80;
-const CONNECTIONS_PER_NODE = 3;
+const NODE_COUNT = 120;
+const CONNECTIONS_PER_NODE = 4;
 
 const NODE_COLOR = "#ffcb74";
 const EDGE_COLOR = "rgba(255,204,116,0.28)";
