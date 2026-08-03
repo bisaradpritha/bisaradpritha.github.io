@@ -376,7 +376,7 @@ header{
 
     grid-template-columns:repeat(4, 1fr);
 
-    gap:clamp(72px,3vw,96px);
+    gap:clamp(96px,3vw,144px);
 
     margin-top:clamp(48px,6vh,80px);
     
