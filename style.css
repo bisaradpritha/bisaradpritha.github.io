@@ -25,7 +25,7 @@ body{
 }
 
 body{
-    font-family:'Inter', sans-serif;
+    font-family:'Manrope', sans-serif;
     overflow-x:hidden;
 
     background:
@@ -46,8 +46,32 @@ body{
 
 }
 
-h1,h2,h3,h4,h5,h6{
-    font-family:'Space Grotesk',sans-serif;
+/* Headings */
+
+h1,
+h2{
+
+    font-family:'DM Serif Display', serif;
+
+    font-weight:400;
+
+    letter-spacing:.02em;
+
+}
+
+/* Card titles, navigation, buttons */
+
+h3,
+h4,
+h5,
+h6,
+.nav-links,
+.logo,
+.cta-btn,
+button{
+
+    font-family:'Manrope', sans-serif;
+
 }
 
 
@@ -1278,7 +1302,7 @@ footer p {
 
 .research-hero h1{
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:"DM Serif Display",serif;
 
     font-size:clamp(3rem,6vw,4.5rem);
 
@@ -1290,7 +1314,7 @@ footer p {
 
 .research-hero p{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Manrope",sans-serif;
 
     max-width:700px;
 
@@ -1663,7 +1687,7 @@ footer p {
 
 .contact-hero h1{
 
-    font-family:"Sapce Grotesk",sans-serif;
+    font-family:"DM Serif Display",serif;
 
     font-size:clamp(3rem,6vw,4.5rem);
 
@@ -1675,7 +1699,7 @@ footer p {
 
 .contact-hero p{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Manrope",sans-serif;
 
     max-width:700px;
 
@@ -1783,7 +1807,7 @@ footer p {
 
 .contact-card h3{
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:"DM Serif Display",serif;
 
     font-size:1.25rem;
 
@@ -1801,7 +1825,7 @@ footer p {
 
 .contact-card p{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Manrope",sans-serif;
 
     font-size:.98rem;
 
