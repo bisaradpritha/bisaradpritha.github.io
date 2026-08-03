@@ -496,6 +496,90 @@ header{
 }
 
 
+/* =====================================
+   Tablet
+===================================== */
+
+@media (max-width:1200px){
+
+    .interest-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:48px;
+
+    }
+
+    .interest-grid::before{
+
+        display:none;
+
+    }
+
+}
+
+/* =====================================
+   Mobile
+===================================== */
+
+@media (max-width:768px){
+
+    #overview{
+
+        padding:80px 0;
+
+    }
+
+    #overview h2{
+
+        font-size:2.2rem;
+
+    }
+
+    .overview-subtitle{
+
+        font-size:1rem;
+
+        margin-bottom:48px;
+
+    }
+
+    .interest-grid{
+
+        grid-template-columns:1fr;
+
+        gap:32px;
+
+    }
+
+    .interest-card{
+
+        max-width:420px;
+
+        width:100%;
+
+        margin:0 auto;
+
+    }
+
+}
+
+.interest-icon{
+
+    width:130px;
+
+    height:130px;
+
+}
+
+.interest-icon img{
+
+    width:96px;
+
+    height:96px;
+
+}
+
 /* =============================
 Recent Publication Section 
 ================================*/
