@@ -698,9 +698,15 @@ Recent Publication Section
 
 #publications h2{
 
-    color:#f6f6f6;
+    color:var(--text);
 
-    margin-bottom:clamp(40px,5vh,70px);
+    font-family:'DM Serif Display', serif;
+
+    font-size:clamp(2.5rem,2.4vw + 1rem,4rem);
+
+    text-align:center;
+
+    margin-bottom:clamp(18px,2vh,28px);
 
 }
 
