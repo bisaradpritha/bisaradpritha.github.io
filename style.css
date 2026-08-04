@@ -662,7 +662,17 @@ Recent Publication Section
 ================================*/
 #publications{
 
-    padding:120px 0;
+    position:relative;
+
+    min-height:100vh;
+
+    padding:clamp(90px,8vh,140px) 0;
+
+    display:flex;
+
+    align-items:center;
+
+    overflow:hidden;
 
     background:#111111;
 
@@ -680,13 +690,17 @@ Recent Publication Section
 
     gap:28px;     /* <-- controls spacing */
 
+    justify-content:center;
+    
+    height:100%;
+
 }
 
 #publications h2{
 
     color:#f6f6f6;
 
-    margin-bottom:30px;
+    margin-bottom:clamp(40px,5vh,70px);
 
 }
 
@@ -722,6 +736,8 @@ Recent Publication Section
     gap:28px;
     
     position:relative;
+    
+    margin-bottom:clamp(18px,2vh,30px);
 
 }
 
