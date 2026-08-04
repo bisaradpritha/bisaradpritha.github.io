@@ -311,7 +311,13 @@ header{
 
     position:relative;
 
-    padding:clamp(90px, 10vh, 160px) 0;
+    min-height:100vh;
+
+    padding:clamp(90px,8vh,140px) 0;
+
+    display:flex;
+
+    align-items:center;
 
     overflow:hidden;
 
@@ -335,6 +341,12 @@ header{
     width:min(1280px,92%);
 
     margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+    
+    justify-content:center;
 
 }
 
@@ -376,9 +388,9 @@ header{
 
     grid-template-columns:repeat(4, 1fr);
 
-    gap:clamp(96px,3vw,144px);
+    gap:clamp(96px,3vw,180px);
 
-    margin-top:clamp(48px,6vh,80px);
+    margin-top:clamp(64px,8vh,120px);
     
     justify-items:center;
 
