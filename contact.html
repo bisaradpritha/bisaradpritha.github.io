@@ -36,19 +36,18 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Me</a></li>
                 <li><a href="research.html">Research</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
 
         </nav>
 
     </header>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.fog.min.js"></script>
-
  <main id="contact-page">
+
+    <canvas class="ambient-network"></canvas>
      
-       <section class="contact-hero">
+       <section class="contact-hero reveal">
 
     
           <div class="container">
@@ -72,7 +71,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
     <div class="contact-grid">
 
         <a href="mailto:pbisarad@arizona.edu"
-           class="glass contact-card">
+           class="glass contact-card reveal tilt">
 
             <h3>Email</h3>
             <p>pbisarad@arizona.edu</p>
@@ -82,7 +81,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
         <a href="https://www.linkedin.com/in/prithabisarad/"
            target="_blank"
            rel="noopener noreferrer"
-           class="glass contact-card">
+           class="glass contact-card reveal tilt">
 
             <h3>LinkedIn</h3>
             <p>Professional Network</p>
@@ -92,7 +91,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
         <a href="https://github.com/bisaradpritha/"
            target="_blank"
            rel="noopener noreferrer"
-           class="glass contact-card">
+           class="glass contact-card reveal tilt">
 
             <h3>GitHub</h3>
             <p>Code & Projects</p>
@@ -102,7 +101,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
         <a href="https://scholar.google.com/citations?user=f0pQkY4AAAAJ&hl=en"
            target="_blank"
            rel="noopener noreferrer"
-           class="glass contact-card">
+           class="glass contact-card reveal tilt">
 
             <h3>Google Scholar</h3>
             <p>Publications & Citations</p>
@@ -112,7 +111,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
         <a href="https://orcid.org/0000-0002-2677-9847"
            target="_blank"
            rel="noopener noreferrer"
-           class="glass contact-card">
+           class="glass contact-card reveal tilt">
 
             <h3>ORCID</h3>
             <p>0000-0002-2677-9847</p>
@@ -122,7 +121,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
         <a href="https://kruerlab.org"
            target="_blank"
            rel="noopener noreferrer"
-           class="glass contact-card">
+           class="glass contact-card reveal tilt">
 
             <h3>Kruer Lab Website</h3>
             <p>Explore more of our research</p>
@@ -135,7 +134,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 
         <a href="assets/Bisarad_Pritha_CV.pdf"
            target="_blank"
-           class="cta-btn">
+           class="cta-btn magnetic">
 
             Download CV
 
@@ -146,25 +145,6 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 </section>
 
 </main>
-
-      
-     <script>
-          VANTA.FOG({
-          el: "#contact-page",
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.00,
-          minWidth: 200.00,
-          highlightColor: 0x111111,
-          midtoneColor: 0x2f2f2f,
-          lowlightColor:0xffcb74,
-          baseColor: 0x111111,
-          blurFactor: 0.9,
-          zoom: 0.5,
-          speed: 2
-        });
-        </script>
 
 
 <!-- Footer -->
@@ -182,8 +162,8 @@ document.getElementById("year").textContent = new Date().getFullYear();
 <div id="cursor-trail"></div>
 
 <script src="cursor.js"></script>
+<script src="script.js"></script>
     
 </body>
 
 </html>
-
