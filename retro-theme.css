@@ -1,10 +1,5 @@
 /* =====================================================
-   RETRO TERMINAL THEME — homepage only
-   Loaded AFTER style.css, only by index.html. Nothing in
-   this file is referenced by about/research/contact.html,
-   so it can be deleted at any time with zero effect on the
-   rest of the site — that's the whole point of keeping it
-   as a separate override file instead of editing style.css.
+   RETRO TERMINAL THEME 
 ===================================================== */
 
 :root{
@@ -617,5 +612,45 @@ html{
 .research-cta p{
 
     color:var(--text-muted) !important;
+
+}
+
+/* =====================================================
+   CONTACT PAGE
+===================================================== */
+
+.contact-hero h1{
+
+    color:var(--accent) !important;
+
+}
+
+.contact-hero p{
+
+    color:var(--text-muted) !important;
+
+}
+
+.contact-card{
+
+    color:var(--accent) !important;
+
+}
+
+.contact-card p{
+
+    color:var(--text-muted) !important;
+
+}
+
+.contact-card::after{
+
+    color:rgba(51,255,51,.6) !important;
+
+}
+
+.contact-card:hover::after{
+
+    color:var(--accent) !important;
 
 }
