@@ -195,14 +195,14 @@ body::before{
         transparent 30%),
 
     radial-gradient(circle at bottom left,
-        rgba(255,204,116,0.08) 0%,
+        rgba(255,204,116,0.10) 0%,
         transparent 35%),
 
     linear-gradient(
         180deg,
         #111111 0%,
-        #2f2f2f 45%,
-        #ffcb74 100%
+        #232019 62%,
+        rgba(255,203,116,.3) 100%
     );
 
 }
@@ -1388,6 +1388,8 @@ footer p {
 
 .about-photo{
 
+    position:relative;
+
     display:flex;
 
     justify-content:center;
@@ -1398,13 +1400,47 @@ footer p {
 
 .about-photo img{
 
+    position:relative;
+
     width: 260px;
 
     height: auto;
 
+    display:block;
+
     border-radius: 20px;
 
-    border: 1px solid var(--border);
+    border: 1px solid var(--glass-border);
+
+    box-shadow: var(--glass-shadow);
+
+    /* Softens the photo's bright studio background so it
+       reads as part of the dark glass UI rather than a
+       pasted-on rectangle */
+    filter: saturate(.88) contrast(1.04) brightness(.94);
+
+}
+
+/* Vignette that fades the photo's edges toward the card's
+   own tone, further blending it into the dark theme */
+.about-photo::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    width:260px;
+
+    margin:auto;
+
+    border-radius:20px;
+
+    pointer-events:none;
+
+    box-shadow:
+        inset 0 0 40px 12px rgba(17,17,17,.55);
 
 }
 
@@ -1426,12 +1462,16 @@ footer p {
 
 .journey-card{
 
+    position:relative;
+
+    overflow:hidden;
+
     background: rgba(255,204,116,.12);
     border: 2px solid rgba(255,204,116,.18);
     border-radius: 24px;
     padding: 2.5rem;
     backdrop-filter: blur(16px);
-    min-height: 420px;
+    min-height: 260px;
 
     display: none;
     opacity: 0;
@@ -1442,6 +1482,40 @@ footer p {
         transform .45s ease,
         border-color .35s ease,
         box-shadow .35s ease;
+
+}
+
+/* A large, quiet quotation mark fills the card's negative
+   space instead of leaving it a bare glass void when a
+   chapter's text is short — reads as intentional rather
+   than empty. */
+
+.journey-card::after{
+
+    content:"\201C";
+
+    position:absolute;
+
+    right:1.2rem;
+    bottom:-1.2rem;
+
+    font-family:'DM Serif Display', serif;
+
+    font-size:12rem;
+    line-height:1;
+
+    color:rgba(255,204,116,.08);
+
+    pointer-events:none;
+
+    z-index:0;
+
+}
+
+.journey-card > *{
+
+    position:relative;
+    z-index:1;
 
 }
 
@@ -1945,6 +2019,10 @@ footer p {
 
 /* =====================================
    Node Core
+   Left-side entries use the primary amber,
+   right-side entries use the secondary blue —
+   a deliberate rhythm along the timeline rather
+   than a single repeated color.
 ===================================== */
 
 .node-core{
@@ -1961,8 +2039,27 @@ footer p {
 
 }
 
+.timeline-item.right .timeline-node{
+
+    border-color:rgba(111,214,255,.7);
+
+}
+
+.timeline-item.right .node-core{
+
+    background:var(--accent-2);
+
+    box-shadow:0 0 12px var(--accent-2-glow);
+
+}
+
 /* =====================================
    Research Topic
+   The eyebrow label is metadata, not the
+   heading — using the secondary accent here
+   (rather than white) makes that distinction
+   visible at a glance, and gives the second
+   color a consistent job across the site.
 ===================================== */
 
 .research-topic{
@@ -1979,7 +2076,7 @@ footer p {
 
     text-transform:uppercase;
 
-    color:#fff;
+    color:var(--accent-2);
 
 }
 
@@ -2184,6 +2281,89 @@ footer p {
 /* =====================================
    Contact Card
 ===================================== */
+
+/* =====================================
+   Contact Icons
+===================================== */
+
+.contact-icon{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:44px;
+    height:44px;
+
+    margin-bottom:1rem;
+
+    border-radius:50%;
+
+    border:1px solid rgba(111,214,255,.3);
+
+    background:rgba(111,214,255,.06);
+
+    color:var(--accent-2);
+
+    flex-shrink:0;
+
+}
+
+.contact-icon svg{
+
+    width:20px;
+    height:20px;
+
+}
+
+/* =====================================
+   Featured Contact Cards
+   Email + LinkedIn get visual priority —
+   larger and listed first, since realistically
+   those are the two people actually use.
+===================================== */
+
+.contact-featured{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:2rem;
+
+    margin-bottom:2rem;
+
+}
+
+.contact-card--featured{
+
+    padding:2.8rem;
+
+    min-height:150px;
+
+}
+
+.contact-card--featured .contact-icon{
+
+    width:52px;
+    height:52px;
+
+}
+
+.contact-card--featured .contact-icon svg{
+
+    width:24px;
+    height:24px;
+
+}
+
+.contact-card--featured h3{
+
+    font-size:1.4rem;
+
+}
 
 .contact-card{
 
