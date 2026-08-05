@@ -956,7 +956,9 @@ header.header-hidden{
 
     pointer-events:none;
 
-    animation:interestPulse 4s cubic-bezier(.45,0,.2,1) infinite;
+    z-index:0;
+
+    animation:interestPulse 8s cubic-bezier(.45,0,.2,1) infinite;
 
 }
 
@@ -1008,6 +1010,12 @@ header.header-hidden{
     min-height:clamp(180px,22vh,240px);
 
     position:relative;
+
+    /* Without this, the pulse's ::after (which conceptually
+       sits "after" the cards in paint order) would render on
+       top of them instead of passing behind, like the static
+       connector line already correctly does. */
+    z-index:1;
 
     overflow:hidden;
 
