@@ -755,8 +755,8 @@ const canvases = document.querySelectorAll(".ambient-network");
 if (!canvases.length) return;
 
 const AMBIENT_NODE_COLOR = "#ffcb74";
-const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.34)";
-const AMBIENT_LINK_DISTANCE_FACTOR = 0.22;
+const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.25)";
+const AMBIENT_LINK_DISTANCE_FACTOR = 0.14;
 
 // Density scales with the container's area instead of using
 // a fixed node count, so a short page (Contact) and a long
@@ -766,9 +766,9 @@ const AMBIENT_LINK_DISTANCE_FACTOR = 0.22;
 function nodeCountFor(width, height) {
 
     const area = width * height;
-    const density = Math.round(area / 22000);
+    const density = Math.round(area / 30000);
 
-    return Math.min(140, Math.max(36, density));
+    return Math.min(90, Math.max(36, density));
 
 }
 
