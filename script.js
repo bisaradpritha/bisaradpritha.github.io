@@ -755,7 +755,7 @@ const canvases = document.querySelectorAll(".ambient-network");
 if (!canvases.length) return;
 
 const AMBIENT_NODE_COLOR = "#ffcb74";
-const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.25)";
+const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.16)";
 const AMBIENT_LINK_DISTANCE_FACTOR = 0.14;
 
 // Density scales with the container's area instead of using
