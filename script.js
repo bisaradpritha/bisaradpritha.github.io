@@ -761,8 +761,16 @@ const canvases = document.querySelectorAll(".ambient-network");
 
 if (!canvases.length) return;
 
-const AMBIENT_NODE_COLOR = "#ffcb74";
-const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.16)";
+// Picks up the same body[data-theme="retro"] attribute
+// cursor.js checks — pages that have been converted to the
+// retro theme get a green network; everything else keeps
+// the site's normal amber.
+const isRetro = document.body.dataset.theme === "retro";
+
+const AMBIENT_NODE_COLOR = isRetro ? "#33ff33" : "#ffcb74";
+const AMBIENT_EDGE_BASE_ALPHA = 0.16;
+const AMBIENT_EDGE_RGB = isRetro ? "51,255,51" : "255,204,116";
+const AMBIENT_EDGE_COLOR = `rgba(${AMBIENT_EDGE_RGB},${AMBIENT_EDGE_BASE_ALPHA})`;
 const AMBIENT_LINK_DISTANCE_FACTOR = 0.14;
 
 // Density scales with the container's area instead of using
@@ -892,7 +900,10 @@ canvases.forEach((canvas) => {
                     const opacity = 1 - dist / linkDistance;
 
                     ctx.strokeStyle = AMBIENT_EDGE_COLOR
-                        .replace("0.34", (0.34 * opacity).toFixed(3));
+                        .replace(
+                            String(AMBIENT_EDGE_BASE_ALPHA),
+                            (AMBIENT_EDGE_BASE_ALPHA * opacity).toFixed(3)
+                        );
 
                     ctx.beginPath();
                     ctx.moveTo(a.x, a.y);
