@@ -29,6 +29,12 @@ const NETWORK_RADIUS_FACTOR = 0.38;
 // =====================================
 
 const canvas = document.getElementById("connectomeCanvas");
+
+// This canvas only exists on index.html — the other pages
+// use the lighter .ambient-network canvas set up further
+// down this file instead.
+if (canvas) {
+
 const ctx = canvas.getContext("2d");
 
 let width;
@@ -725,5 +731,405 @@ for (const node of nodes) {
 
 requestAnimationFrame(animate);
 
+
+} // end if (canvas) — hero connectome
+
+})();
+
+
+// =====================================================
+// Ambient Connectome (About / Research / Contact)
+// A much lighter, non-interactive echo of the homepage
+// network — a handful of slowly drifting nodes and thin
+// connecting edges, low opacity, no mouse interaction.
+// Runs once per .ambient-network canvas found on the page.
+// =====================================================
+
+(() => {
+
+const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const canvases = document.querySelectorAll(".ambient-network");
+
+if (!canvases.length) return;
+
+const AMBIENT_NODE_COUNT = 22;
+const AMBIENT_NODE_COLOR = "#ffcb74";
+const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.18)";
+const AMBIENT_LINK_DISTANCE_FACTOR = 0.28;
+
+canvases.forEach((canvas) => {
+
+    const ctx = canvas.getContext("2d");
+
+    let width = 0;
+    let height = 0;
+    let nodes = [];
+
+    function resize() {
+
+        const parent = canvas.parentElement;
+        width = parent.clientWidth;
+        height = parent.clientHeight;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    }
+
+    function makeNodes() {
+
+        nodes = [];
+
+        for (let i = 0; i < AMBIENT_NODE_COUNT; i++) {
+
+            nodes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.12,
+                vy: (Math.random() - 0.5) * 0.12,
+                radius: 1.4 + Math.random() * 1.6
+            });
+
+        }
+
+    }
+
+    function step() {
+
+        const linkDistance =
+            Math.max(width, height) * AMBIENT_LINK_DISTANCE_FACTOR;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Drift + wrap around edges
+        for (const n of nodes) {
+
+            n.x += n.vx;
+            n.y += n.vy;
+
+            if (n.x < -20) n.x = width + 20;
+            if (n.x > width + 20) n.x = -20;
+            if (n.y < -20) n.y = height + 20;
+            if (n.y > height + 20) n.y = -20;
+
+        }
+
+        // Edges between nearby nodes
+        ctx.lineWidth = 1;
+
+        for (let i = 0; i < nodes.length; i++) {
+
+            for (let j = i + 1; j < nodes.length; j++) {
+
+                const a = nodes[i];
+                const b = nodes[j];
+
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < linkDistance) {
+
+                    const opacity = 1 - dist / linkDistance;
+
+                    ctx.strokeStyle = AMBIENT_EDGE_COLOR
+                        .replace("0.18", (0.18 * opacity).toFixed(3));
+
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+
+                }
+
+            }
+
+        }
+
+        // Nodes
+        ctx.fillStyle = AMBIENT_NODE_COLOR;
+
+        for (const n of nodes) {
+
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+        }
+
+    }
+
+    function loop() {
+
+        step();
+        requestAnimationFrame(loop);
+
+    }
+
+    window.addEventListener("resize", () => {
+
+        resize();
+        makeNodes();
+
+    });
+
+    resize();
+    makeNodes();
+
+    if (prefersReducedMotion) {
+
+        // Draw a single static frame instead of animating
+        step();
+
+    } else {
+
+        requestAnimationFrame(loop);
+
+    }
+
+});
+
+})();
+
+
+// =====================================================
+// Scroll Reveal
+// Fades/slides .reveal elements in the first time they
+// scroll into view. Staggers siblings slightly so groups
+// of cards feel like they arrive together, not all at once.
+// =====================================================
+
+(() => {
+
+const revealEls = document.querySelectorAll(".reveal");
+
+if (!revealEls.length) return;
+
+const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (prefersReducedMotion) {
+
+    revealEls.forEach(el => el.classList.add("is-visible"));
+    return;
+
+}
+
+// Stagger elements that share a parent, so grids of cards
+// cascade in rather than popping in simultaneously.
+const groups = new Map();
+
+revealEls.forEach((el) => {
+
+    const parent = el.parentElement;
+
+    if (!groups.has(parent)) groups.set(parent, []);
+    groups.get(parent).push(el);
+
+});
+
+groups.forEach((siblings) => {
+
+    siblings.forEach((el, i) => {
+
+        el.style.transitionDelay = Math.min(i * 90, 360) + "ms";
+
+    });
+
+});
+
+const observer = new IntersectionObserver((entries) => {
+
+    entries.forEach((entry) => {
+
+        if (entry.isIntersecting) {
+
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+
+        }
+
+    });
+
+}, {
+    threshold: 0.15,
+    rootMargin: "0px 0px -60px 0px"
+});
+
+revealEls.forEach(el => observer.observe(el));
+
+})();
+
+
+// =====================================================
+// Card Tilt
+// Subtle mouse-position-based 3D tilt on any element
+// with the .tilt class (interest/publication/contact/
+// timeline/journey cards). Skipped on touch devices,
+// where hover doesn't really apply.
+// =====================================================
+
+(() => {
+
+const isTouch = window.matchMedia("(hover: none)").matches;
+const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (isTouch || prefersReducedMotion) return;
+
+const TILT_MAX_DEG = 6;
+const LIFT_PX = 8;
+
+document.querySelectorAll(".tilt").forEach((card) => {
+
+    card.addEventListener("mouseenter", () => {
+
+        card.classList.add("tilt-active");
+
+    });
+
+    card.addEventListener("mousemove", (e) => {
+
+        const rect = card.getBoundingClientRect();
+
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+
+        const rotateY = (px - 0.5) * TILT_MAX_DEG * 2;
+        const rotateX = (0.5 - py) * TILT_MAX_DEG * 2;
+
+        card.style.transform =
+            `perspective(900px) translateY(-${LIFT_PX}px) ` +
+            `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+    });
+
+    card.addEventListener("mouseleave", () => {
+
+        card.classList.remove("tilt-active");
+        card.style.transform = "";
+
+    });
+
+});
+
+})();
+
+
+// =====================================================
+// Magnetic Buttons
+// CTA buttons gently pull toward the cursor within a
+// small radius, and snap back on mouse leave.
+// =====================================================
+
+(() => {
+
+const isTouch = window.matchMedia("(hover: none)").matches;
+const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (isTouch || prefersReducedMotion) return;
+
+const PULL_STRENGTH = 0.35;
+const MAX_OFFSET = 10;
+
+document.querySelectorAll(".magnetic").forEach((btn) => {
+
+    btn.addEventListener("mouseenter", () => {
+
+        btn.classList.add("magnetic-active");
+
+    });
+
+    btn.addEventListener("mousemove", (e) => {
+
+        const rect = btn.getBoundingClientRect();
+
+        const offsetX = (e.clientX - rect.left - rect.width / 2)
+            * PULL_STRENGTH;
+        const offsetY = (e.clientY - rect.top - rect.height / 2)
+            * PULL_STRENGTH;
+
+        const clampedX = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, offsetX));
+        const clampedY = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, offsetY));
+
+        btn.style.transform =
+            `translate(${clampedX}px, ${clampedY}px)`;
+
+    });
+
+    btn.addEventListener("mouseleave", () => {
+
+        btn.classList.remove("magnetic-active");
+        btn.style.transform = "";
+
+    });
+
+});
+
+})();
+
+
+// =====================================================
+// Header show/hide on scroll
+// Header gets a solid backdrop once the page has scrolled
+// a bit, and tucks away on scroll-down / reappears on
+// scroll-up so it doesn't compete with content but is
+// always reachable.
+// =====================================================
+
+(() => {
+
+const header = document.querySelector("header");
+
+if (!header) return;
+
+let lastScrollY = window.scrollY;
+let ticking = false;
+
+const SCROLL_THRESHOLD = 24;
+
+function onScroll() {
+
+    const currentY = window.scrollY;
+
+    header.classList.toggle(
+        "header-scrolled",
+        currentY > SCROLL_THRESHOLD
+    );
+
+    if (currentY > lastScrollY && currentY > header.offsetHeight * 2) {
+
+        header.classList.add("header-hidden");
+
+    } else {
+
+        header.classList.remove("header-hidden");
+
+    }
+
+    lastScrollY = currentY;
+    ticking = false;
+
+}
+
+window.addEventListener("scroll", () => {
+
+    if (!ticking) {
+
+        requestAnimationFrame(onScroll);
+        ticking = true;
+
+    }
+
+});
 
 })();
