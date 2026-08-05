@@ -1147,6 +1147,22 @@ header.header-hidden{
 
 }
 
+.interest-icon{
+
+    color:var(--accent);
+
+}
+
+.interest-icon svg{
+
+    width:clamp(64px,4.5vw,80px);
+
+    height:clamp(64px,4.5vw,80px);
+
+    display:block;
+
+}
+
 
 /* =====================================
    Tablet
