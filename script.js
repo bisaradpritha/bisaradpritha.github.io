@@ -803,15 +803,44 @@ canvases.forEach((canvas) => {
 
         const count = nodeCountFor(width, height);
 
-        for (let i = 0; i < count; i++) {
+        // Jittered grid instead of pure Math.random() placement.
+        // Pure randomness naturally produces clumps and empty gaps
+        // (a well-known artifact — true randomness doesn't look
+        // "evenly spread" to the eye). Splitting the canvas into a
+        // grid and placing one node per cell, with a small random
+        // offset inside that cell, keeps coverage even while each
+        // node still lands in a slightly different spot.
 
-            nodes.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.12,
-                vy: (Math.random() - 0.5) * 0.12,
-                radius: 2 + Math.random() * 2.2
-            });
+        const cols = Math.max(1, Math.round(Math.sqrt(count * width / height)));
+        const rows = Math.max(1, Math.round(count / cols));
+
+        const cellW = width / cols;
+        const cellH = height / rows;
+
+        // How far a node can drift from its cell's center, as a
+        // fraction of the cell size. Lower = more evenly gridded
+        // and orderly, higher = more organic/random-looking.
+        const JITTER = 0.62;
+
+        for (let r = 0; r < rows; r++) {
+
+            for (let c = 0; c < cols; c++) {
+
+                const cellCenterX = (c + 0.5) * cellW;
+                const cellCenterY = (r + 0.5) * cellH;
+
+                const offsetX = (Math.random() - 0.5) * cellW * JITTER;
+                const offsetY = (Math.random() - 0.5) * cellH * JITTER;
+
+                nodes.push({
+                    x: cellCenterX + offsetX,
+                    y: cellCenterY + offsetY,
+                    vx: (Math.random() - 0.5) * 0.12,
+                    vy: (Math.random() - 0.5) * 0.12,
+                    radius: 2 + Math.random() * 2.2
+                });
+
+            }
 
         }
 
