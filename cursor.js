@@ -7,7 +7,7 @@ const colors = [
     "#ffcb74",
     "#ffcb74",
     "#ffcb74",
-    "#ffcb74"
+    "#6fd6ff"
 ];
 
 let mouseX = 0;
