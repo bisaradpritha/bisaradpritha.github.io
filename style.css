@@ -611,8 +611,6 @@ header.header-hidden{
 
     overflow:hidden;
 
-    background:#111111;
-
 }
 
 
@@ -963,8 +961,6 @@ Recent Publication Section
     align-items:center;
 
     overflow:hidden;
-
-    background:#111111;
 
 }
 
@@ -1324,8 +1320,6 @@ footer p {
     padding: var(--space-hero-y) 0;
 
     overflow: hidden;
-
-    background: #111111;
 
 }
 
