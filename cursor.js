@@ -1,6 +1,17 @@
 (() => {
 
+const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const isTouch = window.matchMedia("(hover: none)").matches;
+
+// Skip entirely for reduced-motion users, and for touch
+// devices where there's no real "cursor" to trail and the
+// effect would just burn battery for nothing.
+if (prefersReducedMotion || isTouch) return;
+
 const trail = document.getElementById("cursor-trail");
+const glow = document.getElementById("cursor-glow");
 
 const colors = [
     "#ffcb74",
@@ -12,11 +23,24 @@ const colors = [
 
 let mouseX = 0;
 let mouseY = 0;
+let hasMoved = false;
 
 document.addEventListener("mousemove", (e) => {
 
     mouseX = e.clientX;
     mouseY = e.clientY;
+    hasMoved = true;
+
+    // #cursor-glow has full CSS styling (soft blurred blob,
+    // centered via transform:translate(-50%,-50%)) but was
+    // never actually being positioned — it sat frozen in the
+    // top-left corner. left/top here is all it was missing.
+    if (glow) {
+
+        glow.style.left = mouseX + "px";
+        glow.style.top = mouseY + "px";
+
+    }
 
 });
 
@@ -56,7 +80,15 @@ function createParticle() {
 
 function animateCursor() {
 
-    createParticle();
+    // Only spawn particles once the mouse has actually
+    // moved at least once, and skip frames where it's
+    // been stationary instead of emitting continuously.
+    if (hasMoved) {
+
+        createParticle();
+        hasMoved = false;
+
+    }
 
     requestAnimationFrame(animateCursor);
 
