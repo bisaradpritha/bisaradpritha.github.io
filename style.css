@@ -88,6 +88,69 @@
 
 }
 
+/* =====================================
+   Focus states
+   Visible, on-theme focus rings for keyboard
+   navigation. Browser default outlines are
+   inconsistent against a dark glass UI, so
+   every interactive element gets an explicit,
+   deliberate one instead of losing it silently.
+===================================== */
+
+a,
+button,
+.cta-btn,
+.contact-card,
+.dot,
+#prev,
+#next{
+
+    outline-offset:3px;
+
+}
+
+a:focus-visible,
+button:focus-visible,
+.cta-btn:focus-visible,
+.contact-card:focus-visible,
+.dot:focus-visible,
+#prev:focus-visible,
+#next:focus-visible{
+
+    outline:2px solid var(--accent-2);
+    outline-offset:3px;
+    border-radius:4px;
+
+}
+
+.cta-btn:focus-visible{
+
+    border-radius:999px;
+
+}
+
+.contact-card:focus-visible,
+.interest-card:focus-visible,
+.publication-card:focus-visible,
+.timeline-card:focus-visible{
+
+    outline:2px solid var(--accent-2);
+    outline-offset:3px;
+    border-radius:var(--radius-lg);
+
+}
+
+/* Remove the outline for mouse/touch users who
+   click rather than tab — :focus-visible above
+   already covers keyboard users properly. */
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible){
+
+    outline:none;
+
+}
+
 html{
     margin:0;
     padding:0;
