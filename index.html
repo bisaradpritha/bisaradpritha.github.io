@@ -32,26 +32,34 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
 
 <!-- My CSS -->
 <link rel="stylesheet" href="style.css">
 
+<!-- Retro terminal theme — homepage only, loaded after
+     style.css so it can override it. Delete this line (and
+     retro-theme.css) to revert the homepage instantly. -->
+<link rel="stylesheet" href="retro-theme.css">
+
 </head>
 
-<body>
+<body data-theme="retro">
+
+<div class="crt-overlay" aria-hidden="true"></div>
+
      <header>
 
         <nav class="navbar">
 
             <a href="index.html" class="logo">
                 <svg class="logo-mark" viewBox="0 0 36 36" aria-hidden="true">
-                    <circle class="logo-ring" cx="18" cy="18" r="16.5" fill="none" stroke="#ffcb74" stroke-width="1.4"></circle>
-                    <line x1="12" y1="23" x2="22" y2="12" stroke="#ffcb74" stroke-width="1.4"></line>
-                    <line x1="22" y1="12" x2="25" y2="23" stroke="#d98b74" stroke-width="1.4"></line>
-                    <circle cx="12" cy="23" r="2.6" fill="#ffcb74"></circle>
-                    <circle cx="22" cy="12" r="2.6" fill="#ffcb74"></circle>
-                    <circle cx="25" cy="23" r="2.2" fill="#d98b74"></circle>
+                    <circle class="logo-ring" cx="18" cy="18" r="16.5" fill="none" stroke="#33ff33" stroke-width="1.4"></circle>
+                    <line x1="12" y1="23" x2="22" y2="12" stroke="#33ff33" stroke-width="1.4"></line>
+                    <line x1="22" y1="12" x2="25" y2="23" stroke="#33ff33" stroke-width="1.4"></line>
+                    <circle cx="12" cy="23" r="2.6" fill="#33ff33"></circle>
+                    <circle cx="22" cy="12" r="2.6" fill="#33ff33"></circle>
+                    <circle cx="25" cy="23" r="2.2" fill="#33ff33"></circle>
                 </svg>
                 <span class="logo-text">Pritha Bisarad</span>
             </a>
@@ -104,7 +112,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
             molecules and genomes to neural circuits.
         </p>
 
-        <a href="about.html" class="cta-btn magnetic">
+        <a href="about.html" class="cta-btn">
             My Research Journey
         </a>
 
@@ -129,7 +137,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
           </p>
 
          <div class="interest-grid">
-              <div class="interest-card reveal tilt">
+              <div class="interest-card reveal">
 
                <div class="interest-icon">
                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Neurological Movement Disorders">
@@ -152,7 +160,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
                
                </div>
 
-              <div class="interest-card reveal tilt">
+              <div class="interest-card reveal">
           
                  <div class="interest-icon">
                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Multiomics">
@@ -169,7 +177,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
           
               </div>
           
-              <div class="interest-card reveal tilt">
+              <div class="interest-card reveal">
           
                   <div class="interest-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Bioinformatics">
@@ -191,7 +199,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
           
               </div>
           
-              <div class="interest-card reveal tilt">
+              <div class="interest-card reveal">
           
                   <div class="interest-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Deep Brain Stimulation">
@@ -226,7 +234,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 
         <h2 class="reveal">Latest Publications</h2>
 
-        <div class="publication-card glass reveal tilt">
+        <div class="publication-card glass reveal">
 
              <div class="publication-thumbnail">
           
@@ -244,7 +252,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 
         </div>
 
-        <div class="publication-card glass reveal tilt">
+        <div class="publication-card glass reveal">
 
              <div class="publication-thumbnail">
           
@@ -263,7 +271,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 
         </div>
 
-        <div class="publication-card glass reveal tilt">
+        <div class="publication-card glass reveal">
 
              <div class="publication-thumbnail">
           
