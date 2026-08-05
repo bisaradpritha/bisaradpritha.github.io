@@ -754,10 +754,23 @@ const canvases = document.querySelectorAll(".ambient-network");
 
 if (!canvases.length) return;
 
-const AMBIENT_NODE_COUNT = 22;
 const AMBIENT_NODE_COLOR = "#ffcb74";
-const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.18)";
-const AMBIENT_LINK_DISTANCE_FACTOR = 0.28;
+const AMBIENT_EDGE_COLOR = "rgba(255,204,116,0.34)";
+const AMBIENT_LINK_DISTANCE_FACTOR = 0.22;
+
+// Density scales with the container's area instead of using
+// a fixed node count, so a short page (Contact) and a long
+// page (Research, with its full timeline) both read as an
+// evenly-populated network rather than the same handful of
+// nodes stretched thin over a much bigger canvas.
+function nodeCountFor(width, height) {
+
+    const area = width * height;
+    const density = Math.round(area / 22000);
+
+    return Math.min(140, Math.max(36, density));
+
+}
 
 canvases.forEach((canvas) => {
 
@@ -788,14 +801,16 @@ canvases.forEach((canvas) => {
 
         nodes = [];
 
-        for (let i = 0; i < AMBIENT_NODE_COUNT; i++) {
+        const count = nodeCountFor(width, height);
+
+        for (let i = 0; i < count; i++) {
 
             nodes.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 vx: (Math.random() - 0.5) * 0.12,
                 vy: (Math.random() - 0.5) * 0.12,
-                radius: 1.4 + Math.random() * 1.6
+                radius: 2 + Math.random() * 2.2
             });
 
         }
@@ -823,7 +838,7 @@ canvases.forEach((canvas) => {
         }
 
         // Edges between nearby nodes
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.3;
 
         for (let i = 0; i < nodes.length; i++) {
 
@@ -841,7 +856,7 @@ canvases.forEach((canvas) => {
                     const opacity = 1 - dist / linkDistance;
 
                     ctx.strokeStyle = AMBIENT_EDGE_COLOR
-                        .replace("0.18", (0.18 * opacity).toFixed(3));
+                        .replace("0.34", (0.34 * opacity).toFixed(3));
 
                     ctx.beginPath();
                     ctx.moveTo(a.x, a.y);
