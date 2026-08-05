@@ -655,6 +655,18 @@ header.header-hidden{
     letter-spacing:.5px;
 }
 
+/* The site-wide rule grouping .logo in with nav links/buttons
+   sets Manrope — that's right for the rest of that group, but
+   the wordmark itself should match the serif used for every
+   other heading on the site (h1/h2), not the UI sans. */
+.logo-text{
+
+    font-family:'DM Serif Display', serif;
+
+    font-weight:400;
+
+}
+
 .logo-mark{
 
     flex-shrink:0;
