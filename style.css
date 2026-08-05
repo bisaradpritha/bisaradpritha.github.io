@@ -10,6 +10,51 @@
 
     --text-muted: rgba(246,246,246,.72);
 
+    /* =====================================
+       Spacing Scale (4px base unit)
+       Use for margin/padding/gap everywhere
+       instead of one-off px/rem values.
+    ===================================== */
+
+    --space-1: 0.25rem;   /* 4px  */
+    --space-2: 0.5rem;    /* 8px  */
+    --space-3: 0.75rem;   /* 12px */
+    --space-4: 1rem;      /* 16px */
+    --space-5: 1.5rem;    /* 24px */
+    --space-6: 2rem;      /* 32px */
+    --space-7: 2.5rem;    /* 40px */
+    --space-8: 3rem;      /* 48px */
+    --space-9: 4rem;      /* 64px */
+    --space-10: 5rem;     /* 80px */
+    --space-11: 6rem;     /* 96px */
+    --space-12: 8rem;     /* 128px */
+
+    /* Fluid section-level spacing, all derived
+       from the same scale so pages feel consistent */
+
+    --space-section-y: clamp(var(--space-11), 8vw, var(--space-12));
+    --space-hero-y: clamp(var(--space-9), 10vw, var(--space-12));
+    --space-card-pad: clamp(var(--space-6), 2.5vw, var(--space-7));
+    --space-stack: clamp(var(--space-8), 6vw, var(--space-10));
+
+    /* =====================================
+       Type Scale
+       All headings/body copy pull from here
+       so every page reads as one system.
+    ===================================== */
+
+    --text-hero: clamp(3rem, 6vw, 4.5rem);
+    --text-h1: clamp(2.5rem, 2.4vw + 1rem, 4rem);
+    --text-h2: clamp(2.3rem, 2vw + 1rem, 3.6rem);
+    --text-h3: clamp(1.3rem, .5vw + 1.1rem, 1.8rem);
+    --text-body-lg: clamp(1.05rem, .4vw + .95rem, 1.25rem);
+    --text-body: 1rem;
+    --text-small: 0.9rem;
+
+    --leading-tight: 1.2;
+    --leading-normal: 1.6;
+    --leading-relaxed: 1.8;
+
 }
 
 html{
@@ -27,16 +72,38 @@ body{
 body{
     font-family:'Manrope', sans-serif;
     overflow-x:hidden;
+    background:var(--bg);
+}
+
+/* =====================================
+   Ambient background layer
+   Pinned to the viewport (fixed), not the
+   document, so the gradient reads the same
+   on a short page and a long page, and on
+   any monitor size — it no longer stretches
+   or compresses with content length.
+===================================== */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    z-index:-1;
+
+    pointer-events:none;
 
     background:
     radial-gradient(circle at top right,
         rgba(17,17,17,0.05) 0%,
         transparent 30%),
-    
+
     radial-gradient(circle at bottom left,
         rgba(255,204,116,0.08) 0%,
         transparent 35%),
-    
+
     linear-gradient(
         180deg,
         #111111 0%,
@@ -138,9 +205,9 @@ button{
 
 .hero-content h1{
 
-    font-size:clamp(3rem,6vw,4.5rem);
+    font-size:var(--text-hero);
 
-    margin-bottom:0.5rem;
+    margin-bottom:var(--space-2);
 
     color:#f6f6f6;
 
@@ -148,16 +215,9 @@ button{
 
 .hero-content p{
 
-    font-size:1.4rem;
+    font-size:var(--text-body-lg);
 
     color:#d0d0d0;
-
-}
-h1{
-
-font-size:clamp(3rem,6vw,4.5rem);
-
-color:#f6f6f6
 
 }
 
@@ -313,7 +373,7 @@ header{
 
     min-height:100vh;
 
-    padding:clamp(90px,8vh,140px) 0;
+    padding:var(--space-hero-y) 0;
 
     display:flex;
 
@@ -666,7 +726,7 @@ Recent Publication Section
 
     min-height:100vh;
 
-    padding:clamp(90px,8vh,140px) 0;
+    padding:var(--space-hero-y) 0;
 
     display:flex;
 
@@ -1012,16 +1072,6 @@ footer p {
 
 }
 
-/* About Section */
-#about{
-
-    max-width:1100px;
-
-    margin:8rem auto 5rem;
-
-    padding:0 2rem;
-
-}
 .cta-btn:active{
 
     transform:translateY(-3px);
@@ -1032,6 +1082,8 @@ footer p {
 
 /* ====================================
         About
+        (single consolidated #about rule —
+        this used to be declared twice)
 ======================================= */
 #about-page{
 
@@ -1039,7 +1091,7 @@ footer p {
 
     min-height: 100vh;
 
-    padding: 120px 0;
+    padding: var(--space-hero-y) 0;
 
     overflow: hidden;
 
@@ -1051,21 +1103,29 @@ footer p {
 
     position:relative;
 
+    max-width:1100px;
+
+    margin:0 auto;
+
+    padding:0 var(--space-6);
+
 }
 
 .about-header{
 
-    margin-bottom:4rem;
+    margin-bottom:var(--space-9);
 
 }
 
 .about-header h1{
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:'Manrope', sans-serif;
 
-    font-size:clamp(3rem,6vw,4.5rem);
+    font-weight:700;
 
-    margin-bottom:.75rem;
+    font-size:var(--text-hero);
+
+    margin-bottom:var(--space-2);
 
     color:#fff;
 
@@ -1414,7 +1474,7 @@ footer p {
 
     min-height:100vh;
 
-    padding:6rem;
+    padding:0 clamp(var(--space-4), 4vw, var(--space-6));
 
 }
 
@@ -1426,7 +1486,7 @@ footer p {
 
     text-align:center;
 
-    padding:8rem 0 5rem;
+    padding:var(--space-hero-y) 0 var(--space-9);
 
 }
 
@@ -1442,11 +1502,11 @@ footer p {
 
     font-family:"DM Serif Display",serif;
 
-    font-size:clamp(3rem,6vw,4.5rem);
+    font-size:var(--text-hero);
 
     color:#fff;
 
-    margin-bottom:1.5rem;
+    margin-bottom:var(--space-5);
 
 }
 
@@ -1458,9 +1518,9 @@ footer p {
 
     margin:0 auto;
 
-    font-size:1.15rem;
+    font-size:var(--text-body-lg);
 
-    line-height:1.9;
+    line-height:var(--leading-relaxed);
 
     color:rgba(255,255,255,.82);
 
@@ -1475,7 +1535,7 @@ footer p {
 
     position:relative;
 
-    padding:2rem 0 6rem;
+    padding:var(--space-6) 0 var(--space-11);
 
 }
 
@@ -1766,7 +1826,7 @@ footer p {
 
 .research-cta{
 
-    padding:8rem 0;
+    padding:var(--space-11) 0;
 
     display:flex;
 
@@ -1782,9 +1842,11 @@ footer p {
 
 .research-cta h2{
 
-    margin-bottom:1rem;
+    margin-bottom:var(--space-4);
 
     max-width:18ch;
+
+    font-size:var(--text-h2);
 
     color:#fff
 
@@ -1794,9 +1856,9 @@ footer p {
 
     max-width:700px;
 
-    margin:0 auto 2rem;
+    margin:0 auto var(--space-6);
 
-    line-height:1.8;
+    line-height:var(--leading-relaxed);
 
     color:#f6f6f6
 
@@ -1811,7 +1873,7 @@ footer p {
 
     text-align:center;
 
-    padding:8rem 0 5rem;
+    padding:var(--space-hero-y) 0 var(--space-9);
 
 }
 
@@ -1827,11 +1889,11 @@ footer p {
 
     font-family:"DM Serif Display",serif;
 
-    font-size:clamp(3rem,6vw,4.5rem);
+    font-size:var(--text-hero);
 
     color:#fff;
 
-    margin-bottom:1.5rem;
+    margin-bottom:var(--space-5);
 
 }
 
@@ -1843,9 +1905,9 @@ footer p {
 
     margin:0 auto;
 
-    font-size:1.15rem;
+    font-size:var(--text-body-lg);
 
-    line-height:1.9;
+    line-height:var(--leading-relaxed);
 
     color:rgba(255,255,255,.82);
 
@@ -1858,7 +1920,7 @@ footer p {
 .contact-links{
 
     width:min(1200px,92%);
-    margin:6rem auto 8rem;
+    margin:var(--space-11) auto var(--space-12);
 
 }
 
@@ -2047,13 +2109,8 @@ footer p {
 
 #contact-page{
 
-    padding-bottom:6rem;
+    padding-bottom:var(--space-11);
 
-}
-
-@keyframes testAnim{
-    from{opacity:1;}
-    to{opacity:.99;}
 }
 
 
