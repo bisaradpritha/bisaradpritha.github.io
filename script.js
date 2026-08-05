@@ -750,6 +750,13 @@ requestAnimationFrame(animate);
 const prefersReducedMotion =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// Matches the CSS breakpoint that hides .ambient-network on
+// mobile — skip the canvas setup and animation loop entirely
+// rather than running it invisibly in the background.
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+if (isMobile) return;
+
 const canvases = document.querySelectorAll(".ambient-network");
 
 if (!canvases.length) return;
