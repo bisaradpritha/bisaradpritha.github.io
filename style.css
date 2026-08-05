@@ -2648,6 +2648,21 @@ footer p {
 
 }
 
+/* Hidden on mobile — the node network is dense enough that
+   on small screens it either looks cluttered or gets scaled
+   so thin it's not worth the render/battery cost. The JS
+   also skips starting the animation loop at this breakpoint
+   (see script.js), so this isn't just a visual hide. */
+@media (max-width:768px){
+
+    .ambient-network{
+
+        display:none;
+
+    }
+
+}
+
 #about-page,
 #research-page,
 #contact-page{
