@@ -1130,6 +1130,64 @@ document.querySelectorAll(".magnetic").forEach((btn) => {
 
 
 // =====================================================
+// Mobile nav toggle
+// Opens/closes the dropdown menu, keeps aria-expanded in
+// sync for screen readers, and closes automatically when
+// a link is tapped or the viewport grows back past mobile.
+// =====================================================
+
+(() => {
+
+const toggle = document.querySelector(".nav-toggle");
+const navLinks = document.querySelector(".nav-links");
+
+if (!toggle || !navLinks) return;
+
+function closeMenu() {
+
+    navLinks.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+
+}
+
+function openMenu() {
+
+    navLinks.classList.add("open");
+    toggle.setAttribute("aria-expanded", "true");
+
+}
+
+toggle.addEventListener("click", () => {
+
+    const isOpen = navLinks.classList.contains("open");
+
+    if (isOpen) {
+        closeMenu();
+    } else {
+        openMenu();
+    }
+
+});
+
+navLinks.querySelectorAll("a").forEach((link) => {
+
+    link.addEventListener("click", closeMenu);
+
+});
+
+// Resizing past the mobile breakpoint (e.g. rotating a
+// tablet, or a desktop window being resized) shouldn't
+// leave the dropdown open with no toggle button visible.
+window.addEventListener("resize", () => {
+
+    if (window.innerWidth > 768) closeMenu();
+
+});
+
+})();
+
+
+// =====================================================
 // Header show/hide on scroll
 // Header gets a solid backdrop once the page has scrolled
 // a bit, and tucks away on scroll-down / reappears on
