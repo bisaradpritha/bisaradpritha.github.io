@@ -1,3 +1,22 @@
+/* =====================================
+   Global reset
+   Without this, any element that sets both
+   width and padding renders WIDER than its
+   declared width (padding adds on top by
+   default), which is exactly what pushes
+   layouts past the viewport edge on narrow
+   phones and reads as things being
+   "shifted"/cut off on one side.
+===================================== */
+
+*,
+*::before,
+*::after{
+
+    box-sizing:border-box;
+
+}
+
 :root{
 
     --bg: #111111;
@@ -420,6 +439,147 @@ button{
 
     margin:0;
     padding:0;
+}
+
+/* =====================================
+   Mobile Nav Toggle
+   Hidden on desktop; becomes the visible
+   menu control under 768px, where .nav-links
+   collapses into a dropdown instead of
+   trying to fit 4 links + logo on one line.
+===================================== */
+
+.nav-toggle{
+
+    display:none;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:5px;
+
+    width:36px;
+    height:36px;
+
+    padding:0;
+
+    background:none;
+
+    border:none;
+
+    cursor:pointer;
+
+    z-index:1001;
+
+}
+
+.nav-toggle span{
+
+    display:block;
+
+    width:100%;
+
+    height:2px;
+
+    border-radius:2px;
+
+    background:var(--text);
+
+    transition:
+        transform .3s ease,
+        opacity .3s ease;
+
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1){
+
+    transform:translateY(7px) rotate(45deg);
+
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(2){
+
+    opacity:0;
+
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(3){
+
+    transform:translateY(-7px) rotate(-45deg);
+
+}
+
+@media (max-width:768px){
+
+    .navbar{
+
+        padding:0 20px;
+
+    }
+
+    .nav-toggle{
+
+        display:flex;
+
+    }
+
+    .nav-links{
+
+        position:fixed;
+
+        top:70px;
+
+        left:0;
+
+        right:0;
+
+        flex-direction:column;
+
+        gap:0;
+
+        max-height:0;
+
+        overflow:hidden;
+
+        background:rgba(10,10,15,.92);
+
+        backdrop-filter:blur(14px);
+
+        border-bottom:1px solid rgba(255,255,255,.08);
+
+        transition:max-height .35s ease;
+
+    }
+
+    .nav-links.open{
+
+        max-height:400px;
+
+    }
+
+    .nav-links li{
+
+        width:100%;
+
+    }
+
+    .nav-links a{
+
+        display:block;
+
+        padding:18px 24px;
+
+        width:100%;
+
+    }
+
+    .nav-links a::after{
+
+        display:none;
+
+    }
+
 }
 
 header{
@@ -926,22 +1086,6 @@ header.header-hidden{
         margin:0 auto;
 
     }
-
-}
-
-.interest-icon{
-
-    width:130px;
-
-    height:130px;
-
-}
-
-.interest-icon img{
-
-    width:96px;
-
-    height:96px;
 
 }
 
@@ -2044,6 +2188,66 @@ footer p {
     background:var(--accent-2);
 
     box-shadow:0 0 12px var(--accent-2-glow);
+
+}
+
+/* =====================================
+   Timeline — Mobile
+   The alternating left/right layout with a
+   centered spine and connector lines needs a
+   100px+ center gutter to work — far too much
+   on a narrow phone. Below 768px it collapses
+   to a single column: spine and nodes move to
+   the left edge, every card (left or right)
+   stacks in the same column, and the connector
+   lines (which only make sense pointing at a
+   center spine) are hidden.
+===================================== */
+
+@media (max-width:768px){
+
+    .timeline-spine{
+
+        left:20px;
+
+        transform:none;
+
+    }
+
+    .timeline-item{
+
+        grid-template-columns:40px 1fr;
+
+        margin-bottom:2.5rem;
+
+        min-height:0;
+
+    }
+
+    .timeline-item.left .timeline-card,
+    .timeline-item.right .timeline-card{
+
+        grid-column:2;
+
+    }
+
+    .timeline-card{
+
+        padding:1.5rem;
+
+    }
+
+    .timeline-card::after{
+
+        display:none;
+
+    }
+
+    .timeline-node{
+
+        left:20px;
+
+    }
 
 }
 
