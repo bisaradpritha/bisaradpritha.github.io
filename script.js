@@ -1,4 +1,3 @@
-
 (() => {
 
 // =====================================
@@ -41,8 +40,24 @@ const pulses = [];
 
 function resizeCanvas() {
 
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
+    // Logical (CSS pixel) size — all node/edge math below
+    // still uses these, so nothing else needs to change.
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+    // Backing store sized for the screen's actual pixel
+    // density so the network doesn't look soft/blurry on
+    // retina and high-DPI monitors, and doesn't appear
+    // sparser/denser purely because of screen resolution.
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 }
 
