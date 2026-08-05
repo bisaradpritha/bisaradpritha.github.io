@@ -920,7 +920,75 @@ header.header-hidden{
     rgba(255,203,116,.18) 88%,
     transparent);
 
-    z-index:0;
+}
+
+/* =====================================
+   Interest Line Pulse
+   A small glowing dot travels the connecting
+   line left-to-right, then pauses before firing
+   again — reads as a signal/impulse traveling
+   the line rather than continuous motion,
+   echoing the "neural signal" theme.
+===================================== */
+
+.interest-grid::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:77px;
+
+    left:12%;
+
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:var(--accent);
+
+    box-shadow:
+        0 0 8px 2px rgba(255,203,116,.85),
+        0 0 18px 5px rgba(255,203,116,.35);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    animation:interestPulse 4s cubic-bezier(.45,0,.2,1) infinite;
+
+}
+
+@keyframes interestPulse{
+
+    0%{
+
+        left:12%;
+        opacity:0;
+
+    }
+
+    4%{
+
+        opacity:1;
+
+    }
+
+    32%{
+
+        left:88%;
+        opacity:1;
+
+    }
+
+    38%,
+    100%{
+
+        left:88%;
+        opacity:0;
+
+    }
 
 }
 
@@ -1087,6 +1155,12 @@ header.header-hidden{
     }
 
     .interest-grid::before{
+
+        display:none;
+
+    }
+
+    .interest-grid::after{
 
         display:none;
 
