@@ -638,6 +638,12 @@ header.header-hidden{
 
 .logo{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
     color:#f6f6f6;
 
     text-decoration:none;
@@ -647,6 +653,39 @@ header.header-hidden{
     font-weight:600;
 
     letter-spacing:.5px;
+}
+
+.logo-mark{
+
+    flex-shrink:0;
+
+    width:34px;
+    height:34px;
+
+}
+
+.logo-mark circle.logo-ring{
+
+    transition:stroke .3s ease;
+
+}
+
+.logo:hover .logo-ring{
+
+    stroke:var(--accent-2);
+
+}
+
+/* Below ~400px the icon + full name + hamburger button
+   is too tight — keep the mark, drop the wordmark. */
+@media (max-width:400px){
+
+    .logo-text{
+
+        display:none;
+
+    }
+
 }
 
 .nav-links a{
