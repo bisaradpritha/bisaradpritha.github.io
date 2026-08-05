@@ -1,0 +1,410 @@
+/* =====================================================
+   RETRO TERMINAL THEME — homepage only
+   Loaded AFTER style.css, only by index.html. Nothing in
+   this file is referenced by about/research/contact.html,
+   so it can be deleted at any time with zero effect on the
+   rest of the site — that's the whole point of keeping it
+   as a separate override file instead of editing style.css.
+===================================================== */
+
+:root{
+
+    --bg:#080808;
+    --surface:#0f0f0f;
+
+    --accent:#33ff33;
+    --accent-2:#33ff33;
+    --accent-2-soft:rgba(51,255,51,.16);
+    --accent-2-glow:rgba(51,255,51,.35);
+
+    --text:#33ff33;
+    --text-muted:rgba(51,255,51,.65);
+
+    --glass-bg:rgba(10,14,10,.55);
+    --glass-bg-hover:rgba(20,28,20,.7);
+    --glass-border:rgba(51,255,51,.4);
+    --glass-highlight:rgba(51,255,51,.04);
+    --glass-shadow:0 0 0 rgba(0,0,0,0);
+    --glass-shadow-hover:0 0 16px rgba(51,255,51,.25);
+    --glass-blur:0px;
+
+    --radius-sm:0px;
+    --radius-md:0px;
+    --radius-lg:0px;
+    --radius-xl:0px;
+
+}
+
+/* =====================================
+   Base
+===================================== */
+
+body,
+h1, h2, h3, h4, h5, h6,
+p, a, span, button, li,
+.logo-text,
+.nav-links,
+.cta-btn{
+
+    font-family:'VT323', monospace !important;
+    letter-spacing:.02em;
+
+}
+
+body{
+
+    background:var(--bg) !important;
+
+}
+
+/* Kill the shared ambient gradient/grain — flat CRT black
+   reads more authentic than a warm glow */
+body::before,
+body::after{
+
+    display:none !important;
+
+}
+
+h1, h2{
+
+    font-weight:400 !important;
+    letter-spacing:.03em !important;
+
+}
+
+p{
+
+    color:var(--text-muted);
+
+}
+
+/* =====================================
+   CRT scanline overlay
+===================================== */
+
+.crt-overlay{
+
+    position:fixed;
+    inset:0;
+
+    z-index:9997;
+
+    pointer-events:none;
+
+    background:repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 1px,
+        rgba(0,0,0,.28) 2px,
+        rgba(0,0,0,.28) 3px
+    );
+
+    mix-blend-mode:multiply;
+
+    animation:crtFlicker 6s infinite;
+
+}
+
+@keyframes crtFlicker{
+
+    0%, 92%, 100%{ opacity:1; }
+    93%{ opacity:.85; }
+    94%{ opacity:1; }
+    96%{ opacity:.92; }
+
+}
+
+/* =====================================
+   Header / Nav
+===================================== */
+
+header{
+
+    background:rgba(8,8,8,.92) !important;
+    backdrop-filter:none !important;
+    border-bottom:1px solid var(--accent) !important;
+
+}
+
+.logo-text{
+
+    font-size:1.7rem !important;
+    text-shadow:0 0 6px var(--accent-2-glow);
+
+}
+
+.nav-links a{
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+    transition:none !important;
+
+}
+
+.nav-links a::after{
+
+    display:none !important;
+
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+
+    background:var(--accent) !important;
+    color:#000 !important;
+    text-shadow:none !important;
+
+}
+
+@media (max-width:768px){
+
+    .nav-links{
+
+        background:rgba(8,8,8,.96) !important;
+        border-bottom:1px solid var(--accent) !important;
+
+    }
+
+}
+
+/* =====================================
+   Hero
+===================================== */
+
+.hero-content h1{
+
+    text-shadow:0 0 8px var(--accent-2-glow), 0 0 20px rgba(51,255,51,.2);
+
+}
+
+.hero-content h1::before{
+
+    content:"guest@pritha-bisarad:~$ whoami";
+
+    display:block;
+
+    font-size:1rem;
+
+    color:var(--text-muted);
+
+    text-shadow:none;
+
+    margin-bottom:.75rem;
+
+    letter-spacing:0;
+
+}
+
+.hero-content h1::after{
+
+    content:"_";
+
+    animation:blink 1s step-end infinite;
+
+}
+
+@keyframes blink{
+
+    0%, 100%{ opacity:1; }
+    50%{ opacity:0; }
+
+}
+
+.hero-content p{
+
+    color:var(--text-muted);
+
+}
+
+.hero-content p::before{
+
+    content:"# ";
+
+    color:rgba(51,255,51,.4);
+
+}
+
+.cta-btn{
+
+    border-radius:0 !important;
+    border:2px solid var(--accent) !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    text-shadow:0 0 4px var(--accent-2-glow);
+    transition:none !important;
+
+}
+
+.cta-btn::before{
+
+    display:none !important;
+
+}
+
+.cta-btn:hover{
+
+    background:var(--accent) !important;
+    color:#000 !important;
+    text-shadow:none !important;
+    transform:none !important;
+    box-shadow:0 0 16px rgba(51,255,51,.4) !important;
+
+}
+
+.cta-btn::after{
+
+    content:" >";
+
+}
+
+/* =====================================
+   Overview / Interest Cards
+===================================== */
+
+#overview h2::before,
+#publications h2::before{
+
+    content:"> ";
+    color:rgba(51,255,51,.5);
+
+}
+
+.interest-card{
+
+    background:rgba(10,14,10,.6) !important;
+    border:1px solid var(--accent) !important;
+    border-radius:0 !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    box-shadow:none !important;
+    transition:border-color .2s ease, box-shadow .2s ease !important;
+
+}
+
+.interest-card::before{
+
+    display:none !important;
+
+}
+
+.interest-card:hover{
+
+    transform:none !important;
+    box-shadow:0 0 18px rgba(51,255,51,.3) !important;
+
+}
+
+.interest-icon{
+
+    border:1px solid var(--accent) !important;
+    border-radius:50% !important;
+    background:rgba(51,255,51,.04) !important;
+    color:var(--accent) !important;
+
+}
+
+.interest-card h3{
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+
+}
+
+/* Connector line + pulse — redeclared in green instead of
+   the shared amber (those rules hardcode hex, not tokens,
+   so they need a full redeclaration rather than a variable
+   swap) */
+
+.interest-grid::before{
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(51,255,51,.25) 12%,
+        rgba(51,255,51,.25) 88%,
+        transparent) !important;
+
+}
+
+.interest-grid::after{
+
+    background:var(--accent) !important;
+    box-shadow:
+        0 0 8px 2px rgba(51,255,51,.85),
+        0 0 18px 5px rgba(51,255,51,.35) !important;
+
+}
+
+/* =====================================
+   Publications
+===================================== */
+
+.publication-card{
+
+    background:rgba(10,14,10,.5) !important;
+    border:1px solid var(--accent) !important;
+    border-radius:0 !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    box-shadow:none !important;
+    transition:border-color .2s ease, box-shadow .2s ease !important;
+
+}
+
+.publication-card:hover{
+
+    transform:none !important;
+    border-color:var(--accent) !important;
+    box-shadow:0 0 18px rgba(51,255,51,.3) !important;
+
+}
+
+.publication-info h3{
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+
+}
+
+.publication-thumbnail img{
+
+    filter:grayscale(1) brightness(1.4) sepia(1) hue-rotate(60deg) saturate(4);
+
+}
+
+/* =====================================
+   Footer
+===================================== */
+
+footer{
+
+    background:rgba(8,8,8,.92) !important;
+    border-top:1px solid var(--accent) !important;
+    backdrop-filter:none !important;
+
+}
+
+/* =====================================
+   Cursor glow (particle colors handled
+   separately in cursor.js)
+===================================== */
+
+#cursor-glow{
+
+    background:radial-gradient(circle, rgba(51,255,51,.22), transparent 70%) !important;
+
+}
+
+/* =====================================
+   Scrollbar
+===================================== */
+
+::-webkit-scrollbar-thumb{
+
+    background:var(--accent) !important;
+
+}
+
+html{
+
+    scrollbar-color:var(--accent) rgba(8,8,8,.4) !important;
+
+}
