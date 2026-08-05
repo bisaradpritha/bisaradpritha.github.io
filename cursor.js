@@ -13,13 +13,14 @@ if (prefersReducedMotion || isTouch) return;
 const trail = document.getElementById("cursor-trail");
 const glow = document.getElementById("cursor-glow");
 
-const colors = [
-    "#ffcb74",
-    "#ffcb74",
-    "#ffcb74",
-    "#ffcb74",
-    "#d98b74"
-];
+// index.html has a body[data-theme="retro"] attribute for the
+// retro terminal homepage — every other page falls through to
+// the site's normal amber/rose palette unchanged.
+const isRetro = document.body.dataset.theme === "retro";
+
+const colors = isRetro
+    ? ["#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33"]
+    : ["#ffcb74", "#ffcb74", "#ffcb74", "#ffcb74", "#d98b74"];
 
 let mouseX = 0;
 let mouseY = 0;
