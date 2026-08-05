@@ -33,7 +33,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
             </a>
 
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="about.html">About Me</a></li>
                 <li><a href="research.html">Research</a></li>
                 <li><a href="contact.html">Contact</a></li>
@@ -74,7 +74,7 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
             molecules and genomes to neural circuits.
         </p>
 
-        <a href="about.html" class="cta-btn">
+        <a href="about.html" class="cta-btn magnetic">
             My Research Journey
         </a>
 
@@ -82,34 +82,8 @@ content="Official website of Pritha Bisarad, computational biologist and neurosc
 
 </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.fog.min.js"></script>
-
 <script src="script.js"></script>
 
-<!-- <script>
-VANTA.NET({
-    el: "#hero",
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-
-    minHeight: 200.00,
-    minWidth: 200.00,
-
-    scale: 1.0,
-    scaleMobile: 1.0,
-
-    color: 0xbb5579,
-    backgroundColor: 0x0d0320,
-
-    points: 8,
-    maxDistance: 30,
-    spacing: 24
-});
-</script> -->
-     
 <!-- =====================================
      Overview Section
 ===================================== -->
@@ -118,14 +92,14 @@ VANTA.NET({
 
     <div class="container">
 
-        <h2>Research Interests</h2>
+        <h2 class="reveal">Research Interests</h2>
 
-         <p class="overview-subtitle">
+         <p class="overview-subtitle reveal">
               Exploring neurological disorders through molecular biology, computation, and neurotechnology.
           </p>
 
          <div class="interest-grid">
-              <div class="interest-card">
+              <div class="interest-card reveal tilt">
 
                <div class="interest-icon">
                    <img src="images/neuron1.png"
@@ -140,7 +114,7 @@ VANTA.NET({
                
                </div>
 
-              <div class="interest-card">
+              <div class="interest-card reveal tilt">
           
                  <div class="interest-icon">
                    <img src="images/dna1.png"
@@ -153,7 +127,7 @@ VANTA.NET({
           
               </div>
           
-              <div class="interest-card">
+              <div class="interest-card reveal tilt">
           
                   <div class="interest-icon">
                         <img src="images/network1.png"
@@ -166,7 +140,7 @@ VANTA.NET({
           
               </div>
           
-              <div class="interest-card">
+              <div class="interest-card reveal tilt">
           
                   <div class="interest-icon">
                         <img src="images/dbs1.png"
@@ -186,33 +160,14 @@ VANTA.NET({
 
 </section>
 
-<script>
-VANTA.FOG({
-  el: "#overview",
-  mouseControls: true,
-  touchControls: true,
-  gyroControls: false,
-  minHeight: 200.00,
-  minWidth: 200.00,
-  highlightColor: 0x111111,
-  midtoneColor: 0x2f2f2f,
-  lowlightColor:0xffcb74,
-  baseColor: 0x111111,
-  blurFactor: 0.9,
-  zoom: 0.5,
-     speed: 2
-});
-</script>
-
-     
 <!-- recent publication section -->
 <section id="publications">
 
     <div class="container">
 
-        <h2>Latest Publications</h2>
+        <h2 class="reveal">Latest Publications</h2>
 
-        <div class="publication-card glass">
+        <div class="publication-card glass reveal tilt">
 
              <div class="publication-thumbnail">
           
@@ -230,7 +185,7 @@ VANTA.FOG({
 
         </div>
 
-        <div class="publication-card glass">
+        <div class="publication-card glass reveal tilt">
 
              <div class="publication-thumbnail">
           
@@ -249,7 +204,7 @@ VANTA.FOG({
 
         </div>
 
-        <div class="publication-card glass">
+        <div class="publication-card glass reveal tilt">
 
              <div class="publication-thumbnail">
           
@@ -290,5 +245,3 @@ document.getElementById("year").textContent = new Date().getFullYear();
 </body>
 
 </html>
-
-
