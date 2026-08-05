@@ -498,3 +498,124 @@ html{
 
     background:var(--accent) !important;
 }
+
+/* =====================================================
+   RESEARCH PAGE
+===================================================== */
+
+.research-hero h1{
+
+    color:var(--accent) !important;
+
+}
+
+.research-hero p{
+
+    color:var(--text-muted) !important;
+
+}
+
+.timeline-spine{
+
+    background:rgba(51,255,51,.25) !important;
+
+}
+
+.timeline-node{
+
+    border-color:var(--accent) !important;
+    background:var(--bg) !important;
+
+}
+
+.timeline-item.right .timeline-node{
+
+    border-color:var(--accent) !important;
+
+}
+
+.timeline-card{
+
+    background:rgba(10,14,10,.5) !important;
+    border:1px solid var(--accent) !important;
+    border-radius:0 !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    transition:border-color .2s ease, box-shadow .2s ease !important;
+
+}
+
+.timeline-card:hover{
+
+    transform:none !important;
+    border:1px solid var(--accent) !important;
+    box-shadow:0 0 16px rgba(51,255,51,.25) !important;
+
+}
+
+.timeline-card::after{
+
+    background:rgba(51,255,51,.3) !important;
+
+}
+
+.timeline-card h2{
+
+    color:var(--accent) !important;
+
+}
+
+.timeline-card p{
+
+    color:var(--text-muted) !important;
+
+}
+
+.research-topic::before{
+
+    content:"[ ";
+
+}
+
+.research-topic::after{
+
+    content:" ]";
+
+}
+
+.publication{
+
+    border-top:1px solid rgba(51,255,51,.15) !important;
+
+}
+
+.publication h3{
+
+    color:var(--accent) !important;
+
+}
+
+.publication h3::before{
+
+    content:"> ";
+    color:rgba(51,255,51,.5);
+
+}
+
+.publication p{
+
+    color:var(--text-muted) !important;
+
+}
+
+.research-cta h2{
+
+    color:var(--accent) !important;
+
+}
+
+.research-cta p{
+
+    color:var(--text-muted) !important;
+
+}
