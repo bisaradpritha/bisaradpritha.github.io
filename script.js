@@ -40,7 +40,7 @@ const ROTATION_SPEED = 0.0018;
 // the sphere that nodes gather around, so the network reads
 // like modular biological structure (protein complexes,
 // neural ganglia) instead of a mathematically even mesh.
-const CLUSTER_COUNT = 10;
+const CLUSTER_COUNT = 16;
 const SHELL_FRACTION = 0.72;
 let clusters = [];
 
@@ -64,8 +64,17 @@ function buildClusters() {
         const theta = Math.acos(2 * u - 1);
         const phi = Math.random() * Math.PI * 2;
 
-        const weight = 0.5 + Math.random() * 1.5;
-        const spread = 0.18 + Math.random() * 0.32;
+        // Weight range narrowed from the original 0.5-2.0 —
+        // a wide range let a couple of clusters end up much
+        // "heavier" than the rest by chance, starving other
+        // areas of the sphere and leaving big empty gaps
+        // between dense blobs (which is what forced the k-NN
+        // edges below into long, ugly bridge lines across
+        // those gaps). Spread floor raised similarly — a
+        // cluster too tight reads as an isolated dot rather
+        // than blending into its neighbors.
+        const weight = 0.8 + Math.random() * 0.7;
+        const spread = 0.32 + Math.random() * 0.28;
 
         clusters.push({ theta, phi, weight, spread });
 
@@ -395,10 +404,11 @@ function generateNodes() {
             ? 0.95 + Math.random() * 0.05
             : Math.pow(Math.random(), 1.6) * 0.85;
 
-        // 15% of nodes ignore clustering entirely — pure
-        // free-floating noise, so the structure doesn't read
-        // as too neatly modular.
-        const useCluster = Math.random() < 0.85;
+        // Raised from 15% — that wasn't enough baseline
+        // coverage to fill the gaps between clusters, which
+        // is part of what let the sphere read as isolated
+        // islands rather than one continuous structure.
+        const useCluster = Math.random() < 0.65;
 
         let theta, phi;
 
@@ -478,6 +488,16 @@ function buildConnections() {
 
     const edgeSet = new Set();
 
+    // Distance cap — without this, a node in a sparse area
+    // is still forced to connect to its "nearest" neighbors
+    // no matter how far away they actually are, which is
+    // exactly what produced the long stretched bridge lines
+    // between clusters. Filtering candidates to a reasonable
+    // radius first means an isolated node just ends up with
+    // fewer (or zero) edges instead of a visible tether to
+    // the nearest distant cluster.
+    const maxConnectionDist = sphereRadius * 0.55;
+
     for (const node of nodes) {
 
         const nConnections =
@@ -487,6 +507,8 @@ function buildConnections() {
         const nearest = [...nodes]
         
             .filter(other => other.id !== node.id)
+
+            .filter(other => distance(node, other) < maxConnectionDist)
         
             .sort((a, b) => distance(node, a) - distance(node, b))
         
