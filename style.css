@@ -2679,6 +2679,20 @@ footer p {
 
 }
 
+.publication a{
+
+    text-decoration:none;
+
+    transition:none;
+
+}
+
+.publication a:hover h3{
+
+    color:var(--accent);
+
+}
+
 .publication h3{
 
     font-size:1rem;
