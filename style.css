@@ -249,6 +249,21 @@ html{
    each page's markup, right after <body>.
 ===================================== */
 
+body::before{
+
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    z-index:-1;
+
+    pointer-events:none;
+
+    box-shadow:inset 0 0 90px 30px rgba(51,255,51,.06);
+
+}
+
 .crt-overlay{
 
     position:fixed;
