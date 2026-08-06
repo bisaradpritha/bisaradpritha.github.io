@@ -127,6 +127,17 @@ if (canvas) {
 
 const ctx = canvas.getContext("2d");
 
+// The hero network is the richest animation on the site —
+// rotation, drift, breathing, flashes, and traveling pulses
+// all running continuously. For reduced-motion users, none
+// of that runs: the sphere still renders (it's the visual
+// identity of the page, not just decoration), but as a
+// single frozen frame instead of a live animation. Same
+// principle the ambient network on other pages already
+// follows, just applied to the fuller version here.
+const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 let width;
 let height;
 
@@ -181,7 +192,21 @@ function resizeCanvas() {
 }
 
 
-window.addEventListener("resize", resizeCanvas);
+window.addEventListener("resize", () => {
+
+    resizeCanvas();
+
+    // No animate loop is running to redraw after a resize
+    // clears the canvas's backing store, so the static frame
+    // needs to be explicitly redrawn here.
+    if (prefersReducedMotion) {
+
+        updateNodes(performance.now());
+        render();
+
+    }
+
+});
 
 window.addEventListener("mousemove", e => {
 
@@ -998,7 +1023,23 @@ for (const node of nodes) {
 
 }
 
-requestAnimationFrame(animate);
+if (prefersReducedMotion) {
+
+    // A single static frame — chooseNewTarget() above has
+    // already set each node's drift target, but since no
+    // time has passed yet, updateNodes() renders them at
+    // t≈0, which is their clean base sphere position. No
+    // rotation, drift, breathing, flashes, or pulses ever
+    // run.
+    updateNodes(now);
+
+    render();
+
+} else {
+
+    requestAnimationFrame(animate);
+
+}
 
 
 } // end if (canvas) — hero connectome
