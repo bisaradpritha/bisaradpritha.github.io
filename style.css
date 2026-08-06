@@ -445,21 +445,65 @@ button{
 
     display:block;
 
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    width:0;
+
+    margin:0 auto .75rem;
+
+    border-right:2px solid var(--text-muted);
+
     font-size:1rem;
 
     color:var(--text-muted);
 
     text-shadow:none;
 
-    margin-bottom:.75rem;
-
     letter-spacing:0;
+
+    animation:
+        heroTyping 1.5s steps(30) forwards,
+        heroPromptCursor .8s step-end infinite;
 
 }
 
-.hero-content h1::after{
+@keyframes heroTyping{
 
-    content:"_";
+    to{ width:30ch; }
+
+}
+
+@keyframes heroPromptCursor{
+
+    0%, 100%{ border-color:var(--text-muted); }
+    50%{ border-color:transparent; }
+
+}
+
+/* "Hello!" and its cursor stay invisible until the prompt
+   line above finishes typing (1.5s), then fade in — reads
+   as the terminal "responding" to the command rather than
+   everything appearing at once. */
+
+.hero-typed{
+
+    display:inline-block;
+
+    opacity:0;
+
+    animation:heroTypedReveal .35s ease 1.5s forwards;
+
+}
+
+@keyframes heroTypedReveal{
+
+    to{ opacity:1; }
+
+}
+
+.hero-cursor{
 
     animation:blink 1s step-end infinite;
 
@@ -817,6 +861,21 @@ header.header-hidden{
     background:var(--accent);
     color:#000;
     text-shadow:none;
+}
+
+/* Active page gets its own blinking cursor — "Contact_" —
+   reusing the same terminal-prompt cue as the hero, so it
+   reads as "you are here" rather than just a color swap. */
+.nav-links a.active::after{
+
+    content:"_";
+
+    display:inline;
+
+    color:#000;
+
+    animation:blink 1s step-end infinite;
+
 }
 /* =====================================
    Hero Network Overlay
@@ -2342,6 +2401,8 @@ footer p {
 
 .poster-placeholder{
 
+    position:relative;
+
     display:flex;
     align-items:center;
     justify-content:center;
@@ -2350,13 +2411,37 @@ footer p {
 
     padding:1.5rem;
 
-    border:1px dashed rgba(51,255,51,.3);
-
     color:var(--text-muted);
 
     font-size:.95rem;
 
     text-align:center;
+
+    /* Animated dashed border — real border-style:dashed can't
+       be animated, so this fakes it with four thin repeating
+       gradients (one per edge) and shifts their position each
+       frame, the classic CSS "marching ants" technique. */
+    background-image:
+        linear-gradient(90deg, rgba(51,255,51,.5) 50%, transparent 50%),
+        linear-gradient(90deg, rgba(51,255,51,.5) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(51,255,51,.5) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(51,255,51,.5) 50%, transparent 50%);
+
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+
+    background-size: 10px 1px, 10px 1px, 1px 10px, 1px 10px;
+
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+
+    animation:marchingAnts .5s linear infinite;
+
+}
+
+@keyframes marchingAnts{
+
+    to{
+        background-position: 10px 0, -10px 100%, 0 -10px, 100% 10px;
+    }
 
 }
 
