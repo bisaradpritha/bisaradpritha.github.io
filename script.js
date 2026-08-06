@@ -539,7 +539,7 @@ function drawEdges() {
             0.5 - length / 800
         );
 
-        ctx.strokeStyle = `rgba(255,204,116,${alpha})`;
+        ctx.strokeStyle = `rgba(51,255,51,${alpha})`;
 
         const nx = -dy / length;
         const ny = dx / length;
@@ -761,15 +761,9 @@ const canvases = document.querySelectorAll(".ambient-network");
 
 if (!canvases.length) return;
 
-// Picks up the same body[data-theme="retro"] attribute
-// cursor.js checks — pages that have been converted to the
-// retro theme get a green network; everything else keeps
-// the site's normal amber.
-const isRetro = document.body.dataset.theme === "retro";
-
-const AMBIENT_NODE_COLOR = isRetro ? "#33ff33" : "#ffcb74";
+const AMBIENT_NODE_COLOR = "#33ff33";
 const AMBIENT_EDGE_BASE_ALPHA = 0.16;
-const AMBIENT_EDGE_RGB = isRetro ? "51,255,51" : "255,204,116";
+const AMBIENT_EDGE_RGB = "51,255,51";
 const AMBIENT_EDGE_COLOR = `rgba(${AMBIENT_EDGE_RGB},${AMBIENT_EDGE_BASE_ALPHA})`;
 const AMBIENT_LINK_DISTANCE_FACTOR = 0.14;
 
