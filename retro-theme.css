@@ -14,6 +14,12 @@
        inconsistency. */
     --heading-accent:#f2fff2;
 
+    /* Same white, dimmed via opacity — for secondary/nested
+       titles (a publication title inside a card, a card's
+       own h3) so they read as "part of the white tier" but
+       one step down from page-level h1/h2. */
+    --heading-accent-muted:rgba(242,255,242,.72);
+
     --accent:#33ff33;
     --accent-2:#33ff33;
     --accent-2-soft:rgba(51,255,51,.16);
@@ -182,6 +188,7 @@ header{
 
 .hero-content h1{
 
+    color:var(--heading-accent) !important;
     text-shadow:0 0 8px var(--accent-2-glow), 0 0 20px rgba(51,255,51,.2);
 
 }
@@ -256,7 +263,7 @@ header{
     color:#000 !important;
     text-shadow:none !important;
     transform:none !important;
-    box-shadow:0 0 16px rgba(51,255,51,.4) !important;
+    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
 
 }
 
@@ -275,6 +282,19 @@ header{
 
     content:"> ";
     color:rgba(51,255,51,.5);
+
+}
+
+#overview h2,
+#publications h2{
+
+    color:var(--heading-accent) !important;
+
+}
+
+.overview-subtitle{
+
+    color:var(--heading-accent-muted) !important;
 
 }
 
@@ -299,7 +319,7 @@ header{
 .interest-card:hover{
 
     transform:none !important;
-    box-shadow:0 0 18px rgba(51,255,51,.3) !important;
+    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
 
 }
 
@@ -314,6 +334,7 @@ header{
 
 .interest-card h3{
 
+    color:var(--heading-accent-muted) !important;
     text-shadow:0 0 4px var(--accent-2-glow);
 
 }
@@ -363,12 +384,13 @@ header{
 
     transform:none !important;
     border-color:var(--accent) !important;
-    box-shadow:0 0 18px rgba(51,255,51,.3) !important;
+    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
 
 }
 
 .publication-info h3{
 
+    color:var(--heading-accent-muted) !important;
     text-shadow:0 0 4px var(--accent-2-glow);
 
 }
@@ -422,6 +444,12 @@ html{
    ABOUT PAGE
 ===================================================== */
 
+.about-header h1{
+
+    color:var(--heading-accent) !important;
+
+}
+
 .journey-card{
 
     background:rgba(10,14,10,.6) !important;
@@ -436,7 +464,12 @@ html{
 
 .journey-card:hover{
 
-    box-shadow:0 0 16px rgba(51,255,51,.25) !important;
+    /* Explicit override — the shared style.css sets an amber
+       border-color on this exact hover state, and this is the
+       property that actually needs to win, not just the glow. */
+    border-color:var(--accent) !important;
+    border-width:2px !important;
+    box-shadow:0 0 28px rgba(51,255,51,.55) !important;
 
 }
 
@@ -551,7 +584,7 @@ html{
 
     transform:none !important;
     border:1px solid var(--accent) !important;
-    box-shadow:0 0 16px rgba(51,255,51,.25) !important;
+    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
 
 }
 
@@ -593,7 +626,7 @@ html{
 
 .publication h3{
 
-    color:var(--accent) !important;
+    color:var(--heading-accent-muted) !important;
 
 }
 
@@ -641,6 +674,18 @@ html{
 .contact-card{
 
     color:var(--accent) !important;
+
+}
+
+.contact-card:hover{
+
+    /* Same fix as journey-card — style.css sets an amber
+       border-color + amber box-shadow on this exact hover
+       state that would otherwise leak through untouched. */
+    transform:none !important;
+    border-color:var(--accent) !important;
+    border-width:2px !important;
+    box-shadow:0 0 28px rgba(51,255,51,.55) !important;
 
 }
 
