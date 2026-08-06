@@ -2687,6 +2687,26 @@ footer p {
 
 }
 
+/* Linked entries need to read as clickable before the user
+   ever hovers — a brighter "> " prefix and a trailing arrow
+   (the same ↗ cue used on the contact cards) both signal it
+   at a glance, rather than only revealing itself on hover. */
+.publication a h3::before{
+
+    color:var(--accent);
+
+}
+
+.publication a h3::after{
+
+    content:" ↗";
+
+    color:var(--accent);
+
+    font-size:.85em;
+
+}
+
 .publication a:hover h3{
 
     color:var(--accent);
