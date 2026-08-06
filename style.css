@@ -1857,6 +1857,14 @@ footer p {
 
 }
 
+.journey-card h2::before{
+
+    content:"> ";
+
+    color:rgba(51,255,51,.5);
+
+}
+
 .chapter-number{
 
     color:var(--text-muted);
