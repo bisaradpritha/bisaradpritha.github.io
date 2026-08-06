@@ -10,7 +10,6 @@ const CONNECTIONS_PER_NODE = 4;
 const NODE_COLOR = "#33ff33";
 const EDGE_COLOR = "rgba(255,204,116,0.28)";
 
-const DRIFT_RADIUS = 12;
 const DRIFT_MIN_TIME = 3000;
 const DRIFT_MAX_TIME = 6000;
 
@@ -20,9 +19,74 @@ const mouse = {
     active: false
 };
 
-const REPULSE_RADIUS = 220;
-const REPULSE_STRENGTH = 3;
+// Toned down from the original 220/3 — the repulsion effect
+// was too dramatic against the new sphere structure, so it's
+// a gentler, more localized push now.
+const REPULSE_RADIUS = 160;
+const REPULSE_STRENGTH = 1.6;
 const NETWORK_RADIUS_FACTOR = 0.38;
+
+// Nodes near the sphere's boundary barely wander (that's
+// what keeps the ring/edge well-defined); nodes near the
+// center are free to drift much further. This replaces the
+// old flat DRIFT_RADIUS with a per-node budget.
+const EDGE_JITTER = 6;
+const CENTER_JITTER = 34;
+
+// Y-axis rotation
+let rotation = 0;
+const ROTATION_SPEED = 0.0018;
+
+// Organic clustering — a handful of irregular seed points on
+// the sphere that nodes gather around, so the network reads
+// like modular biological structure (protein complexes,
+// neural ganglia) instead of a mathematically even mesh.
+const CLUSTER_COUNT = 10;
+const SHELL_FRACTION = 0.72;
+let clusters = [];
+
+function buildClusters() {
+
+    clusters = [];
+
+    for (let i = 0; i < CLUSTER_COUNT; i++) {
+
+        const u = Math.random();
+        const theta = Math.acos(2 * u - 1);
+        const phi = Math.random() * Math.PI * 2;
+
+        clusters.push({
+            theta,
+            phi,
+            weight: 0.5 + Math.random() * 1.5,
+            spread: 0.18 + Math.random() * 0.32
+        });
+
+    }
+
+}
+
+function pickCluster() {
+
+    const totalWeight = clusters.reduce((sum, c) => sum + c.weight, 0);
+    let r = Math.random() * totalWeight;
+
+    for (const c of clusters) {
+
+        if (r < c.weight) return c;
+        r -= c.weight;
+
+    }
+
+    return clusters[clusters.length - 1];
+
+}
+
+// Random brief brightness flashes on a few nodes at a time —
+// like an activation event, independent and unsynchronized.
+const FLASH_DURATION = 550;
+const FLASH_CHANCE_PER_FRAME = 0.035;
+const MAX_CONCURRENT_FLASHES = 4;
 
 // =====================================
 // Canvas
@@ -43,6 +107,29 @@ let height;
 const nodes = [];
 const edges = [];
 const pulses = [];
+
+// Set once per generateNodes() call, referenced by
+// chooseNewTarget() and the rotation/depth math in
+// updateNodes() so they all agree on the same sphere size.
+let sphereRadius = 0;
+
+function maybeSpawnFlash(now) {
+
+    const activeCount = nodes.reduce(
+        (sum, n) => sum + (now < n.flashUntil ? 1 : 0), 0
+    );
+
+    if (activeCount >= MAX_CONCURRENT_FLASHES) return;
+    if (Math.random() >= FLASH_CHANCE_PER_FRAME) return;
+
+    const candidate = nodes[Math.floor(Math.random() * nodes.length)];
+
+    if (now < candidate.flashUntil) return;
+
+    candidate.flashStart = now;
+    candidate.flashUntil = now + FLASH_DURATION;
+
+}
 
 function resizeCanvas() {
 
@@ -111,29 +198,40 @@ window.addEventListener("touchend", () => {
 
 class Node {
 
-    constructor(id, x, y, radius) {
+    constructor(id, x3d, y3d, z3d, radius, radiusFraction) {
 
         this.id = id;
 
         this.radius = radius;
 
-        // Home position
+        // Fixed 3D anchor on/within the sphere — this is what
+        // the drift wobble orbits around, and what gets
+        // rotated each frame to produce the 2D screen position.
 
-        this.homeX = x;
-        this.homeY = y;
+        this.baseX3d = x3d;
+        this.baseY3d = y3d;
+        this.baseZ3d = z3d;
 
-        // Current position
+        this.radiusFraction = radiusFraction;
 
-        this.x = x;
-        this.y = y;
+        // Nodes near the sphere's edge barely wander (keeps
+        // the boundary well-defined); nodes near the center
+        // drift much more freely.
+        this.jitterBudget =
+            EDGE_JITTER +
+            (1 - radiusFraction) * (CENTER_JITTER - EDGE_JITTER);
 
-        // Motion
+        // 3D drift motion — same smoothstep-interpolated
+        // random-target system as before, just extended to
+        // three dimensions instead of two.
 
-        this.startX = x;
-        this.startY = y;
+        this.startX3d = x3d;
+        this.startY3d = y3d;
+        this.startZ3d = z3d;
 
-        this.targetX = x;
-        this.targetY = y;
+        this.targetX3d = x3d;
+        this.targetY3d = y3d;
+        this.targetZ3d = z3d;
 
         this.moveStart = performance.now();
 
@@ -142,15 +240,31 @@ class Node {
             Math.random() *
             (DRIFT_MAX_TIME - DRIFT_MIN_TIME);
 
+        // Final rendered 2D position (post-drift, post-
+        // rotation, post mouse-repulsion) — same role as
+        // before, just now derived from the 3D pipeline.
+
+        this.x = 0;
+        this.y = 0;
+
+        // 0 = fully on the far side, 1 = fully facing the
+        // viewer. Drives size/brightness so the far side of
+        // the sphere reads as receding rather than flat.
+        this.depth = 1;
+
         this.baseRadius = radius;
         this.phase = Math.random() * Math.PI * 2;
-        
+
         // Offset params
         this.offsetX = 0;
         this.offsetY = 0;
-        
+
         this.vx = 0;
         this.vy = 0;
+
+        // Brief random brightness flashes
+        this.flashStart = 0;
+        this.flashUntil = 0;
 
     }
 
@@ -204,10 +318,11 @@ class Pulse {
 
 function distance(a, b) {
 
-    const dx = a.homeX - b.homeX;
-    const dy = a.homeY - b.homeY;
+    const dx = a.baseX3d - b.baseX3d;
+    const dy = a.baseY3d - b.baseY3d;
+    const dz = a.baseZ3d - b.baseZ3d;
 
-    return Math.hypot(dx, dy);
+    return Math.sqrt(dx*dx + dy*dy + dz*dz);
 
 }
 
@@ -232,68 +347,100 @@ function generateNodes() {
 
     nodes.length = 0;
 
+    buildClusters();
+
+    sphereRadius =
+        Math.min(width, height) *
+        NETWORK_RADIUS_FACTOR;
+
     for (let i = 0; i < NODE_COUNT; i++) {
 
         const radius = randomRadius();
-    
-        const centerX = width / 2;
-        const centerY = height / 2;
-        
-        const networkRadius =
-            Math.min(width, height) *
-            NETWORK_RADIUS_FACTOR;
-        
-        const theta =
-            Math.random() * Math.PI * 2;
-        
-        // 0.5 exponent = uniform circular cloud
-        const r =
-            Math.sqrt(Math.random()) *
-            networkRadius;
-        
-        const x =
-            centerX +
-            r * Math.cos(theta);
-        
-        const y =
-            centerY +
-            r * Math.sin(theta);
+
+        const isShell = i < NODE_COUNT * SHELL_FRACTION;
+
+        // Shell nodes sit close to the sphere's surface, with
+        // only a little jitter — this is what forms the
+        // definite ring/boundary. Interior nodes get a radius
+        // biased toward the center via a power curve, for a
+        // volume-uniform-ish scatter.
+        const radiusFraction = isShell
+            ? 0.95 + Math.random() * 0.05
+            : Math.pow(Math.random(), 1.6) * 0.85;
+
+        // 15% of nodes ignore clustering entirely — pure
+        // free-floating noise, so the structure doesn't read
+        // as too neatly modular.
+        const useCluster = Math.random() < 0.85;
+
+        let theta, phi;
+
+        if (useCluster) {
+
+            const cluster = pickCluster();
+
+            // Sum of three uniforms is a cheap stand-in for a
+            // Gaussian — bell-shaped jitter around the cluster
+            // center rather than a hard-edged uniform blob.
+            const jitterT = (Math.random() + Math.random() + Math.random() - 1.5);
+            const jitterP = (Math.random() + Math.random() + Math.random() - 1.5);
+
+            theta = cluster.theta + jitterT * cluster.spread;
+            phi = cluster.phi + jitterP * cluster.spread;
+
+            theta = Math.max(0.05, Math.min(Math.PI - 0.05, theta));
+
+        } else {
+
+            theta = Math.acos(2 * Math.random() - 1);
+            phi = Math.random() * Math.PI * 2;
+
+        }
+
+        const r = sphereRadius * radiusFraction;
+
+        const x3d = r * Math.sin(theta) * Math.cos(phi);
+        const y3d = r * Math.cos(theta);
+        const z3d = r * Math.sin(theta) * Math.sin(phi);
 
         let valid = true;
 
         for (const other of nodes) {
-        
+
             const minSpacing =
                 radius + other.baseRadius + 6 + Math.random() * 4;
-        
-            const dx = x - other.homeX;
-            const dy = y - other.homeY;
-        
-            if (Math.hypot(dx, dy) < minSpacing) {
-        
+
+            const dx = x3d - other.baseX3d;
+            const dy = y3d - other.baseY3d;
+            const dz = z3d - other.baseZ3d;
+
+            if (Math.sqrt(dx*dx + dy*dy + dz*dz) < minSpacing) {
+
                 valid = false;
                 break;
-        
+
             }
-        
+
         }
-        
+
         if (!valid) {
-        
+
             i--;
             continue;
-        
+
         }
-        
+
         nodes.push(
             new Node(
                 i,
-                x,
-                y,
-                radius
+                x3d,
+                y3d,
+                z3d,
+                radius,
+                radiusFraction
             )
         );
-    
+
     }
 
 }
@@ -352,46 +499,33 @@ function buildConnections() {
 
 function chooseNewTarget(node, now) {
 
-    node.startX = node.x;
-    node.startY = node.y;
+    node.startX3d = node.targetX3d;
+    node.startY3d = node.targetY3d;
+    node.startZ3d = node.targetZ3d;
 
-    const centerX = width / 2;
-    const centerY = height / 2;
-    
-    const networkRadius =
-        Math.min(width, height) *
-        NETWORK_RADIUS_FACTOR;
-    
-    // Candidate destination
-    let tx =
-        node.homeX +
-        (Math.random() * 2 - 1) * DRIFT_RADIUS;
-    
-    let ty =
-        node.homeY +
-        (Math.random() * 2 - 1) * DRIFT_RADIUS;
-    
-    // Distance from center
-    const dx = tx - centerX;
-    const dy = ty - centerY;
-    
-    const d = Math.hypot(dx, dy);
-    
-    // If outside the circle, project back onto the edge
-    if (d > networkRadius) {
-    
-        tx =
-            centerX +
-            dx / d * networkRadius;
-    
-        ty =
-            centerY +
-            dy / d * networkRadius;
-    
+    // Candidate destination — jitter around the node's fixed
+    // sphere anchor, budget scaled per-node (tight near the
+    // boundary, loose near the center).
+    let tx = node.baseX3d + (Math.random() * 2 - 1) * node.jitterBudget;
+    let ty = node.baseY3d + (Math.random() * 2 - 1) * node.jitterBudget;
+    let tz = node.baseZ3d + (Math.random() * 2 - 1) * node.jitterBudget;
+
+    // Keep drift targets from wandering past the sphere's
+    // own radius (mainly relevant for interior nodes with a
+    // large jitter budget).
+    const d = Math.sqrt(tx*tx + ty*ty + tz*tz);
+
+    if (d > sphereRadius) {
+
+        tx = tx / d * sphereRadius;
+        ty = ty / d * sphereRadius;
+        tz = tz / d * sphereRadius;
+
     }
-    
-    node.targetX = tx;
-    node.targetY = ty;
+
+    node.targetX3d = tx;
+    node.targetY3d = ty;
+    node.targetZ3d = tz;
 
     node.moveStart = now;
 
@@ -410,6 +544,12 @@ function smoothstep(t) {
 
 function updateNodes(now) {
 
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    const cosR = Math.cos(rotation);
+    const sinR = Math.sin(rotation);
+
     for (const node of nodes) {
 
         let t =
@@ -417,9 +557,6 @@ function updateNodes(now) {
             node.moveDuration;
 
         if (t >= 1) {
-
-            node.x = node.targetX;
-            node.y = node.targetY;
 
             chooseNewTarget(node, now);
 
@@ -429,13 +566,32 @@ function updateNodes(now) {
 
         const e = smoothstep(t);
 
-        node.x =
-            node.startX +
-            (node.targetX - node.startX) * e;
+        // 3D drift position, in the sphere's own unrotated
+        // local space.
+        const driftedX =
+            node.startX3d +
+            (node.targetX3d - node.startX3d) * e;
 
-        node.y =
-            node.startY +
-            (node.targetY - node.startY) * e;
+        const driftedY =
+            node.startY3d +
+            (node.targetY3d - node.startY3d) * e;
+
+        const driftedZ =
+            node.startZ3d +
+            (node.targetZ3d - node.startZ3d) * e;
+
+        // Y-axis rotation, applied once per frame to every
+        // node — this is what makes the whole structure read
+        // as a slowly turning sphere.
+        const rx = driftedX * cosR + driftedZ * sinR;
+        const rz = -driftedX * sinR + driftedZ * cosR;
+
+        node.depth = Math.max(0, Math.min(1,
+            (rz + sphereRadius) / (sphereRadius * 2)
+        ));
+
+        node.x = centerX + rx;
+        node.y = centerY + driftedY;
 
         // ============================
         // Cursor repulsion goes HERE
@@ -488,6 +644,8 @@ function updateNodes(now) {
 
     }
 
+    maybeSpawnFlash(now);
+
 }
 
 function updatePulses() {
@@ -529,15 +687,27 @@ function drawEdges() {
 
         if (length < 1) continue;
 
+        // Depth-modulated — edges on the far side of the
+        // rotating sphere fade out rather than staying flat,
+        // which is what actually sells the 3D read. Very
+        // deep back-side edges are skipped entirely so the
+        // far side doesn't turn into visual mud.
+        const avgDepth = (edge.nodeA.depth + edge.nodeB.depth) / 2;
+
+        if (avgDepth < 0.12) continue;
+
         // Thickness depends on connected node sizes
         ctx.lineWidth =
-            0.8 +
-            (edge.nodeA.radius + edge.nodeB.radius) / 10;
+            (0.8 +
+            (edge.nodeA.radius + edge.nodeB.radius) / 10) *
+            (0.5 + avgDepth * 0.6);
 
-        const alpha = Math.max(
+        const lengthAlpha = Math.max(
             0.1,
             0.5 - length / 800
         );
+
+        const alpha = lengthAlpha * (0.35 + avgDepth * 0.65);
 
         ctx.strokeStyle = `rgba(255,204,116,${alpha})`;
 
@@ -565,11 +735,33 @@ function drawEdges() {
     
 function drawNodes() {
 
-    ctx.fillStyle = NODE_COLOR;
+    const now = performance.now();
 
     for (const node of nodes) {
 
-        ctx.shadowBlur = node.radius * 3;
+        let flashBoost = 0;
+
+        if (now < node.flashUntil) {
+
+            const progress = (now - node.flashStart) / FLASH_DURATION;
+            flashBoost = Math.sin(progress * Math.PI);
+
+        }
+
+        // Depth-modulated brightness/size, boosted briefly for
+        // whichever nodes are currently "activated".
+        const alpha = Math.min(1,
+            0.35 + node.depth * 0.65 + flashBoost * 0.5
+        );
+
+        const renderRadius =
+            node.radius *
+            (0.55 + node.depth * 0.55) *
+            (1 + flashBoost * 0.8);
+
+        ctx.fillStyle = `rgba(51,255,51,${alpha})`;
+
+        ctx.shadowBlur = renderRadius * 3 + flashBoost * 16;
         ctx.shadowColor = NODE_COLOR;
         
         ctx.beginPath();
@@ -578,7 +770,7 @@ function drawNodes() {
 
             node.x,
             node.y,
-            node.radius,
+            renderRadius,
             0,
             Math.PI * 2
 
@@ -594,8 +786,6 @@ function drawNodes() {
 
 function drawPulses() {
 
-    ctx.fillStyle = "#fa7420";
-
     for (const pulse of pulses) {
 
         const a = pulse.edge.nodeA;
@@ -603,15 +793,39 @@ function drawPulses() {
 
         const t = pulse.progress;
 
+        // Same curve the edge itself is drawn with — without
+        // this, the pulse cut a straight line across a
+        // visibly bent edge instead of riding along it.
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const length = Math.hypot(dx, dy);
+
+        if (length < 1) continue;
+
+        const nx = -dy / length;
+        const ny = dx / length;
+
+        const mx = (a.x + b.x) / 2;
+        const my = (a.y + b.y) / 2;
+
+        const cx = mx + nx * pulse.edge.bend;
+        const cy = my + ny * pulse.edge.bend;
+
         const x =
-            a.x +
-            (b.x - a.x) * t;
+            (1 - t) * (1 - t) * a.x +
+            2 * (1 - t) * t * cx +
+            t * t * b.x;
 
         const y =
-            a.y +
-            (b.y - a.y) * t;
+            (1 - t) * (1 - t) * a.y +
+            2 * (1 - t) * t * cy +
+            t * t * b.y;
 
-        ctx.shadowBlur = 18;
+        const avgDepth = (a.depth + b.depth) / 2;
+
+        ctx.fillStyle = `rgba(250,116,32,${0.5 + avgDepth * 0.5})`;
+
+        ctx.shadowBlur = 18 * (0.5 + avgDepth * 0.5);
         ctx.shadowColor = "#ffffff";
 
         ctx.beginPath();
@@ -649,6 +863,8 @@ function render() {
 // =====================================
 
 function animate(now) {
+
+    rotation += ROTATION_SPEED;
 
     updateNodes(now);
 
