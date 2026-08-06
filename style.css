@@ -322,8 +322,8 @@ body::after{
 @keyframes crtSweep{
 
     0%{ transform:translateY(-20px); opacity:0; }
-    5%{ opacity:.6; }
-    45%{ opacity:.6; }
+    5%{ opacity:.4; }
+    45%{ opacity:.4; }
     50%{ transform:translateY(100vh); opacity:0; }
     100%{ transform:translateY(100vh); opacity:0; }
 
