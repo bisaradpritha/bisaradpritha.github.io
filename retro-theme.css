@@ -661,7 +661,7 @@ html{
 
 .contact-hero h1{
 
-    color:var(--accent) !important;
+    color:var(--heading-accent) !important;
 
 }
 
