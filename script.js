@@ -8,7 +8,7 @@ const NODE_COUNT = 120;
 const CONNECTIONS_PER_NODE = 4;
 
 const NODE_COLOR = "#33ff33";
-const EDGE_COLOR = "rgba(51,255,51,0.28)";
+const EDGE_COLOR = "rgba(255,204,116,0.28)";
 
 const DRIFT_RADIUS = 12;
 const DRIFT_MIN_TIME = 3000;
@@ -539,7 +539,7 @@ function drawEdges() {
             0.5 - length / 800
         );
 
-        ctx.strokeStyle = `rgba(51,255,51,${alpha})`;
+        ctx.strokeStyle = `rgba(255,204,116,${alpha})`;
 
         const nx = -dy / length;
         const ny = dx / length;
