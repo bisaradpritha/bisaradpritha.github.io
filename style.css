@@ -1799,7 +1799,7 @@ footer p {
 
 .journey-card h2{
 
-    color:var(--accent);
+    color:var(--heading-accent);
 
     margin-bottom:1rem;
 
@@ -1830,6 +1830,18 @@ footer p {
     line-height:1.9;
 
     color:var(--text-muted);
+
+}
+
+.journey-card p::after{
+
+    content:"_";
+
+    display:inline-block;
+
+    margin-left:2px;
+
+    animation:blink 1s step-end infinite;
 
 }
 
