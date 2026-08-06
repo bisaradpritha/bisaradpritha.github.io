@@ -382,12 +382,16 @@ function generateNodes() {
     // reads as small, adrift in a lot of empty space. Letting
     // width contribute its own (larger) factor allows it to
     // grow on wide screens while height still keeps it from
-    // overflowing a short viewport.
+    // overflowing a short viewport. The 0.88 safety factor at
+    // the end accounts for shell-node jitter and drift, which
+    // push the visible edge slightly past the nominal radius —
+    // without it the sphere clips the top/bottom of the
+    // viewport instead of sitting comfortably inside it.
     sphereRadius =
         Math.min(
             width * 0.30,
-            height * 0.62
-        );
+            height * 0.42
+        ) * 0.88;
 
     for (let i = 0; i < NODE_COUNT; i++) {
 
