@@ -24,7 +24,6 @@ const mouse = {
 // a gentler, more localized push now.
 const REPULSE_RADIUS = 160;
 const REPULSE_STRENGTH = 1.6;
-const NETWORK_RADIUS_FACTOR = 0.38;
 
 // Nodes near the sphere's boundary barely wander (that's
 // what keeps the ring/edge well-defined); nodes near the
@@ -49,17 +48,35 @@ function buildClusters() {
 
     clusters = [];
 
-    for (let i = 0; i < CLUSTER_COUNT; i++) {
+    // Purely random seed placement can land lopsided by
+    // chance on any given page load (a cluster of clusters
+    // all drawn toward one side) — the sphere is
+    // mathematically centered either way, but visually it can
+    // read as off-balance. Generating seeds in antipodal
+    // pairs (each one mirrored to the opposite point on the
+    // sphere) guarantees the overall mass stays balanced
+    // every time, while each pair's own position is still
+    // random — so it still looks organic, just never lopsided
+    // as a whole.
+    for (let i = 0; i < CLUSTER_COUNT; i += 2) {
 
         const u = Math.random();
         const theta = Math.acos(2 * u - 1);
         const phi = Math.random() * Math.PI * 2;
 
+        const weight = 0.5 + Math.random() * 1.5;
+        const spread = 0.18 + Math.random() * 0.32;
+
+        clusters.push({ theta, phi, weight, spread });
+
+        // Antipodal mirror — same weight/spread family, with
+        // a little of its own jitter so the pair doesn't read
+        // as an obviously identical stamp.
         clusters.push({
-            theta,
-            phi,
-            weight: 0.5 + Math.random() * 1.5,
-            spread: 0.18 + Math.random() * 0.32
+            theta: Math.PI - theta,
+            phi: phi + Math.PI,
+            weight: weight * (0.8 + Math.random() * 0.4),
+            spread: spread * (0.8 + Math.random() * 0.4)
         });
 
     }
@@ -349,9 +366,19 @@ function generateNodes() {
 
     buildClusters();
 
+    // Height alone (the old Math.min(width,height) approach)
+    // caps the sphere at whatever the shorter dimension is —
+    // on a wide-but-short desktop window, that means the
+    // sphere never grows to use the available width and
+    // reads as small, adrift in a lot of empty space. Letting
+    // width contribute its own (larger) factor allows it to
+    // grow on wide screens while height still keeps it from
+    // overflowing a short viewport.
     sphereRadius =
-        Math.min(width, height) *
-        NETWORK_RADIUS_FACTOR;
+        Math.min(
+            width * 0.30,
+            height * 0.62
+        );
 
     for (let i = 0; i < NODE_COUNT; i++) {
 
