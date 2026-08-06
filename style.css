@@ -1343,6 +1343,8 @@ Recent Publication Section
 
     transition:transform .35s ease;
 
+   filter:grayscale(1) brightness(1.4) sepia(1) hue-rotate(60deg) saturate(4);
+
 }
 
 .publication-info{
