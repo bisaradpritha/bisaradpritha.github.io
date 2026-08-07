@@ -428,6 +428,45 @@ button{
 
 }
 
+/* Two CTAs side by side — Research Journey stays the primary
+   action (full brightness), CV download sits next to it as a
+   secondary, lower-emphasis option for anyone who just wants
+   the document fast without engaging with the rest of the
+   page first. */
+.hero-actions{
+
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:1rem;
+
+    margin-top:2.5rem;
+
+}
+
+.hero-actions .cta-btn{
+
+    margin-top:0;
+
+}
+
+.cta-btn-secondary{
+
+    border-color:var(--text-muted);
+    color:var(--text-muted);
+
+}
+
+.cta-btn-secondary:hover{
+
+    background:var(--text-muted);
+    border-color:var(--text-muted);
+    color:#000;
+
+    box-shadow:0 0 16px rgba(51,255,51,.3);
+
+}
+
 .hero-content h1{
 
     font-size:var(--text-hero);
@@ -1960,6 +1999,39 @@ footer p {
     font-size:1.15rem;
 
     margin-bottom:1rem;
+
+}
+
+/* A shortcut for anyone who wants everything visible at once
+   rather than opening each section individually — expands
+   every accordion item simultaneously, bypassing the normal
+   single-open behavior. Right-aligned since it acts on the
+   list below it, not part of the centered intro sentence. */
+.expand-all-btn{
+
+    align-self:flex-end;
+
+    margin-bottom:-1rem;
+
+    background:none;
+    border:none;
+
+    color:var(--text-muted);
+
+    font-family:'VT323', monospace;
+    font-size:1rem;
+    letter-spacing:.05em;
+
+    cursor:pointer;
+
+    transition:color .2s ease;
+
+}
+
+.expand-all-btn:hover,
+.expand-all-btn[aria-expanded="true"]{
+
+    color:var(--accent);
 
 }
 
