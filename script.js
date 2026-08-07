@@ -138,11 +138,6 @@ const ctx = canvas.getContext("2d");
 const prefersReducedMotion =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// User-facing pause control, independent of prefersReducedMotion
-// above — someone may want to pause ongoing motion without
-// having a system-wide OS setting for it.
-let isPaused = false;
-
 let width;
 let height;
 
@@ -947,8 +942,6 @@ function render() {
 
 function animate(now) {
 
-    if (isPaused) return;
-
     rotation += ROTATION_SPEED;
 
     updateNodes(now);
@@ -1066,49 +1059,6 @@ if (prefersReducedMotion) {
 } else {
 
     requestAnimationFrame(animate);
-
-}
-
-const heroPauseBtn = document.getElementById("heroPauseBtn");
-
-if (heroPauseBtn) {
-
-    if (prefersReducedMotion) {
-
-        // Nothing is animating for a reduced-motion user in
-        // the first place — a "resume" control here would
-        // imply an action that could restart full motion
-        // against their explicit OS-level preference.
-        heroPauseBtn.style.display = "none";
-
-    } else {
-
-        heroPauseBtn.addEventListener("click", () => {
-
-            isPaused = !isPaused;
-
-            heroPauseBtn.setAttribute("aria-pressed", isPaused ? "true" : "false");
-
-            heroPauseBtn.setAttribute(
-                "aria-label",
-                isPaused ? "Resume animation" : "Pause animation"
-            );
-
-            heroPauseBtn.querySelector(".icon-pause").style.display =
-                isPaused ? "none" : "block";
-
-            heroPauseBtn.querySelector(".icon-play").style.display =
-                isPaused ? "block" : "none";
-
-            if (!isPaused) {
-
-                requestAnimationFrame(animate);
-
-            }
-
-        });
-
-    }
 
 }
 
