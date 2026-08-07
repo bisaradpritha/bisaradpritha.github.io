@@ -1780,30 +1780,45 @@ footer p {
 
 }
 
-/* Education / Experience — reuses the exact publication-list
-   pattern from Research (Title + Institution · Dates, "> "
-   prefix) since it's the same shape of content, just here
-   instead of nested in a timeline card. */
+/* Education / Experience / Honors — each wrapped in a
+   .glass card, same contained-box treatment every other
+   piece of content on the site already gets (interest
+   cards, timeline cards, journey cards). Without this, text
+   sat directly on the busy ambient network with only thin
+   full-page-width divider lines — the one place on the site
+   that didn't feel like part of the same system. */
 
 .credentials{
 
     margin-top:5rem;
 
-    padding-top:3rem;
-
-    border-top:1px solid rgba(51,255,51,.15);
-
-}
-
-.credentials h2{
-
-    margin-bottom:.5rem;
+    display:flex;
+    flex-direction:column;
+    gap:2rem;
 
 }
 
-.credentials h2 + .publication-list{
+.credentials-group{
 
-    margin-bottom:3rem;
+    border-radius:0;
+
+}
+
+.credentials-group h2{
+
+    margin-bottom:1.5rem;
+
+}
+
+/* Inside a bounded card, the divider lines between entries
+   (already built into .publication) read as normal list
+   separators rather than stray lines across the page — but
+   the very first entry doesn't need one right under the
+   heading. */
+.credentials-group .publication:first-child{
+
+    border-top:none;
+    padding-top:0;
 
 }
 
