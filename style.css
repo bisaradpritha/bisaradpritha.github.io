@@ -3383,6 +3383,22 @@ footer p {
 
 @media print{
 
+    /* The scroll-reveal system (.reveal) starts every card
+       and heading at opacity:0, only becoming visible via JS
+       once scrolled into the viewport. Printing doesn't
+       simulate a scroll-through, so anything not yet
+       revealed in the current session — likely most of a
+       long page like Research's timeline — printed
+       completely blank. Forcing full visibility here fixes
+       it regardless of scroll history. */
+    .reveal{
+
+        opacity:1 !important;
+        transform:none !important;
+        transition:none !important;
+
+    }
+
     /* Kill every decorative/motion layer — none of it
        survives translation to paper anyway. */
     .crt-overlay,
