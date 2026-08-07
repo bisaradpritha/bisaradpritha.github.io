@@ -1,4 +1,4 @@
-// deploy-version: 3
+// deploy-version: 4
 (() => {
 
 // =====================================
@@ -1580,9 +1580,17 @@ function onScroll() {
 
     if (themeToggleBtn) {
 
+        // Position-based, not direction-based like the header
+        // above — the header reappearing on any upward scroll
+        // makes sense (helps navigate back), but the switch is
+        // a much less frequently-needed control, and having it
+        // flicker back in on every small upward nudge (even
+        // while still deep in a long page) read as unexpected
+        // rather than as "fades out on scroll." It should stay
+        // hidden until actually back near the top.
         themeToggleBtn.classList.toggle(
             "switch-hidden",
-            currentY > lastScrollY && currentY > header.offsetHeight * 2
+            currentY > 150
         );
 
     }
