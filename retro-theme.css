@@ -1,4 +1,4 @@
-/* deploy-version: 3 */
+/* deploy-version: 4 */
 
 /* =====================================================
    LIGHT MODE
@@ -134,5 +134,20 @@ html[data-theme="light"] .logo-ring{
 
     background:var(--accent);
     color:var(--bg);
+
+}
+
+/* The publication thumbnail icon is a raster PNG, not SVG
+   or CSS-drawn — a variable redefinition can't recolor it
+   the way it did the logo mark. brightness(0) crushes every
+   non-transparent pixel to solid black regardless of the
+   source image's original color, while preserving its
+   transparency; a touch of opacity softens pure black
+   toward the same dark-grey the rest of the light theme's
+   text uses, rather than a starker black. */
+html[data-theme="light"] .publication-thumbnail img{
+
+    filter:brightness(0) saturate(100%);
+    opacity:.82;
 
 }
