@@ -1,4 +1,4 @@
-/* deploy-version: 4 */
+/* deploy-version: 5 */
 
 /* =====================================================
    LIGHT MODE
@@ -106,34 +106,101 @@ html[data-theme="light"] .logo-ring{
 
 /* Theme toggle control itself */
 
-.theme-toggle{
+/* =====================================================
+   Theme switch
+   A standalone floating control in the top-right corner,
+   independent of the nav bar — not a nav item, styled as
+   an actual toggle switch (track + sliding knob) rather
+   than a text button. Fades out on scroll via .switch-
+   hidden (toggled in script.js, reusing the same scroll
+   condition that already hides the header), and fades back
+   in when scrolling back up.
+===================================================== */
+
+.theme-switch{
+
+    position:fixed;
+    top:1.5rem;
+    right:2rem;
+    z-index:1001;
 
     background:none;
     border:none;
-
-    /* Explicit match to .nav-links a's color, rather than
-       relying on color:inherit — that traced back through
-       <li>/<ul>/<nav> to nothing explicitly set, falling
-       through to the browser's default black button text
-       (invisible against the dark nav in dark mode). */
-    color:var(--accent);
-    font-family:'VT323', monospace;
-    font-size:1.05rem;
+    padding:0;
 
     cursor:pointer;
 
-    padding:4px 8px;
+    transition:opacity .3s ease;
 
 }
 
-/* Matches .nav-links a:hover's inverted-fill treatment,
-   rather than a same-as-base color change that would have
-   given no visible feedback now that the base color was
-   fixed to match the nav links explicitly. */
-.theme-toggle:hover{
+.theme-switch.switch-hidden{
+
+    opacity:0;
+    pointer-events:none;
+
+}
+
+.theme-switch-track{
+
+    display:block;
+
+    width:52px;
+    height:28px;
+
+    border:2px solid var(--accent);
+    border-radius:999px;
+
+    position:relative;
+
+    transition:box-shadow .2s ease;
+
+}
+
+.theme-switch:hover .theme-switch-track{
+
+    box-shadow:0 0 16px rgba(var(--accent-rgb),.4);
+
+}
+
+.theme-switch-knob{
+
+    position:absolute;
+    top:2px;
+    left:2px;
+
+    width:20px;
+    height:20px;
+
+    border-radius:50%;
 
     background:var(--accent);
-    color:var(--bg);
+
+    transition:transform .25s cubic-bezier(.2,.7,.2,1);
+
+}
+
+.theme-switch[aria-checked="true"] .theme-switch-knob{
+
+    transform:translateX(24px);
+
+}
+
+/* The hamburger menu also lands in the top-right corner at
+   this width — moving the switch to the opposite corner
+   avoids both that and the existing bottom-right back-to-
+   top button, rather than stacking three controls into two
+   corners. */
+@media (max-width:768px){
+
+    .theme-switch{
+
+        top:auto;
+        bottom:1.25rem;
+        left:1.25rem;
+        right:auto;
+
+    }
 
 }
 
