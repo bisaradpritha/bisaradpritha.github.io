@@ -1,4 +1,4 @@
-// deploy-version: 2
+// deploy-version: 3
 (() => {
 
 // =====================================
@@ -213,7 +213,7 @@ window.addEventListener("resize", () => {
     // No animate loop is running to redraw after a resize
     // clears the canvas's backing store, so the static frame
     // needs to be explicitly redrawn here.
-    if (prefersReducedMotion || isLightMode) {
+    if (prefersReducedMotion) {
 
         updateNodes(performance.now());
         render();
@@ -1058,7 +1058,7 @@ for (const node of nodes) {
 
 }
 
-if (prefersReducedMotion || isLightMode) {
+if (prefersReducedMotion) {
 
     // A single static frame — chooseNewTarget() above has
     // already set each node's drift target, but since no
@@ -1288,7 +1288,7 @@ canvases.forEach((canvas) => {
     resize();
     makeNodes();
 
-    if (prefersReducedMotion || isLightMode) {
+    if (prefersReducedMotion) {
 
         // Draw a single static frame instead of animating
         step();
@@ -1578,6 +1578,15 @@ function onScroll() {
 
     }
 
+    if (themeToggleBtn) {
+
+        themeToggleBtn.classList.toggle(
+            "switch-hidden",
+            currentY > lastScrollY && currentY > header.offsetHeight * 2
+        );
+
+    }
+
     lastScrollY = currentY;
     ticking = false;
 
@@ -1646,8 +1655,7 @@ if (themeToggleBtn) {
     const isCurrentlyLight =
         document.documentElement.getAttribute("data-theme") === "light";
 
-    themeToggleBtn.textContent =
-        isCurrentlyLight ? "[ Dark Mode ]" : "[ Light Mode ]";
+    themeToggleBtn.setAttribute("aria-checked", isCurrentlyLight ? "true" : "false");
 
     themeToggleBtn.setAttribute(
         "aria-label",
