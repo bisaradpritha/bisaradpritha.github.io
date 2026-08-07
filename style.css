@@ -1798,9 +1798,23 @@ footer p {
 
 }
 
+/* Matches .timeline-card and .contact-card's hover glow
+   exactly — the base .glass:hover treatment these cards
+   inherited by default is noticeably weaker (16px/.25 alpha
+   vs 26px/.55 here), which is what made them read as visually
+   disconnected from the rest of the card family on the site. */
 .credentials-group{
 
     border-radius:0;
+
+    transition:border-color .2s ease, box-shadow .2s ease;
+
+}
+
+.credentials-group:hover{
+
+    border-color:var(--accent);
+    box-shadow:0 0 26px rgba(51,255,51,.55);
 
 }
 
@@ -2464,6 +2478,20 @@ footer p {
    get their poster in column 3, right-card
    entries in column 1.
 ===================================== */
+
+/* The stagger system (script.js) adds a delay to whichever
+   sibling comes second in the DOM, meant for grids of
+   otherwise-identical cards. A timeline-card and its poster
+   sit in the same grid row and should read as one paired
+   unit, not a leader-and-follower — this cancels that added
+   delay so they reveal together, based on their own natural
+   scroll position rather than DOM order. */
+.poster-preview,
+.poster-placeholder{
+
+    transition-delay:0s !important;
+
+}
 
 .poster-preview{
 
