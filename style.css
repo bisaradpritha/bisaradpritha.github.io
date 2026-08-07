@@ -2012,13 +2012,13 @@ footer p {
    secondary read this needs. */
 .credentials-label{
 
-    font-size:.85rem;
+    font-size:.95rem;
 
     font-family:'VT323', monospace;
 
     color:var(--text-muted);
 
-    letter-spacing:.08em;
+    letter-spacing:.12em;
 
     text-shadow:none;
 
@@ -3053,11 +3053,11 @@ footer p {
 
     margin-bottom:.75rem;
 
-    font-size:.85rem;
+    font-size:.95rem;
 
     font-weight:600;
 
-    letter-spacing:.15em;
+    letter-spacing:.18em;
 
     text-transform:uppercase;
 
