@@ -467,6 +467,16 @@ button{
         heroTyping 1.5s steps(30) forwards,
         heroPromptCursor .8s step-end infinite;
 
+    /* Paused until .hero-content picks up .typing-active —
+       otherwise this starts counting down the moment the
+       page loads, while .hero-content itself is still
+       invisible (opacity:0) waiting on the scroll-linked
+       reveal. By the time a visitor actually scrolls far
+       enough to see it, the animation would already be long
+       finished offscreen and they'd only ever see the end
+       state. */
+    animation-play-state:paused;
+
 }
 
 @keyframes heroTyping{
@@ -495,6 +505,8 @@ button{
 
     animation:heroTypedReveal .35s ease 1.5s forwards;
 
+    animation-play-state:paused;
+
 }
 
 @keyframes heroTypedReveal{
@@ -506,6 +518,21 @@ button{
 .hero-cursor{
 
     animation:blink 1s step-end infinite;
+
+    animation-play-state:paused;
+
+}
+
+/* Set by JS the first moment the scroll-linked hero reveal
+   begins — starts all three animations above together, so
+   the typing effect actually plays while a visitor is
+   watching it rather than having already finished
+   invisibly. */
+.hero-content.typing-active h1::before,
+.hero-content.typing-active .hero-typed,
+.hero-content.typing-active .hero-cursor{
+
+    animation-play-state:running;
 
 }
 
