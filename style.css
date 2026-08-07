@@ -1,4 +1,4 @@
-/* deploy-version: 3 */
+/* deploy-version: 4 */
 /* =====================================
    Global reset
    Without this, any element that sets both
@@ -1619,17 +1619,16 @@ Recent Publication Section
 
 }
 
-.publication-thumbnail img{
+.publication-thumbnail svg{
 
     width:96px;
-
-    height:auto;
+    height:96px;
 
     display:block;
 
-    transition:transform .35s ease;
+    color:var(--accent);
 
-   filter:grayscale(1) brightness(1.4) sepia(1) hue-rotate(60deg) saturate(4);
+    transition:transform .35s ease;
 
 }
 
@@ -1665,7 +1664,7 @@ Recent Publication Section
 
 }
 
-.publication-card:hover .publication-thumbnail img{
+.publication-card:hover .publication-thumbnail svg{
 
     transform:
         rotate(-3deg)
