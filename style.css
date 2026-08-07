@@ -1777,7 +1777,34 @@ footer p {
 
 .about-header{
 
+    margin-bottom:1rem;
+
+}
+
+/* A one-line, instantly scannable summary for anyone in
+   fact-extraction mode — a search committee cross-checking
+   a CV, a recruiter doing a fast first pass — who wants the
+   basics without reading the narrative or opening the
+   accordion below. Left-aligned deliberately, unlike the
+   centered treatment used elsewhere on this page, since it
+   reads as a factual readout, not part of the story. */
+.quick-facts{
+
+    text-align:left;
+
+    color:var(--text-muted);
+
+    font-size:1.1rem;
+
     margin-bottom:var(--space-9);
+
+}
+
+.quick-facts::before{
+
+    content:"> ";
+
+    color:var(--accent);
 
 }
 
