@@ -1812,6 +1812,29 @@ footer p {
 
 }
 
+/* The bracketed category name riding alongside the themed
+   word — small and dim enough to read as a label, not a
+   second heading, but still there so the section is
+   instantly scannable even without reading "Pitstops" as a
+   metaphor first. text-shadow reset since it would otherwise
+   inherit the heading's glow, working against the dimmed,
+   secondary read this needs. */
+.credentials-label{
+
+    font-size:.85rem;
+
+    font-family:'VT323', monospace;
+
+    color:var(--text-muted);
+
+    letter-spacing:.08em;
+
+    text-shadow:none;
+
+    vertical-align:middle;
+
+}
+
 /* Inside a bounded card, the divider lines between entries
    (already built into .publication) read as normal list
    separators rather than stray lines across the page — but
@@ -1821,6 +1844,36 @@ footer p {
 
     border-top:none;
     padding-top:0;
+
+}
+
+/* The one line of the page's own voice bridging the
+   narrative half (the journey chapters) and the structured
+   half (the cards below) — without it, the shift from story
+   to CV reads as an abrupt mode-change rather than the same
+   person continuing to talk. */
+.credentials-intro{
+
+    text-align:center;
+
+    color:var(--text-muted);
+
+    font-size:1.15rem;
+
+    margin-bottom:1rem;
+
+}
+
+/* Moved here from right after the carousel — as the actual
+   closing gesture of the whole page (story + record both
+   told) rather than a false ending that gets immediately
+   followed by three more cards. .credentials is itself a
+   flex column, so centering this one item needs align-self
+   rather than margin:auto. */
+.credentials-cta{
+
+    align-self:center;
+    margin-top:1rem;
 
 }
 
