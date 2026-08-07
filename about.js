@@ -1,3 +1,4 @@
+// deploy-version: 1
 const cards = document.querySelectorAll(".journey-card");
 const dots = document.querySelectorAll(".dot");
 
