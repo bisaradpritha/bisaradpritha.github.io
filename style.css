@@ -3371,3 +3371,164 @@ footer p {
     isolation:isolate;
 
 }
+
+/* =====================================================
+   PRINT
+   Green-on-black CRT styling is meaningless (and wasteful
+   on ink) on paper — this strips the entire visual system
+   down to clean black-on-white for anyone who hits Ctrl+P
+   on a bio/CV page, e.g. for a search committee packet.
+   Purely additive: nothing here affects on-screen rendering.
+===================================================== */
+
+@media print{
+
+    /* Kill every decorative/motion layer — none of it
+       survives translation to paper anyway. */
+    .crt-overlay,
+    #cursor-glow,
+    #cursor-trail,
+    #connectomeCanvas,
+    .ambient-network,
+    .network-overlay,
+    body::before,
+    body::after{
+
+        display:none !important;
+
+    }
+
+    body{
+
+        background:#ffffff !important;
+        color:#111111 !important;
+
+        font-family:Georgia, 'Times New Roman', serif !important;
+
+    }
+
+    /* The header's fixed positioning and dark background
+       only make sense on screen — on paper it should just
+       be a normal top block, not stuck over the content. */
+    header{
+
+        position:static !important;
+        background:#ffffff !important;
+        border-bottom:2px solid #111111 !important;
+        backdrop-filter:none !important;
+    }
+
+    .nav-toggle{
+
+        display:none !important;
+
+    }
+
+    .nav-links{
+
+        position:static !important;
+        max-height:none !important;
+        flex-direction:row !important;
+        background:none !important;
+    }
+
+    .nav-links a{
+
+        color:#111111 !important;
+        text-shadow:none !important;
+        background:none !important;
+    }
+
+    .logo-text,
+    .logo-mark circle,
+    .logo-mark line{
+
+        color:#111111 !important;
+        stroke:#111111 !important;
+    }
+
+    h1, h2, h3, h4, h5, h6{
+
+        color:#111111 !important;
+        text-shadow:none !important;
+        font-family:Georgia, 'Times New Roman', serif !important;
+    }
+
+    p, span, li, a{
+
+        color:#222222 !important;
+        text-shadow:none !important;
+    }
+
+    /* Every card/timeline/glass surface collapses to a plain
+       bordered box — no blur, no glow, no green, just enough
+       structure to keep content visually grouped. */
+    .interest-card,
+    .publication-card,
+    .timeline-card,
+    .journey-card,
+    .contact-card,
+    .glass{
+
+        background:#ffffff !important;
+        border:1px solid #999999 !important;
+        box-shadow:none !important;
+        backdrop-filter:none !important;
+        break-inside:avoid;
+    }
+
+    .interest-icon,
+    .contact-icon{
+
+        border-color:#999999 !important;
+        background:none !important;
+        color:#111111 !important;
+    }
+
+    .cta-btn,
+    #prev,
+    #next,
+    .dot{
+
+        display:none !important;
+
+    }
+
+    /* Links keep their color role reversed (dark, not green)
+       but stay visually distinguishable via underline, since
+       the color-only cue used on screen doesn't carry over
+       well to a black-and-white printout. */
+    a{
+
+        text-decoration:underline !important;
+
+    }
+
+    .research-topic,
+    .chapter-number,
+    .publication h3::before,
+    #overview h2::before,
+    #publications h2::before,
+    .journey-card h2::before{
+
+        color:#555555 !important;
+
+    }
+
+    /* Scanlines, vignette, sweep-line animation and the CRT
+       flicker are already covered by the body::before/::after
+       and .crt-overlay rules above — nothing further to do
+       for those here.
+
+       Poster thumbnails and images still print (useful
+       reference), but full-bleed background photography
+       doesn't need to survive since there isn't any. */
+
+    footer{
+
+        background:none !important;
+        border-top:1px solid #999999 !important;
+        color:#555555 !important;
+    }
+
+}
