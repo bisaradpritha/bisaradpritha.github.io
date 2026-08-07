@@ -1,708 +1,118 @@
+/* deploy-version: 2 */
+
 /* =====================================================
-   RETRO TERMINAL THEME 
+   LIGHT MODE
+   Same retro terminal identity — monospace type, bracket
+   labels, the connectome — just monochrome black/grey on
+   off-white instead of green-on-black, with the CRT layer
+   (scanlines, vignette, sweep, glow effects) removed
+   entirely. This file was the original pre-merge retro
+   theme stylesheet, unlinked from every page once its
+   styles were folded into style.css directly — repurposed
+   here rather than left as dead weight in the repo.
+
+   Every color token below redefines the exact same
+   variable names style.css already uses everywhere, so
+   the rest of the site adapts automatically without
+   needing per-selector overrides for anything that was
+   already variable-driven. Hardcoded rgba(51,255,51,X)
+   values throughout style.css were converted to
+   rgba(var(--accent-rgb),X) specifically to make this
+   possible — a manual per-selector override pass across
+   ~40 individual rules would have been far more likely to
+   miss something.
 ===================================================== */
 
-:root{
+html[data-theme="light"]{
 
-    --bg:#080808;
-    --surface:#0f0f0f;
+    --bg:#f5f5f4;
+    --surface:#ececea;
 
-    /* A little white breaks up an entirely-green page —
-       reserved specifically for primary headings, so it
-       reads as intentional hierarchy (white = main content,
-       green = labels/metadata/chrome) rather than random
-       inconsistency. */
-    --heading-accent:#f2fff2;
+    --accent:#1a1a1a;
+    --accent-rgb:26,26,26;
 
-    /* Same white, dimmed via opacity — for secondary/nested
-       titles (a publication title inside a card, a card's
-       own h3) so they read as "part of the white tier" but
-       one step down from page-level h1/h2. */
-    --heading-accent-muted:rgba(242,255,242,.72);
+    --text:#1a1a1a;
+    --text-muted:#5c5c5c;
 
-    --accent:#33ff33;
-    --accent-2:#33ff33;
-    --accent-2-soft:rgba(51,255,51,.16);
-    --accent-2-glow:rgba(51,255,51,.35);
+    --heading-accent:#0d0d0d;
+    --heading-accent-muted:rgba(13,13,13,.72);
 
-    --text:#33ff33;
-    --text-muted:rgba(51,255,51,.65);
+    --accent-2:#1a1a1a;
+    --accent-2-soft:rgba(26,26,26,.08);
+    --accent-2-glow:transparent;
 
-    --glass-bg:rgba(10,14,10,.55);
-    --glass-bg-hover:rgba(20,28,20,.7);
-    --glass-border:rgba(51,255,51,.4);
-    --glass-highlight:rgba(51,255,51,.04);
+    --glass-bg:rgba(255,255,255,.6);
+    --glass-bg-hover:rgba(240,240,238,.85);
+    --glass-border:rgba(26,26,26,.3);
+    --glass-highlight:rgba(26,26,26,.03);
     --glass-shadow:0 0 0 rgba(0,0,0,0);
-    --glass-shadow-hover:0 0 16px rgba(51,255,51,.25);
-    --glass-blur:0px;
-
-    --radius-sm:0px;
-    --radius-md:0px;
-    --radius-lg:0px;
-    --radius-xl:0px;
+    --glass-shadow-hover:0 0 0 rgba(0,0,0,0);
 
 }
 
-/* =====================================
-   Base
-===================================== */
-
-body,
-h1, h2, h3, h4, h5, h6,
-p, a, span, button, li,
-.logo-text,
-.nav-links,
-.cta-btn{
-
-    font-family:'VT323', monospace !important;
-    letter-spacing:.02em;
-
-}
-
-body{
-
-    background:var(--bg) !important;
-
-}
-
-/* Kill the shared ambient gradient/grain — flat CRT black
-   reads more authentic than a warm glow */
-body::before,
-body::after{
+/* No CRT layer at all in light mode — no scanlines,
+   vignette, or sweep animation. */
+html[data-theme="light"] .crt-overlay,
+html[data-theme="light"] body::before,
+html[data-theme="light"] body::after{
 
     display:none !important;
 
 }
 
-h1, h2{
+/* Glow-based hover feedback doesn't translate to a light
+   background the way it does on black — a dark shadow
+   just reads as a smudge, not an effect. A universal kill
+   switch here is deliberate: it guarantees no glow survives
+   anywhere on the site, including any hardcoded shadow
+   value that a manual per-selector pass might have missed,
+   rather than relying on having caught every instance by
+   hand. Clean border-color changes on hover still carry the
+   same feedback without needing any shadow at all. */
+html[data-theme="light"] *{
 
-    font-weight:400 !important;
-    letter-spacing:.03em !important;
-    text-shadow:0 0 6px var(--accent-2-glow);
-
-}
-
-h3{
-
-    text-shadow:0 0 4px var(--accent-2-glow);
-
-}
-
-p{
-
-    color:var(--text-muted);
-
-}
-
-/* =====================================
-   CRT scanline overlay
-===================================== */
-
-.crt-overlay{
-
-    position:fixed;
-    inset:0;
-
-    z-index:9997;
-
-    pointer-events:none;
-
-    background:repeating-linear-gradient(
-        0deg,
-        rgba(0,0,0,0) 0px,
-        rgba(0,0,0,0) 1px,
-        rgba(0,0,0,.28) 2px,
-        rgba(0,0,0,.28) 3px
-    );
-
-    mix-blend-mode:multiply;
-
-    animation:crtFlicker 6s infinite;
-
-}
-
-@keyframes crtFlicker{
-
-    0%, 92%, 100%{ opacity:1; }
-    93%{ opacity:.85; }
-    94%{ opacity:1; }
-    96%{ opacity:.92; }
-
-}
-
-/* =====================================
-   Header / Nav
-===================================== */
-
-header{
-
-    background:rgba(8,8,8,.92) !important;
-    backdrop-filter:none !important;
-    border-bottom:1px solid var(--accent) !important;
-
-}
-
-.logo-text{
-
-    font-size:1.7rem !important;
-    text-shadow:0 0 6px var(--accent-2-glow);
-
-}
-
-.nav-links a{
-
-    text-shadow:0 0 4px var(--accent-2-glow);
-    transition:none !important;
-
-}
-
-.nav-links a::after{
-
-    display:none !important;
-
-}
-
-.nav-links a:hover,
-.nav-links a.active{
-
-    background:var(--accent) !important;
-    color:#000 !important;
+    box-shadow:none !important;
     text-shadow:none !important;
 
 }
 
-@media (max-width:768px){
+/* The logo mark's colors are inline SVG attributes, not
+   CSS — a variable redefinition can't reach them, so they
+   need an explicit override here. This is the only place
+   on the entire site with hardcoded inline SVG color,
+   confirmed by checking all four pages. */
+html[data-theme="light"] .logo-mark *{
 
-    .nav-links{
+    stroke:var(--accent) !important;
+    fill:var(--accent) !important;
 
-        background:rgba(8,8,8,.96) !important;
-        border-bottom:1px solid var(--accent) !important;
-
-    }
-
-}
-
-/* =====================================
-   Hero
-===================================== */
-
-.hero-content h1{
-
-    color:var(--heading-accent) !important;
-    text-shadow:0 0 8px var(--accent-2-glow), 0 0 20px rgba(51,255,51,.2);
-
-}
-
-.hero-content h1::before{
-
-    content:"guest@pritha-bisarad:~$ whoami";
-
-    display:block;
-
-    font-size:1rem;
-
-    color:var(--text-muted);
-
-    text-shadow:none;
-
-    margin-bottom:.75rem;
-
-    letter-spacing:0;
-
-}
-
-.hero-content h1::after{
-
-    content:"_";
-
-    animation:blink 1s step-end infinite;
-
-}
-
-@keyframes blink{
-
-    0%, 100%{ opacity:1; }
-    50%{ opacity:0; }
-
-}
-
-.hero-content p{
-
-    color:var(--text-muted);
-
-}
-
-.hero-content p::before{
-
-    content:"# ";
-
-    color:rgba(51,255,51,.4);
-
-}
-
-.cta-btn{
-
-    border-radius:0 !important;
-    border:2px solid var(--accent) !important;
-    background:transparent !important;
-    box-shadow:none !important;
-    text-shadow:0 0 4px var(--accent-2-glow);
-    transition:none !important;
-
-}
-
-.cta-btn::before{
-
-    display:none !important;
-
-}
-
-.cta-btn:hover{
-
-    background:var(--accent) !important;
-    color:#000 !important;
-    text-shadow:none !important;
-    transform:none !important;
-    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
-
-}
-
-.cta-btn::after{
-
-    content:" >";
-
-}
-
-/* =====================================
-   Overview / Interest Cards
-===================================== */
-
-#overview h2::before,
-#publications h2::before{
-
-    content:"> ";
-    color:rgba(51,255,51,.5);
-
-}
-
-#overview h2,
-#publications h2{
-
-    color:var(--heading-accent) !important;
-
-}
-
-.overview-subtitle{
-
-    color:var(--heading-accent-muted) !important;
-
-}
-
-.interest-card{
-
-    background:rgba(10,14,10,.6) !important;
-    border:1px solid var(--accent) !important;
-    border-radius:0 !important;
-    backdrop-filter:none !important;
-    -webkit-backdrop-filter:none !important;
-    box-shadow:none !important;
-    transition:border-color .2s ease, box-shadow .2s ease !important;
-
-}
-
-.interest-card::before{
-
-    display:none !important;
-
-}
-
-.interest-card:hover{
-
-    transform:none !important;
-    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
-
-}
-
-.interest-icon{
-
-    border:1px solid var(--accent) !important;
-    border-radius:50% !important;
-    background:rgba(51,255,51,.04) !important;
-    color:var(--accent) !important;
-
-}
-
-.interest-card h3{
-
-    color:var(--heading-accent-muted) !important;
-    text-shadow:0 0 4px var(--accent-2-glow);
-
-}
-
-/* Connector line + pulse — redeclared in green instead of
-   the shared amber (those rules hardcode hex, not tokens,
-   so they need a full redeclaration rather than a variable
-   swap) */
-
-.interest-grid::before{
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(51,255,51,.25) 12%,
-        rgba(51,255,51,.25) 88%,
-        transparent) !important;
-
-}
-
-.interest-grid::after{
-
-    background:var(--accent) !important;
-    box-shadow:
-        0 0 8px 2px rgba(51,255,51,.85),
-        0 0 18px 5px rgba(51,255,51,.35) !important;
-
-}
-
-/* =====================================
-   Publications
-===================================== */
-
-.publication-card{
-
-    background:rgba(10,14,10,.5) !important;
-    border:1px solid var(--accent) !important;
-    border-radius:0 !important;
-    backdrop-filter:none !important;
-    -webkit-backdrop-filter:none !important;
-    box-shadow:none !important;
-    transition:border-color .2s ease, box-shadow .2s ease !important;
-
-}
-
-.publication-card:hover{
-
-    transform:none !important;
-    border-color:var(--accent) !important;
-    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
-
-}
-
-.publication-info h3{
-
-    color:var(--heading-accent-muted) !important;
-    text-shadow:0 0 4px var(--accent-2-glow);
-
-}
-
-.publication-thumbnail img{
-
-    filter:grayscale(1) brightness(1.4) sepia(1) hue-rotate(60deg) saturate(4);
-
-}
-
-/* =====================================
-   Footer
-===================================== */
-
-footer{
-
-    background:rgba(8,8,8,.92) !important;
-    border-top:1px solid var(--accent) !important;
-    backdrop-filter:none !important;
-
-}
-
-/* =====================================
-   Cursor glow (particle colors handled
-   separately in cursor.js)
-===================================== */
-
-#cursor-glow{
-
-    background:radial-gradient(circle, rgba(51,255,51,.22), transparent 70%) !important;
-
-}
-
-/* =====================================
-   Scrollbar
-===================================== */
-
-::-webkit-scrollbar-thumb{
-
-    background:var(--accent) !important;
-
-}
-
-html{
-
-    scrollbar-color:var(--accent) rgba(8,8,8,.4) !important;
-
-}
-
-/* =====================================================
-   ABOUT PAGE
-===================================================== */
-
-.about-header h1{
-
-    color:var(--heading-accent) !important;
-
-}
-
-.journey-card{
-
-    background:rgba(10,14,10,.6) !important;
-    border:1px solid var(--accent) !important;
-    border-radius:0 !important;
-    backdrop-filter:none !important;
-    -webkit-backdrop-filter:none !important;
-    box-shadow:none !important;
-    transition:border-color .2s ease, box-shadow .2s ease !important;
-
-}
-
-.journey-card:hover{
-
-    /* Explicit override — the shared style.css sets an amber
-       border-color on this exact hover state, and this is the
-       property that actually needs to win, not just the glow. */
-    border-color:var(--accent) !important;
-    border-width:2px !important;
-    box-shadow:0 0 28px rgba(51,255,51,.55) !important;
-
-}
-
-.journey-card::after{
-
-    color:rgba(51,255,51,.08) !important;
-
-}
-
-.journey-card h2{
-
-    color:var(--accent) !important;
-
-}
-
-.chapter-number{
-
-    color:var(--text-muted) !important;
-
-}
-
-.chapter-number::before{
-
-    content:"[ ";
-
-}
-
-.chapter-number::after{
-
-    content:" ]";
-
-}
-
-#prev,
-#next{
-
-    background:rgba(51,255,51,.08) !important;
-    border:1px solid var(--accent) !important;
-    color:var(--accent) !important;
-    transition:none !important;
-
-}
-
-#prev:hover,
-#next:hover{
-
-    background:var(--accent) !important;
-    color:#000 !important;
-    transform:none !important;
-
-}
-
-.dot{
-
-    background:rgba(51,255,51,.25) !important;
-    border-radius:0 !important;
-
-}
-
-.dot.active{
-
-    background:var(--accent) !important;
-}
-
-/* =====================================================
-   RESEARCH PAGE
-===================================================== */
-
-.research-hero h1{
-
-    color:var(--heading-accent) !important;
-
-}
-
-.research-hero p{
-
-    color:var(--text-muted) !important;
-
-}
-
-.timeline-spine{
-
-    background:rgba(51,255,51,.25) !important;
-
-}
-
-.timeline-node{
-
-    border-color:var(--accent) !important;
-    background:var(--bg) !important;
-
-}
-
-.timeline-item.right .timeline-node{
-
-    border-color:var(--accent) !important;
-
-}
-
-.timeline-card{
-
-    background:rgba(10,14,10,.5) !important;
-    border:1px solid var(--accent) !important;
-    border-radius:0 !important;
-    backdrop-filter:none !important;
-    -webkit-backdrop-filter:none !important;
-    transition:border-color .2s ease, box-shadow .2s ease !important;
-
-}
-
-.timeline-card:hover{
-
-    transform:none !important;
-    border:1px solid var(--accent) !important;
-    box-shadow:0 0 26px rgba(51,255,51,.55) !important;
-
-}
-
-.timeline-card::after{
-
-    background:rgba(51,255,51,.3) !important;
-
-}
-
-.timeline-card h2{
-
-    color:var(--heading-accent) !important;
-
-}
-
-.timeline-card p{
-
-    color:var(--text-muted) !important;
-
-}
-
-.research-topic::before{
-
-    content:"[ ";
-
-}
-
-.research-topic::after{
-
-    content:" ]";
-
-}
-
-.publication{
-
-    border-top:1px solid rgba(51,255,51,.15) !important;
-
 }
 
-.publication h3{
+html[data-theme="light"] .logo-ring{
 
-    color:var(--heading-accent-muted) !important;
+    fill:none !important;
 
 }
 
-.publication h3::before{
+/* Theme toggle control itself */
 
-    content:"> ";
-    color:rgba(51,255,51,.5);
+.theme-toggle{
 
-}
-
-.publication p{
-
-    color:var(--text-muted) !important;
-
-}
-
-.research-cta h2{
-
-    color:var(--heading-accent) !important;
-
-}
-
-.research-cta p{
-
-    color:var(--text-muted) !important;
-
-}
-
-/* =====================================================
-   CONTACT PAGE
-===================================================== */
-
-.contact-hero h1{
-
-    color:var(--heading-accent) !important;
+    background:none;
+    border:none;
 
-}
-
-.contact-hero p{
-
-    color:var(--text-muted) !important;
-
-}
-
-.contact-card{
-
-    color:var(--accent) !important;
-
-}
-
-.contact-card:hover{
-
-    /* Same fix as journey-card — style.css sets an amber
-       border-color + amber box-shadow on this exact hover
-       state that would otherwise leak through untouched. */
-    transform:none !important;
-    border-color:var(--accent) !important;
-    border-width:2px !important;
-    box-shadow:0 0 28px rgba(51,255,51,.55) !important;
-
-}
-
-.contact-card p{
-
-    color:var(--text-muted) !important;
-
-}
+    color:inherit;
+    font-family:'VT323', monospace;
+    font-size:1.05rem;
 
-.contact-card::after{
+    cursor:pointer;
 
-    color:rgba(51,255,51,.6) !important;
+    padding:0;
 
 }
 
-.contact-card:hover::after{
+.theme-toggle:hover{
 
-    color:var(--accent) !important;
+    color:var(--accent);
 
 }
