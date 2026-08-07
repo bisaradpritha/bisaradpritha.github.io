@@ -83,12 +83,32 @@ showCard(0);
 // =====================================================
 
 const accordionItems = document.querySelectorAll(".accordion-item");
+const expandAllBtn = document.getElementById("expandAllBtn");
+
+function setAllExpanded(expanded) {
+
+    accordionItems.forEach((item) => {
+
+        const header = item.querySelector(".accordion-header");
+
+        item.classList.toggle("active", expanded);
+        header.setAttribute("aria-expanded", expanded ? "true" : "false");
+
+    });
+
+    expandAllBtn.setAttribute("aria-expanded", expanded ? "true" : "false");
+    expandAllBtn.textContent = expanded ? "[ Collapse All ]" : "[ Expand All ]";
+
+}
 
 accordionItems.forEach((item) => {
 
     const header = item.querySelector(".accordion-header");
 
     header.addEventListener("click", () => {
+
+        const allExpanded =
+            expandAllBtn.getAttribute("aria-expanded") === "true";
 
         const wasActive = item.classList.contains("active");
 
@@ -99,13 +119,34 @@ accordionItems.forEach((item) => {
 
         });
 
-        if (!wasActive) {
+        // Coming from "all expanded" mode, every item reads as
+        // already-active — a click there means "narrow down to
+        // just this one," not "toggle it closed" the way a
+        // click does in normal single-open mode.
+        const shouldOpen = allExpanded || !wasActive;
+
+        if (shouldOpen) {
 
             item.classList.add("active");
             header.setAttribute("aria-expanded", "true");
 
         }
 
+        // A manual single-item click always breaks "all
+        // expanded" mode, even if every item happened to be
+        // open at the time — keep the button's label honest.
+        expandAllBtn.setAttribute("aria-expanded", "false");
+        expandAllBtn.textContent = "[ Expand All ]";
+
     });
+
+});
+
+expandAllBtn.addEventListener("click", () => {
+
+    const currentlyAllExpanded =
+        expandAllBtn.getAttribute("aria-expanded") === "true";
+
+    setAllExpanded(!currentlyAllExpanded);
 
 });
