@@ -75,3 +75,37 @@ document.addEventListener("keydown", (e) => {
 
 // Initialize
 showCard(0);
+
+// =====================================================
+// Credentials Accordion
+// Each item's header toggles its own panel; opening one
+// closes whichever else is open.
+// =====================================================
+
+const accordionItems = document.querySelectorAll(".accordion-item");
+
+accordionItems.forEach((item) => {
+
+    const header = item.querySelector(".accordion-header");
+
+    header.addEventListener("click", () => {
+
+        const wasActive = item.classList.contains("active");
+
+        accordionItems.forEach((i) => {
+
+            i.classList.remove("active");
+            i.querySelector(".accordion-header").setAttribute("aria-expanded", "false");
+
+        });
+
+        if (!wasActive) {
+
+            item.classList.add("active");
+            header.setAttribute("aria-expanded", "true");
+
+        }
+
+    });
+
+});
