@@ -197,9 +197,10 @@ body{
 }
 
 body{
-    font-family:'Space Mono', monospace;
+    font-family:'VT323', monospace;
     overflow-x:hidden;
     background:var(--bg);
+    letter-spacing:.02em;
 }
 
 /* =====================================
@@ -1971,6 +1972,8 @@ footer p {
 
 .journey-card p{
 
+    font-size:1.05rem;
+
     line-height:1.9;
 
     color:var(--text-muted);
@@ -2759,6 +2762,8 @@ footer p {
 
 .timeline-card p{
 
+    font-size:1.05rem;
+
     color:var(--text-muted);
 
     line-height:1.8;
@@ -2844,7 +2849,7 @@ footer p {
 
     margin:0;
 
-    font-size:.9rem;
+    font-size:.98rem;
 
     color:var(--text-muted);
 
@@ -3141,7 +3146,7 @@ footer p {
 
 .contact-card p{
 
-    font-size:.98rem;
+    font-size:1.05rem;
 
     line-height:1.7;
 
