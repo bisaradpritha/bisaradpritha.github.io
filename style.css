@@ -1780,6 +1780,33 @@ footer p {
 
 }
 
+/* Education / Experience — reuses the exact publication-list
+   pattern from Research (Title + Institution · Dates, "> "
+   prefix) since it's the same shape of content, just here
+   instead of nested in a timeline card. */
+
+.credentials{
+
+    margin-top:5rem;
+
+    padding-top:3rem;
+
+    border-top:1px solid rgba(51,255,51,.15);
+
+}
+
+.credentials h2{
+
+    margin-bottom:.5rem;
+
+}
+
+.credentials h2 + .publication-list{
+
+    margin-bottom:3rem;
+
+}
+
 .about-photo{
 
     position:relative;
