@@ -1,4 +1,4 @@
-/* deploy-version: 5 */
+/* deploy-version: 6 */
 
 /* =====================================================
    LIGHT MODE
@@ -120,7 +120,11 @@ html[data-theme="light"] .logo-ring{
 .theme-switch{
 
     position:fixed;
-    top:1.5rem;
+    /* Explicitly tied to the navbar's own fixed 70px height
+       plus its 1px border, rather than a guessed offset that
+       happened to land on top of the Download CV link at
+       this viewport width. */
+    top:calc(70px + 1px + 1.25rem);
     right:2rem;
     z-index:1001;
 
