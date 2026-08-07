@@ -1953,6 +1953,34 @@ footer p {
 
 }
 
+/* A wordless nudge toward the first accordion item — pulses
+   twice, then stops for good, right as the reveal system
+   marks the card visible (tied to .is-visible, the same class
+   the shared scroll-reveal already manages, so this fires
+   exactly when the card actually appears rather than at page
+   load, which could be well before it's ever scrolled into
+   view). A finite, one-time animation on purpose — anything
+   looping would read as noise rather than a hint after the
+   first couple of seconds. */
+.accordion-item.is-visible .chevron-hint{
+
+    animation:chevronHint 1s ease-in-out 2;
+
+}
+
+@keyframes chevronHint{
+
+    0%, 100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.3);
+        text-shadow:0 0 10px var(--accent);
+    }
+
+}
+
 .accordion-panel{
 
     overflow:hidden;
