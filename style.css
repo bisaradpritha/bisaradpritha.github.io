@@ -3720,6 +3720,37 @@ footer p {
 
 @media print{
 
+    /* Forces browsers to render exactly the colors specified
+       below rather than potentially substituting/adjusting
+       them under a print "economy" mode, which behaves
+       inconsistently across browsers and could plausibly be
+       part of what was causing card content to render blank. */
+    *{
+
+        print-color-adjust:exact !important;
+        -webkit-print-color-adjust:exact !important;
+
+    }
+
+    /* CSS Grid has a well-documented history of unreliable
+       content-height calculation in print/PDF rendering
+       across browsers — exactly the kind of bug that could
+       draw a card's border (positioned by the grid) while
+       failing to correctly size and render its content. A
+       stacked block layout is also more appropriate for a
+       narrow printed page anyway, regardless of the bug. */
+    .timeline-item{
+
+        display:block !important;
+
+    }
+
+    .timeline-item > *{
+
+        margin-bottom:1.5rem;
+
+    }
+
     /* The scroll-reveal system (.reveal) starts every card
        and heading at opacity:0, only becoming visible via JS
        once scrolled into the viewport. Printing doesn't
