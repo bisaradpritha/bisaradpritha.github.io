@@ -1,4 +1,4 @@
-/* deploy-version: 1 */
+/* deploy-version: 2 */
 /* =====================================
    Global reset
    Without this, any element that sets both
@@ -26,9 +26,17 @@
 
     --accent: #33ff33;
 
+    /* Raw R,G,B triplet (no alpha) — lets every hardcoded
+       rgba(var(--accent-rgb),X) elsewhere in this file become
+       rgba(var(--accent-rgb),X) instead, so a single
+       variable redefinition under [data-theme="light"]
+       retints every glow, border, and background at once
+       rather than needing ~40 individual overrides. */
+    --accent-rgb: 51,255,51;
+
     --text: #33ff33;
 
-    --text-muted: rgba(51,255,51,.65);
+    --text-muted: rgba(var(--accent-rgb),.65);
 
     /* A little white breaks up an entirely-green page —
        reserved specifically for primary headings, so it
@@ -98,8 +106,8 @@
     ===================================== */
 
     --accent-2: #33ff33;
-    --accent-2-soft: rgba(51,255,51,.16);
-    --accent-2-glow: rgba(51,255,51,.35);
+    --accent-2-soft: rgba(var(--accent-rgb),.16);
+    --accent-2-glow: rgba(var(--accent-rgb),.35);
 
 }
 
@@ -283,7 +291,7 @@ body{
 
 .back-to-top:hover{
 
-    box-shadow:0 0 20px rgba(51,255,51,.5);
+    box-shadow:0 0 20px rgba(var(--accent-rgb),.5);
 
 }
 
@@ -352,7 +360,7 @@ body::before{
 
     pointer-events:none;
 
-    box-shadow:inset 0 0 90px 30px rgba(51,255,51,.12);
+    box-shadow:inset 0 0 90px 30px rgba(var(--accent-rgb),.12);
 
 }
 
@@ -399,7 +407,7 @@ body::after{
 
     height:2px;
 
-    background:linear-gradient(180deg, transparent, rgba(51,255,51,.4), transparent);
+    background:linear-gradient(180deg, transparent, rgba(var(--accent-rgb),.4), transparent);
 
     z-index:-1;
 
@@ -552,9 +560,9 @@ button{
 
     background:var(--text-muted);
     border-color:var(--text-muted);
-    color:#000;
+    color:var(--bg);
 
-    box-shadow:0 0 16px rgba(51,255,51,.3);
+    box-shadow:0 0 16px rgba(var(--accent-rgb),.3);
 
 }
 
@@ -566,7 +574,7 @@ button{
 
     color:var(--heading-accent);
 
-    text-shadow:0 0 8px var(--accent-2-glow), 0 0 20px rgba(51,255,51,.2);
+    text-shadow:0 0 8px var(--accent-2-glow), 0 0 20px rgba(var(--accent-rgb),.2);
 
 }
 
@@ -686,7 +694,7 @@ button{
 
     content:"# ";
 
-    color:rgba(51,255,51,.4);
+    color:rgba(var(--accent-rgb),.4);
 
 }
 
@@ -1017,7 +1025,7 @@ header.header-hidden{
 .nav-links a.active{
 
     background:var(--accent);
-    color:#000;
+    color:var(--bg);
     text-shadow:none;
 }
 
@@ -1030,7 +1038,7 @@ header.header-hidden{
 
     display:inline;
 
-    color:#000;
+    color:var(--bg);
 
     animation:blink 1s step-end infinite;
 
@@ -1197,8 +1205,8 @@ header.header-hidden{
     background:linear-gradient(
     90deg,
     transparent,
-    rgba(51,255,51,.25) 12%,
-    rgba(51,255,51,.25) 88%,
+    rgba(var(--accent-rgb),.25) 12%,
+    rgba(var(--accent-rgb),.25) 88%,
     transparent);
 
 }
@@ -1230,8 +1238,8 @@ header.header-hidden{
     background:var(--accent);
 
     box-shadow:
-        0 0 8px 2px rgba(51,255,51,.85),
-        0 0 18px 5px rgba(51,255,51,.35);
+        0 0 8px 2px rgba(var(--accent-rgb),.85),
+        0 0 18px 5px rgba(var(--accent-rgb),.35);
 
     opacity:0;
 
@@ -1333,7 +1341,7 @@ header.header-hidden{
 
     border-color:var(--accent);
 
-    box-shadow:0 0 26px rgba(51,255,51,.55);
+    box-shadow:0 0 26px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -1376,7 +1384,7 @@ header.header-hidden{
     border:1px solid var(--accent);
     border-radius:50%;
 
-    background:rgba(51,255,51,.04);
+    background:rgba(var(--accent-rgb),.04);
 
     color:var(--accent);
 
@@ -1580,7 +1588,7 @@ Recent Publication Section
 
     border-color:var(--accent);
 
-    box-shadow:0 0 26px rgba(51,255,51,.55);
+    box-shadow:0 0 26px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -1755,7 +1763,7 @@ footer p {
 
     background:
         radial-gradient(circle,
-        rgba(51,255,51,.18),
+        rgba(var(--accent-rgb),.18),
         transparent 70%);
 
     transform:translate(-50%,-50%);
@@ -1819,12 +1827,12 @@ footer p {
 .cta-btn:hover{
 
     background:var(--accent);
-    color:#000;
+    color:var(--bg);
     text-shadow:none;
     transform:none;
 
     box-shadow:
-        0 0 26px rgba(51,255,51,.55);
+        0 0 26px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -1980,7 +1988,7 @@ footer p {
 .glass.accordion-item.active{
 
     border-color:var(--accent);
-    box-shadow:0 0 26px rgba(51,255,51,.55);
+    box-shadow:0 0 26px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -2313,7 +2321,7 @@ footer p {
     font-size:12rem;
     line-height:1;
 
-    color:rgba(51,255,51,.08);
+    color:rgba(var(--accent-rgb),.08);
 
     pointer-events:none;
 
@@ -2344,7 +2352,7 @@ footer p {
 
     border-width:2px;
 
-    box-shadow:0 0 28px rgba(51,255,51,.55);
+    box-shadow:0 0 28px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -2439,7 +2447,7 @@ footer p {
 
     border-radius:50%;
 
-    background:rgba(51,255,51,.08);
+    background:rgba(var(--accent-rgb),.08);
 
     color:var(--accent);
 
@@ -2456,7 +2464,7 @@ footer p {
 
     background:var(--accent);
 
-    color:#000;
+    color:var(--bg);
 
     transform:none;
 
@@ -2470,7 +2478,7 @@ footer p {
 
     border-radius:0;
 
-    background:rgba(51,255,51,.25);
+    background:rgba(var(--accent-rgb),.25);
 
     cursor:pointer;
 
@@ -2519,15 +2527,15 @@ footer p {
 
     --glass-bg-hover:rgba(20,28,20,.7);
 
-    --glass-border:rgba(51,255,51,.4);
+    --glass-border:rgba(var(--accent-rgb),.4);
 
-    --glass-highlight:rgba(51,255,51,.04);
+    --glass-highlight:rgba(var(--accent-rgb),.04);
 
     --glass-shadow:
         0 0 0 rgba(0,0,0,0);
 
     --glass-shadow-hover:
-        0 0 16px rgba(51,255,51,.25);
+        0 0 16px rgba(var(--accent-rgb),.25);
 
     --glass-blur:0px;
 
@@ -2613,7 +2621,7 @@ footer p {
 
     background:var(--glass-bg-hover);
 
-    border-color:rgba(51,255,51,0.22);
+    border-color:rgba(var(--accent-rgb),0.22);
 
     box-shadow:var(--glass-shadow-hover);
 
@@ -2731,7 +2739,7 @@ footer p {
 
     transform:translateX(-50%);
 
-    background:rgba(51,255,51,.25);
+    background:rgba(var(--accent-rgb),.25);
 
     z-index:1;
 
@@ -2815,7 +2823,7 @@ footer p {
 
 .poster-preview:hover{
 
-    box-shadow:0 0 26px rgba(51,255,51,.55);
+    box-shadow:0 0 26px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -2827,7 +2835,7 @@ footer p {
 
     display:block;
 
-    border:1px solid rgba(51,255,51,.35);
+    border:1px solid rgba(var(--accent-rgb),.35);
 
 }
 
@@ -2878,10 +2886,10 @@ footer p {
        gradients (one per edge) and shifts their position each
        frame, the classic CSS "marching ants" technique. */
     background-image:
-        linear-gradient(90deg, rgba(51,255,51,.5) 50%, transparent 50%),
-        linear-gradient(90deg, rgba(51,255,51,.5) 50%, transparent 50%),
-        linear-gradient(0deg, rgba(51,255,51,.5) 50%, transparent 50%),
-        linear-gradient(0deg, rgba(51,255,51,.5) 50%, transparent 50%);
+        linear-gradient(90deg, rgba(var(--accent-rgb),.5) 50%, transparent 50%),
+        linear-gradient(90deg, rgba(var(--accent-rgb),.5) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(var(--accent-rgb),.5) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(var(--accent-rgb),.5) 50%, transparent 50%);
 
     background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
 
@@ -2963,7 +2971,7 @@ footer p {
 
     transform:none;
     border:1px solid var(--accent);
-    box-shadow:0 0 26px rgba(51,255,51,.55);
+    box-shadow:0 0 26px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -2981,7 +2989,7 @@ footer p {
 
     height:2px;
 
-    background:rgba(51,255,51,.3);
+    background:rgba(var(--accent-rgb),.3);
 
 }
 
@@ -3051,7 +3059,7 @@ footer p {
 
     background:var(--accent);
 
-    box-shadow:0 0 12px rgba(51,255,51,.6);
+    box-shadow:0 0 12px rgba(var(--accent-rgb),.6);
 
 }
 
@@ -3218,7 +3226,7 @@ footer p {
 
     padding-top:1rem;
 
-    border-top:1px solid rgba(51,255,51,.15);
+    border-top:1px solid rgba(var(--accent-rgb),.15);
 
 }
 
@@ -3430,9 +3438,9 @@ footer p {
 
     border-radius:50%;
 
-    border:1px solid rgba(51,255,51,.3);
+    border:1px solid rgba(var(--accent-rgb),.3);
 
-    background:rgba(51,255,51,.06);
+    background:rgba(var(--accent-rgb),.06);
 
     color:var(--accent-2);
 
@@ -3593,7 +3601,7 @@ footer p {
     border-color:var(--accent);
     border-width:2px;
 
-    box-shadow:0 0 28px rgba(51,255,51,.55);
+    box-shadow:0 0 28px rgba(var(--accent-rgb),.55);
 
 }
 
@@ -3611,7 +3619,7 @@ footer p {
 
     font-size:1rem;
 
-    color:rgba(51,255,51,.6);
+    color:rgba(var(--accent-rgb),.6);
 
     transition:none;
 
