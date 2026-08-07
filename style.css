@@ -1807,22 +1807,99 @@ footer p {
 
     border-radius:0;
 
+    padding:0;
+
     transition:border-color .2s ease, box-shadow .2s ease;
 
 }
 
-.credentials-group:hover{
+.credentials-group:hover,
+.accordion-item.active{
 
     border-color:var(--accent);
     box-shadow:0 0 26px rgba(51,255,51,.55);
 
 }
 
-.credentials-group h2{
+/* Thin, full-width click target — heading left-aligned,
+   chevron right-aligned, with breathing room between items
+   handled by .credentials' own gap rather than the header's
+   own padding, so the bars read as separate cards, not one
+   tightly stacked block. */
+.accordion-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    width:100%;
+
+    padding:1rem 1.5rem;
+
+    background:none;
+    border:none;
+
+    cursor:pointer;
+    text-align:left;
+
+    font:inherit;
+    color:inherit;
+
+}
+
+.accordion-heading{
 
     color:var(--heading-accent);
 
-    margin-bottom:1.5rem;
+    font-size:1.4rem;
+
+    letter-spacing:.03em;
+
+    text-shadow:0 0 6px var(--accent-2-glow);
+
+}
+
+.chevron{
+
+    color:var(--accent);
+
+    font-size:1.4rem;
+
+    line-height:1;
+
+    flex-shrink:0;
+
+    margin-left:1rem;
+
+    transition:transform .25s ease;
+
+}
+
+.accordion-item.active .chevron{
+
+    transform:rotate(90deg);
+
+}
+
+.accordion-panel{
+
+    overflow:hidden;
+
+    max-height:0;
+
+    transition:max-height .4s cubic-bezier(.2,.7,.2,1);
+
+}
+
+.accordion-item.active .accordion-panel{
+
+    max-height:900px;
+
+}
+
+.accordion-panel-inner{
+
+    padding:0 clamp(1.5rem, 2vw, 2.5rem) clamp(1.5rem, 2vw, 2.5rem);
 
 }
 
@@ -1846,6 +1923,8 @@ footer p {
     text-shadow:none;
 
     vertical-align:middle;
+
+    margin-left:.6rem;
 
 }
 
