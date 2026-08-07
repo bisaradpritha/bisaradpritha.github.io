@@ -197,7 +197,7 @@ body{
 }
 
 body{
-    font-family:'VT323', monospace;
+    font-family:'Space Mono', monospace;
     overflow-x:hidden;
     background:var(--bg);
 }
@@ -1007,7 +1007,7 @@ header.header-hidden{
 #publications h2::before{
 
     content:"> ";
-    color:rgba(51,255,51,.5);
+    color:var(--text-muted);
 
 }
 
@@ -1947,7 +1947,7 @@ footer p {
 
     content:"> ";
 
-    color:rgba(51,255,51,.5);
+    color:var(--text-muted);
 
 }
 
@@ -2255,8 +2255,6 @@ footer p {
 }
 
 .research-hero p{
-
-    font-family:'VT323', monospace;
 
     max-width:700px;
 
@@ -2838,7 +2836,7 @@ footer p {
 .publication h3::before{
 
     content:"> ";
-    color:rgba(51,255,51,.5);
+    color:var(--text-muted);
 
 }
 
@@ -2933,8 +2931,6 @@ footer p {
 }
 
 .contact-hero p{
-
-    font-family:'VT323', monospace;
 
     max-width:700px;
 
@@ -3144,8 +3140,6 @@ footer p {
 }
 
 .contact-card p{
-
-    font-family:'VT323', monospace;
 
     font-size:.98rem;
 
