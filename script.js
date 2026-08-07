@@ -1,4 +1,4 @@
-// deploy-version: 1
+// deploy-version: 2
 (() => {
 
 // =====================================
@@ -8,8 +8,21 @@
 const NODE_COUNT = 120;
 const CONNECTIONS_PER_NODE = 4;
 
-const NODE_COLOR = "#33ff33";
-const EDGE_COLOR = "rgba(255,204,116,0.28)";
+// Reads the theme set by the early inline script in <head>
+// (or defaults to dark if none was set). The connectome's
+// colors are drawn on canvas, not styled via CSS, so a
+// variable redefinition can't reach them — they need their
+// own explicit light/dark branch here.
+const isLightMode =
+    document.documentElement.getAttribute("data-theme") === "light";
+
+const NODE_COLOR = isLightMode ? "#1a1a1a" : "#33ff33";
+const NODE_COLOR_RGB = isLightMode ? "26,26,26" : "51,255,51";
+const EDGE_COLOR_RGB = isLightMode ? "90,90,90" : "255,204,116";
+const PULSE_COLOR_RGB = isLightMode ? "70,70,70" : "250,116,32";
+const CANVAS_BG = isLightMode ? "#f5f5f4" : "#111111";
+
+const EDGE_COLOR = `rgba(${EDGE_COLOR_RGB},0.28)`;
 
 const DRIFT_MIN_TIME = 3000;
 const DRIFT_MAX_TIME = 6000;
@@ -200,7 +213,7 @@ window.addEventListener("resize", () => {
     // No animate loop is running to redraw after a resize
     // clears the canvas's backing store, so the static frame
     // needs to be explicitly redrawn here.
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || isLightMode) {
 
         updateNodes(performance.now());
         render();
@@ -788,7 +801,7 @@ function drawEdges() {
 
         const alpha = lengthAlpha * (0.35 + avgDepth * 0.65);
 
-        ctx.strokeStyle = `rgba(255,204,116,${alpha})`;
+        ctx.strokeStyle = `rgba(${EDGE_COLOR_RGB},${alpha})`;
 
         const nx = -dy / length;
         const ny = dx / length;
@@ -838,7 +851,7 @@ function drawNodes() {
             (0.55 + node.depth * 0.55) *
             (1 + flashBoost * 0.8);
 
-        ctx.fillStyle = `rgba(51,255,51,${alpha})`;
+        ctx.fillStyle = `rgba(${NODE_COLOR_RGB},${alpha})`;
 
         ctx.shadowBlur = renderRadius * 3 + flashBoost * 16;
         ctx.shadowColor = NODE_COLOR;
@@ -902,10 +915,10 @@ function drawPulses() {
 
         const avgDepth = (a.depth + b.depth) / 2;
 
-        ctx.fillStyle = `rgba(250,116,32,${0.5 + avgDepth * 0.5})`;
+        ctx.fillStyle = `rgba(${PULSE_COLOR_RGB},${0.5 + avgDepth * 0.5})`;
 
         ctx.shadowBlur = 18 * (0.5 + avgDepth * 0.5);
-        ctx.shadowColor = "#ffffff";
+        ctx.shadowColor = isLightMode ? "#000000" : "#ffffff";
 
         ctx.beginPath();
 
@@ -928,7 +941,7 @@ function drawPulses() {
 
 function render() {
 
-    ctx.fillStyle = "#111111";
+    ctx.fillStyle = CANVAS_BG;
     ctx.fillRect(0, 0, width, height);
 
     drawEdges();
@@ -1045,7 +1058,7 @@ for (const node of nodes) {
 
 }
 
-if (prefersReducedMotion) {
+if (prefersReducedMotion || isLightMode) {
 
     // A single static frame — chooseNewTarget() above has
     // already set each node's drift target, but since no
@@ -1082,6 +1095,9 @@ if (prefersReducedMotion) {
 const prefersReducedMotion =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const isLightMode =
+    document.documentElement.getAttribute("data-theme") === "light";
+
 // Matches the CSS breakpoint that hides .ambient-network on
 // mobile — skip the canvas setup and animation loop entirely
 // rather than running it invisibly in the background.
@@ -1093,9 +1109,9 @@ const canvases = document.querySelectorAll(".ambient-network");
 
 if (!canvases.length) return;
 
-const AMBIENT_NODE_COLOR = "#33ff33";
+const AMBIENT_NODE_COLOR = isLightMode ? "#1a1a1a" : "#33ff33";
 const AMBIENT_EDGE_BASE_ALPHA = 0.16;
-const AMBIENT_EDGE_RGB = "51,255,51";
+const AMBIENT_EDGE_RGB = isLightMode ? "26,26,26" : "51,255,51";
 const AMBIENT_EDGE_COLOR = `rgba(${AMBIENT_EDGE_RGB},${AMBIENT_EDGE_BASE_ALPHA})`;
 const AMBIENT_LINK_DISTANCE_FACTOR = 0.14;
 
@@ -1272,7 +1288,7 @@ canvases.forEach((canvas) => {
     resize();
     makeNodes();
 
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || isLightMode) {
 
         // Draw a single static frame instead of animating
         step();
@@ -1607,6 +1623,55 @@ if (backToTopBtn) {
             top: 0,
             behavior: prefersReducedMotion ? "auto" : "smooth"
         });
+
+    });
+
+}
+
+// =====================================================
+// Theme toggle
+// Switches data-theme on <html> and persists the choice via
+// localStorage, then reloads the page. The connectome's
+// canvas colors and static-vs-animated state are only
+// computed once at script load — a clean reload is the
+// simplest reliable way for them to pick up the new theme
+// rather than hot-patching an already-running animation
+// loop mid-flight.
+// =====================================================
+
+const themeToggleBtn = document.getElementById("themeToggle");
+
+if (themeToggleBtn) {
+
+    const isCurrentlyLight =
+        document.documentElement.getAttribute("data-theme") === "light";
+
+    themeToggleBtn.textContent =
+        isCurrentlyLight ? "[ Dark Mode ]" : "[ Light Mode ]";
+
+    themeToggleBtn.setAttribute(
+        "aria-label",
+        isCurrentlyLight ? "Switch to dark mode" : "Switch to light mode"
+    );
+
+    themeToggleBtn.addEventListener("click", () => {
+
+        const nowLight =
+            document.documentElement.getAttribute("data-theme") === "light";
+
+        if (nowLight) {
+
+            document.documentElement.removeAttribute("data-theme");
+            localStorage.setItem("theme", "dark");
+
+        } else {
+
+            document.documentElement.setAttribute("data-theme", "light");
+            localStorage.setItem("theme", "light");
+
+        }
+
+        window.location.reload();
 
     });
 
