@@ -1,4 +1,4 @@
-/* deploy-version: 2 */
+/* deploy-version: 3 */
 /* =====================================
    Global reset
    Without this, any element that sets both
@@ -33,6 +33,19 @@
        retints every glow, border, and background at once
        rather than needing ~40 individual overrides. */
     --accent-rgb: 51,255,51;
+
+    /* Surface tones — header/scrollbar (near-black, close to
+       --bg), visible card backgrounds (a touch lighter than
+       --bg so cards read as distinct surfaces), and a subtle
+       overlay tone (footer, vignette). These were previously
+       hardcoded rgba(var(--surface-rgb),...) / rgba(var(--card-bg-rgb),...) /
+       rgba(var(--overlay-rgb),...) throughout the file — dark-neutral
+       values that were never green to begin with, so they
+       were missed entirely by the accent-color conversion
+       above. Converting them the same way now. */
+    --surface-rgb: 8,8,8;
+    --card-bg-rgb: 10,14,10;
+    --overlay-rgb: 17,17,17;
 
     --text: #33ff33;
 
@@ -311,7 +324,7 @@ body{
 html{
 
     scrollbar-width:thin;
-    scrollbar-color:var(--accent) rgba(8,8,8,.4);
+    scrollbar-color:var(--accent) rgba(var(--surface-rgb),.4);
 
 }
 
@@ -323,7 +336,7 @@ html{
 
 ::-webkit-scrollbar-track{
 
-    background:rgba(8,8,8,.4);
+    background:rgba(var(--surface-rgb),.4);
 
 }
 
@@ -836,7 +849,7 @@ button{
 
         overflow:hidden;
 
-        background:rgba(8,8,8,.96);
+        background:rgba(var(--surface-rgb),.96);
 
         backdrop-filter:none;
 
@@ -889,7 +902,7 @@ header{
 
     backdrop-filter:none;
 
-    background:rgba(8,8,8,.92);
+    background:rgba(var(--surface-rgb),.92);
 
     border-bottom:1px solid var(--accent);
 
@@ -902,7 +915,7 @@ header{
    so the header always shows plain at the very top */
 header.header-scrolled{
 
-    background:rgba(8,8,8,.96);
+    background:rgba(var(--surface-rgb),.96);
 
 }
 
@@ -1287,7 +1300,7 @@ header.header-hidden{
 
 .interest-card{
 
-    background:rgba(10,14,10,.6);
+    background:rgba(var(--card-bg-rgb),.6);
 
     border:1px solid var(--accent);
 
@@ -1551,7 +1564,7 @@ Recent Publication Section
 
 .publication-card{
 
-    background:rgba(10,14,10,.5);
+    background:rgba(var(--card-bg-rgb),.5);
 
     border:1px solid var(--accent);
 
@@ -1677,15 +1690,15 @@ footer {
 
     text-align: center;
 
-    color: rgba(244,245,251,.65);
+    color: var(--text-muted);
     font-size: 0.9rem;
 
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
 
-    background: rgba(17,17,17,.55);
+    background: rgba(var(--overlay-rgb),.55);
 
-    border-top: 1px solid rgba(71,216,255,.12);
+    border-top: 1px solid rgba(var(--accent-rgb),.12);
 }
 
 footer p {
@@ -2256,7 +2269,7 @@ footer p {
     pointer-events:none;
 
     box-shadow:
-        inset 0 0 40px 12px rgba(17,17,17,.55);
+        inset 0 0 40px 12px rgba(var(--overlay-rgb),.55);
 
 }
 
@@ -2282,7 +2295,7 @@ footer p {
 
     overflow:hidden;
 
-    background: rgba(10,14,10,.6);
+    background: rgba(var(--card-bg-rgb),.6);
     border: 1px solid var(--accent);
     border-radius: 0;
     padding: 2.5rem;
@@ -2523,7 +2536,7 @@ footer p {
 
 :root{
 
-    --glass-bg:rgba(10,14,10,.55);
+    --glass-bg:rgba(var(--card-bg-rgb),.55);
 
     --glass-bg-hover:rgba(20,28,20,.7);
 
@@ -2815,7 +2828,7 @@ footer p {
     padding:1.25rem;
 
     border:1px solid var(--accent);
-    background:rgba(10,14,10,.5);
+    background:rgba(var(--card-bg-rgb),.5);
 
     transition:border-color .2s ease, box-shadow .2s ease;
 
@@ -3545,7 +3558,7 @@ footer p {
 
     background:
         radial-gradient(circle,
-        rgba(47,47,47,.12) 0%,
+        rgba(var(--overlay-rgb),.12) 0%,
         transparent 70%);
 
     opacity:0;
