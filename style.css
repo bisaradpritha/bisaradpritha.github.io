@@ -204,6 +204,96 @@ body{
 }
 
 /* =====================================
+   Skip link
+   Off-screen until keyboard-focused, then
+   slides into view at the top of the page —
+   standard pattern letting keyboard/screen-
+   reader users jump past the nav straight to
+   the actual content.
+===================================== */
+
+.skip-link{
+
+    position:absolute;
+    top:-100px;
+    left:1rem;
+    z-index:1000;
+
+    padding:.75rem 1.5rem;
+
+    background:var(--bg);
+    color:var(--accent);
+    border:2px solid var(--accent);
+
+    font-family:'VT323', monospace;
+    font-size:1.1rem;
+
+    text-decoration:none;
+
+    transition:top .2s ease;
+
+}
+
+.skip-link:focus{
+
+    top:1rem;
+
+}
+
+/* =====================================
+   Back to top
+   Hidden (display:none, so it's out of the
+   tab order entirely, not just invisible)
+   until the page has been scrolled past a
+   threshold — toggled via .visible in
+   script.js.
+===================================== */
+
+.back-to-top{
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    position:fixed;
+    bottom:2rem;
+    right:2rem;
+    z-index:500;
+
+    width:48px;
+    height:48px;
+
+    background:var(--bg);
+    border:2px solid var(--accent);
+    color:var(--accent);
+
+    cursor:pointer;
+
+    transition:box-shadow .2s ease, border-color .2s ease;
+
+}
+
+.back-to-top.visible{
+
+    display:flex;
+
+}
+
+.back-to-top:hover{
+
+    box-shadow:0 0 20px rgba(51,255,51,.5);
+
+}
+
+.back-to-top svg{
+
+    width:20px;
+    height:20px;
+
+}
+
+/* =====================================
    Custom scrollbar
    Matches the dark/glass theme instead of
    the browser's default light scrollbar.
@@ -384,6 +474,51 @@ button{
     display:flex;
     justify-content:center;
     align-items:center;
+
+}
+
+/* Auto-starting motion lasting more than a few seconds
+   needs a user-facing pause control regardless of whether
+   prefers-reduced-motion is set at the OS level — someone
+   may want to pause it for focus or sensory reasons without
+   changing a system-wide setting. */
+.hero-pause-btn{
+
+    position:absolute;
+    bottom:2rem;
+    right:2rem;
+    z-index:10;
+
+    width:44px;
+    height:44px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(10,14,10,.55);
+    border:2px solid var(--accent);
+    border-radius:50%;
+
+    color:var(--accent);
+
+    cursor:pointer;
+
+    transition:box-shadow .2s ease, background .2s ease;
+
+}
+
+.hero-pause-btn:hover{
+
+    background:rgba(20,28,20,.7);
+    box-shadow:0 0 20px rgba(51,255,51,.5);
+
+}
+
+.hero-pause-btn svg{
+
+    width:18px;
+    height:18px;
 
 }
 
