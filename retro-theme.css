@@ -1,4 +1,4 @@
-/* deploy-version: 2 */
+/* deploy-version: 3 */
 
 /* =====================================================
    LIGHT MODE
@@ -30,6 +30,16 @@ html[data-theme="light"]{
 
     --accent:#1a1a1a;
     --accent-rgb:26,26,26;
+
+    /* header/scrollbar (near-bg), visible card surfaces
+       (white, distinct from the off-white page), and a
+       subtle overlay tone (footer) — the light-mode
+       counterparts to the dark-neutral rgba(8,8,8,...) /
+       rgba(10,14,10,...) / rgba(17,17,17,...) values these
+       replaced throughout style.css. */
+    --surface-rgb:245,245,244;
+    --card-bg-rgb:255,255,255;
+    --overlay-rgb:235,235,233;
 
     --text:#1a1a1a;
     --text-muted:#5c5c5c;
@@ -101,18 +111,28 @@ html[data-theme="light"] .logo-ring{
     background:none;
     border:none;
 
-    color:inherit;
+    /* Explicit match to .nav-links a's color, rather than
+       relying on color:inherit — that traced back through
+       <li>/<ul>/<nav> to nothing explicitly set, falling
+       through to the browser's default black button text
+       (invisible against the dark nav in dark mode). */
+    color:var(--accent);
     font-family:'VT323', monospace;
     font-size:1.05rem;
 
     cursor:pointer;
 
-    padding:0;
+    padding:4px 8px;
 
 }
 
+/* Matches .nav-links a:hover's inverted-fill treatment,
+   rather than a same-as-base color change that would have
+   given no visible feedback now that the base color was
+   fixed to match the nav links explicitly. */
 .theme-toggle:hover{
 
-    color:var(--accent);
+    background:var(--accent);
+    color:var(--bg);
 
 }
