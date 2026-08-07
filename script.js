@@ -1,1559 +1,3374 @@
-(() => {
+/* =====================================
+   Global reset
+   Without this, any element that sets both
+   width and padding renders WIDER than its
+   declared width (padding adds on top by
+   default), which is exactly what pushes
+   layouts past the viewport edge on narrow
+   phones and reads as things being
+   "shifted"/cut off on one side.
+===================================== */
 
-// =====================================
-// Configuration
-// =====================================
+*,
+*::before,
+*::after{
 
-const NODE_COUNT = 120;
-const CONNECTIONS_PER_NODE = 4;
+    box-sizing:border-box;
 
-const NODE_COLOR = "#33ff33";
-const EDGE_COLOR = "rgba(255,204,116,0.28)";
+}
 
-const DRIFT_MIN_TIME = 3000;
-const DRIFT_MAX_TIME = 6000;
+:root{
 
-const mouse = {
-    x: -1000,
-    y: -1000,
-    active: false
-};
+    --bg: #080808;
 
-// Toned down from the original 220/3 — the repulsion effect
-// was too dramatic against the new sphere structure, so it's
-// a gentler, more localized push now.
-const REPULSE_RADIUS = 160;
-const REPULSE_STRENGTH = 1.6;
+    --surface: #0f0f0f;
 
-// Nodes near the sphere's boundary barely wander (that's
-// what keeps the ring/edge well-defined); nodes near the
-// center are free to drift much further. This replaces the
-// old flat DRIFT_RADIUS with a per-node budget.
-const EDGE_JITTER = 6;
-const CENTER_JITTER = 34;
+    --accent: #33ff33;
 
-// Y-axis rotation
-let rotation = 0;
-const ROTATION_SPEED = 0.0018;
+    --text: #33ff33;
 
-// Organic clustering — a handful of irregular seed points on
-// the sphere that nodes gather around, so the network reads
-// like modular biological structure (protein complexes,
-// neural ganglia) instead of a mathematically even mesh.
-const CLUSTER_COUNT = 16;
-const SHELL_FRACTION = 0.72;
-let clusters = [];
+    --text-muted: rgba(51,255,51,.65);
 
-function buildClusters() {
+    /* A little white breaks up an entirely-green page —
+       reserved specifically for primary headings, so it
+       reads as intentional hierarchy (white = main content,
+       green = labels/metadata/chrome) rather than random
+       inconsistency. */
+    --heading-accent: #f2fff2;
 
-    clusters = [];
+    /* Same white, dimmed via opacity — for secondary/nested
+       titles (a publication title inside a card, a card's
+       own h3) so they read as "part of the white tier" but
+       one step down from page-level h1/h2. */
+    --heading-accent-muted: rgba(242,255,242,.72);
 
-    // Purely random seed placement can land lopsided by
-    // chance on any given page load (a cluster of clusters
-    // all drawn toward one side) — the sphere is
-    // mathematically centered either way, but visually it can
-    // read as off-balance. Generating seeds in antipodal
-    // pairs (each one mirrored to the opposite point on the
-    // sphere) guarantees the overall mass stays balanced
-    // every time, while each pair's own position is still
-    // random — so it still looks organic, just never lopsided
-    // as a whole.
-    for (let i = 0; i < CLUSTER_COUNT; i += 2) {
+    /* =====================================
+       Spacing Scale (4px base unit)
+       Use for margin/padding/gap everywhere
+       instead of one-off px/rem values.
+    ===================================== */
 
-        const u = Math.random();
-        const theta = Math.acos(2 * u - 1);
-        const phi = Math.random() * Math.PI * 2;
+    --space-1: 0.25rem;   /* 4px  */
+    --space-2: 0.5rem;    /* 8px  */
+    --space-3: 0.75rem;   /* 12px */
+    --space-4: 1rem;      /* 16px */
+    --space-5: 1.5rem;    /* 24px */
+    --space-6: 2rem;      /* 32px */
+    --space-7: 2.5rem;    /* 40px */
+    --space-8: 3rem;      /* 48px */
+    --space-9: 4rem;      /* 64px */
+    --space-10: 5rem;     /* 80px */
+    --space-11: 6rem;     /* 96px */
+    --space-12: 8rem;     /* 128px */
 
-        // Weight range narrowed from the original 0.5-2.0 —
-        // a wide range let a couple of clusters end up much
-        // "heavier" than the rest by chance, starving other
-        // areas of the sphere and leaving big empty gaps
-        // between dense blobs (which is what forced the k-NN
-        // edges below into long, ugly bridge lines across
-        // those gaps). Spread floor raised similarly — a
-        // cluster too tight reads as an isolated dot rather
-        // than blending into its neighbors.
-        const weight = 0.8 + Math.random() * 0.7;
-        const spread = 0.32 + Math.random() * 0.28;
+    /* Fluid section-level spacing, all derived
+       from the same scale so pages feel consistent */
 
-        clusters.push({ theta, phi, weight, spread });
+    --space-section-y: clamp(var(--space-11), 8vw, var(--space-12));
+    --space-hero-y: clamp(var(--space-9), 10vw, var(--space-12));
+    --space-card-pad: clamp(var(--space-6), 2.5vw, var(--space-7));
+    --space-stack: clamp(var(--space-8), 6vw, var(--space-10));
 
-        // Antipodal mirror — same weight/spread family, with
-        // a little of its own jitter so the pair doesn't read
-        // as an obviously identical stamp.
-        clusters.push({
-            theta: Math.PI - theta,
-            phi: phi + Math.PI,
-            weight: weight * (0.8 + Math.random() * 0.4),
-            spread: spread * (0.8 + Math.random() * 0.4)
-        });
+    /* =====================================
+       Type Scale
+       All headings/body copy pull from here
+       so every page reads as one system.
+    ===================================== */
 
+    --text-hero: clamp(3rem, 6vw, 4.5rem);
+    --text-h1: clamp(2.5rem, 2.4vw + 1rem, 4rem);
+    --text-h2: clamp(2.3rem, 2vw + 1rem, 3.6rem);
+    --text-h3: clamp(1.3rem, .5vw + 1.1rem, 1.8rem);
+    --text-body-lg: clamp(1.05rem, .4vw + .95rem, 1.25rem);
+    --text-body: 1rem;
+    --text-small: 0.9rem;
+
+    --leading-tight: 1.2;
+    --leading-normal: 1.6;
+    --leading-relaxed: 1.8;
+
+    /* =====================================
+       Secondary accent — monochrome retro theme
+       uses the same green as the primary accent.
+       Kept as a separate variable (rather than
+       deleted) since many rules reference
+       --accent-2 specifically; this way nothing
+       downstream needs to change.
+    ===================================== */
+
+    --accent-2: #33ff33;
+    --accent-2-soft: rgba(51,255,51,.16);
+    --accent-2-glow: rgba(51,255,51,.35);
+
+}
+
+/* =====================================
+   Reduced motion
+   All decorative motion below (reveals, tilt,
+   magnetic buttons, ambient network, cursor
+   trail) is skipped for users who've asked
+   the OS/browser for less motion.
+===================================== */
+
+@media (prefers-reduced-motion: reduce){
+
+    *{
+        animation-duration:.001ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.001ms !important;
+        scroll-behavior:auto !important;
     }
 
 }
 
-function pickCluster() {
+/* =====================================
+   Focus states
+   Visible, on-theme focus rings for keyboard
+   navigation. Browser default outlines are
+   inconsistent against a dark glass UI, so
+   every interactive element gets an explicit,
+   deliberate one instead of losing it silently.
+===================================== */
 
-    const totalWeight = clusters.reduce((sum, c) => sum + c.weight, 0);
-    let r = Math.random() * totalWeight;
+a,
+button,
+.cta-btn,
+.contact-card,
+.dot,
+#prev,
+#next{
 
-    for (const c of clusters) {
-
-        if (r < c.weight) return c;
-        r -= c.weight;
-
-    }
-
-    return clusters[clusters.length - 1];
+    outline-offset:3px;
 
 }
 
-// Random brief brightness flashes on a few nodes at a time —
-// like an activation event, independent and unsynchronized.
-const FLASH_DURATION = 550;
-const FLASH_CHANCE_PER_FRAME = 0.035;
-const MAX_CONCURRENT_FLASHES = 4;
+a:focus-visible,
+button:focus-visible,
+.cta-btn:focus-visible,
+.contact-card:focus-visible,
+.dot:focus-visible,
+#prev:focus-visible,
+#next:focus-visible{
 
-// =====================================
-// Canvas
-// =====================================
+    outline:2px solid var(--accent-2);
+    outline-offset:3px;
+    border-radius:4px;
 
-const canvas = document.getElementById("connectomeCanvas");
+}
 
-// This canvas only exists on index.html — the other pages
-// use the lighter .ambient-network canvas set up further
-// down this file instead.
-if (canvas) {
+.cta-btn:focus-visible{
 
-const ctx = canvas.getContext("2d");
+    border-radius:0;
 
-// The hero network is the richest animation on the site —
-// rotation, drift, breathing, flashes, and traveling pulses
-// all running continuously. For reduced-motion users, none
-// of that runs: the sphere still renders (it's the visual
-// identity of the page, not just decoration), but as a
-// single frozen frame instead of a live animation. Same
-// principle the ambient network on other pages already
-// follows, just applied to the fuller version here.
-const prefersReducedMotion =
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
-let width;
-let height;
+.contact-card:focus-visible,
+.interest-card:focus-visible,
+.publication-card:focus-visible,
+.timeline-card:focus-visible{
 
-const nodes = [];
-const edges = [];
-const pulses = [];
+    outline:2px solid var(--accent-2);
+    outline-offset:3px;
+    border-radius:var(--radius-lg);
 
-// Set once per generateNodes() call, referenced by
-// chooseNewTarget() and the rotation/depth math in
-// updateNodes() so they all agree on the same sphere size.
-let sphereRadius = 0;
+}
 
-function maybeSpawnFlash(now) {
+/* Remove the outline for mouse/touch users who
+   click rather than tab — :focus-visible above
+   already covers keyboard users properly. */
 
-    const activeCount = nodes.reduce(
-        (sum, n) => sum + (now < n.flashUntil ? 1 : 0), 0
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible){
+
+    outline:none;
+
+}
+
+html{
+    margin:0;
+    padding:0;
+}
+
+body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+body{
+    font-family:'VT323', monospace;
+    overflow-x:hidden;
+    background:var(--bg);
+}
+
+/* =====================================
+   Custom scrollbar
+   Matches the dark/glass theme instead of
+   the browser's default light scrollbar.
+===================================== */
+
+html{
+
+    scrollbar-width:thin;
+    scrollbar-color:var(--accent) rgba(8,8,8,.4);
+
+}
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:rgba(8,8,8,.4);
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:var(--accent);
+    border-radius:0;
+    border:2px solid transparent;
+    background-clip:padding-box;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:var(--accent);
+    background-clip:padding-box;
+
+}
+
+/* =====================================
+   CRT scanline overlay
+   Applied via the .crt-overlay element in
+   each page's markup, right after <body>.
+===================================== */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    z-index:-1;
+
+    pointer-events:none;
+
+    box-shadow:inset 0 0 90px 30px rgba(51,255,51,.12);
+
+}
+
+.crt-overlay{
+
+    position:fixed;
+    inset:0;
+
+    z-index:9997;
+
+    pointer-events:none;
+
+    background:repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 1px,
+        rgba(0,0,0,.28) 2px,
+        rgba(0,0,0,.28) 3px
     );
 
-    if (activeCount >= MAX_CONCURRENT_FLASHES) return;
-    if (Math.random() >= FLASH_CHANCE_PER_FRAME) return;
+    mix-blend-mode:multiply;
 
-    const candidate = nodes[Math.floor(Math.random() * nodes.length)];
-
-    if (now < candidate.flashUntil) return;
-
-    candidate.flashStart = now;
-    candidate.flashUntil = now + FLASH_DURATION;
+    animation:crtFlicker 6s infinite;
 
 }
 
-function resizeCanvas() {
+@keyframes crtFlicker{
 
-    // Logical (CSS pixel) size — all node/edge math below
-    // still uses these, so nothing else needs to change.
-    width = window.innerWidth;
-    height = window.innerHeight;
+    0%, 92%, 100%{ opacity:1; }
+    93%{ opacity:.85; }
+    94%{ opacity:1; }
+    96%{ opacity:.92; }
 
-    // Backing store sized for the screen's actual pixel
-    // density so the network doesn't look soft/blurry on
-    // retina and high-DPI monitors, and doesn't appear
-    // sparser/denser purely because of screen resolution.
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+}
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+body::after{
 
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
+    content:"";
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+
+    height:2px;
+
+    background:linear-gradient(180deg, transparent, rgba(51,255,51,.4), transparent);
+
+    z-index:-1;
+
+    pointer-events:none;
+
+    transform:translateY(-20px);
+
+    animation:crtSweep 6s linear infinite;
+
+}
+
+@keyframes crtSweep{
+
+    0%{ transform:translateY(-20px); opacity:0; }
+    5%{ opacity:.4; }
+    45%{ opacity:.4; }
+    50%{ transform:translateY(100vh); opacity:0; }
+    100%{ transform:translateY(100vh); opacity:0; }
+
+}
+
+/* Headings */
+
+h1,
+h2{
+
+    font-family:'VT323', monospace;
+
+    font-weight:400;
+
+    letter-spacing:.03em;
+
+    text-shadow:0 0 6px var(--accent-2-glow);
+
+}
+
+h3{
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+
+}
+
+/* Card titles, navigation, buttons */
+
+h3,
+h4,
+h5,
+h6,
+.nav-links,
+.logo,
+.cta-btn,
+button{
+
+    font-family:'VT323', monospace;
 
 }
 
 
-window.addEventListener("resize", () => {
+/* =====================================
+   Connectome Hero
+===================================== */
 
-    resizeCanvas();
+#connectome-hero{
 
-    // No animate loop is running to redraw after a resize
-    // clears the canvas's backing store, so the static frame
-    // needs to be explicitly redrawn here.
-    if (prefersReducedMotion) {
+    position:sticky;
+    top:0;
 
-        updateNodes(performance.now());
-        render();
+    width:100vw;
+    height:100vh;
+
+    overflow:hidden;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+#hero-intro{
+
+    position:relative;
+
+    width:100vw;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+
+    padding-top:70px;
+
+}
+
+.hero-content{
+
+    position:relative;
+
+    z-index:5;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    width:min(900px,90%);
+
+    text-align:center;
+
+    color:white;
+
+    opacity:0;
+    transform:translateY(60px);
+
+    will-change:opacity, transform;
+
+}
+
+.hero-content h1{
+
+    font-size:var(--text-hero);
+
+    margin-bottom:var(--space-2);
+
+    color:var(--heading-accent);
+
+    text-shadow:0 0 8px var(--accent-2-glow), 0 0 20px rgba(51,255,51,.2);
+
+}
+
+.hero-content h1::before{
+
+    content:"guest@pritha-bisarad:~$ whoami";
+
+    display:block;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    width:0;
+
+    margin:0 auto .75rem;
+
+    border-right:2px solid var(--text-muted);
+
+    font-size:1rem;
+
+    color:var(--text-muted);
+
+    text-shadow:none;
+
+    letter-spacing:0;
+
+    animation:
+        heroTyping 1.5s steps(30) forwards,
+        heroPromptCursor .8s step-end infinite;
+
+    /* Paused until .hero-content picks up .typing-active —
+       otherwise this starts counting down the moment the
+       page loads, while .hero-content itself is still
+       invisible (opacity:0) waiting on the scroll-linked
+       reveal. By the time a visitor actually scrolls far
+       enough to see it, the animation would already be long
+       finished offscreen and they'd only ever see the end
+       state. */
+    animation-play-state:paused;
+
+}
+
+@keyframes heroTyping{
+
+    to{ width:30ch; }
+
+}
+
+@keyframes heroPromptCursor{
+
+    0%, 100%{ border-color:var(--text-muted); }
+    50%{ border-color:transparent; }
+
+}
+
+/* "Hello!" and its cursor stay invisible until the prompt
+   line above finishes typing (1.5s), then fade in — reads
+   as the terminal "responding" to the command rather than
+   everything appearing at once. */
+
+.hero-typed{
+
+    display:inline-block;
+
+    opacity:0;
+
+    animation:heroTypedReveal .35s ease 1.5s forwards;
+
+    animation-play-state:paused;
+
+}
+
+@keyframes heroTypedReveal{
+
+    to{ opacity:1; }
+
+}
+
+.hero-cursor{
+
+    animation:blink 1s step-end infinite;
+
+    animation-play-state:paused;
+
+}
+
+/* Set by JS the first moment the scroll-linked hero reveal
+   begins — starts all three animations above together, so
+   the typing effect actually plays while a visitor is
+   watching it rather than having already finished
+   invisibly. */
+.hero-content.typing-active h1::before,
+.hero-content.typing-active .hero-typed,
+.hero-content.typing-active .hero-cursor{
+
+    animation-play-state:running;
+
+}
+
+@keyframes blink{
+
+    0%, 100%{ opacity:1; }
+    50%{ opacity:0; }
+
+}
+
+.hero-content p{
+
+    font-size:var(--text-body-lg);
+
+    color:var(--text-muted);
+
+}
+
+.hero-content p::before{
+
+    content:"# ";
+
+    color:rgba(51,255,51,.4);
+
+}
+
+.hero-content.visible{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+#connectomeCanvas{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+
+    height:100%;
+
+    pointer-events:none;
+
+    z-index:1;
+
+    transform-origin:center center;
+
+}
+
+
+.nav-links{
+    display:flex;
+    gap:40px;
+
+    list-style:none;
+
+    margin:0;
+    padding:0;
+}
+
+/* =====================================
+   Mobile Nav Toggle
+   Hidden on desktop; becomes the visible
+   menu control under 768px, where .nav-links
+   collapses into a dropdown instead of
+   trying to fit 4 links + logo on one line.
+===================================== */
+
+.nav-toggle{
+
+    display:none;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:5px;
+
+    width:36px;
+    height:36px;
+
+    padding:0;
+
+    background:none;
+
+    border:none;
+
+    cursor:pointer;
+
+    z-index:1001;
+
+}
+
+.nav-toggle span{
+
+    display:block;
+
+    width:100%;
+
+    height:2px;
+
+    border-radius:2px;
+
+    background:var(--text);
+
+    transition:
+        transform .3s ease,
+        opacity .3s ease;
+
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1){
+
+    transform:translateY(7px) rotate(45deg);
+
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(2){
+
+    opacity:0;
+
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(3){
+
+    transform:translateY(-7px) rotate(-45deg);
+
+}
+
+@media (max-width:768px){
+
+    .navbar{
+
+        padding:0 20px;
 
     }
 
-});
+    .nav-toggle{
 
-window.addEventListener("mousemove", e => {
+        display:flex;
 
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    mouse.active = true;
+    }
 
-});
+    .nav-links{
 
-window.addEventListener("mouseleave", () => {
+        position:fixed;
 
-    mouse.active = false;
+        top:70px;
 
-});
+        left:0;
 
-window.addEventListener("touchstart", e => {
+        right:0;
 
-    mouse.x = e.touches[0].clientX;
-    mouse.y = e.touches[0].clientY;
-    mouse.active = true;
+        flex-direction:column;
 
-}, { passive: true });
+        gap:0;
 
-window.addEventListener("touchmove", e => {
+        max-height:0;
 
-    mouse.x = e.touches[0].clientX;
-    mouse.y = e.touches[0].clientY;
+        overflow:hidden;
 
-}, { passive: true });
+        background:rgba(8,8,8,.96);
 
-window.addEventListener("touchend", () => {
+        backdrop-filter:none;
 
-    mouse.active = false;
+        border-bottom:1px solid var(--accent);
 
-});
+        transition:max-height .35s ease;
 
-// =====================================
-// Classes
-// =====================================
+    }
 
-class Node {
+    .nav-links.open{
 
-    constructor(id, x3d, y3d, z3d, radius, radiusFraction) {
+        max-height:400px;
 
-        this.id = id;
+    }
 
-        this.radius = radius;
+    .nav-links li{
 
-        // Fixed 3D anchor on/within the sphere — this is what
-        // the drift wobble orbits around, and what gets
-        // rotated each frame to produce the 2D screen position.
+        width:100%;
 
-        this.baseX3d = x3d;
-        this.baseY3d = y3d;
-        this.baseZ3d = z3d;
+    }
 
-        this.radiusFraction = radiusFraction;
+    .nav-links a{
 
-        // Nodes near the sphere's edge barely wander (keeps
-        // the boundary well-defined); nodes near the center
-        // drift much more freely.
-        this.jitterBudget =
-            EDGE_JITTER +
-            (1 - radiusFraction) * (CENTER_JITTER - EDGE_JITTER);
+        display:block;
 
-        // 3D drift motion — same smoothstep-interpolated
-        // random-target system as before, just extended to
-        // three dimensions instead of two.
+        padding:18px 24px;
 
-        this.startX3d = x3d;
-        this.startY3d = y3d;
-        this.startZ3d = z3d;
+        width:100%;
 
-        this.targetX3d = x3d;
-        this.targetY3d = y3d;
-        this.targetZ3d = z3d;
+    }
 
-        this.moveStart = performance.now();
+    .nav-links a::after{
 
-        this.moveDuration =
-            DRIFT_MIN_TIME +
-            Math.random() *
-            (DRIFT_MAX_TIME - DRIFT_MIN_TIME);
-
-        // Final rendered 2D position (post-drift, post-
-        // rotation, post mouse-repulsion) — same role as
-        // before, just now derived from the 3D pipeline.
-
-        this.x = 0;
-        this.y = 0;
-
-        // 0 = fully on the far side, 1 = fully facing the
-        // viewer. Drives size/brightness so the far side of
-        // the sphere reads as receding rather than flat.
-        this.depth = 1;
-
-        this.baseRadius = radius;
-        this.phase = Math.random() * Math.PI * 2;
-
-        // Offset params
-        this.offsetX = 0;
-        this.offsetY = 0;
-
-        this.vx = 0;
-        this.vy = 0;
-
-        // Brief random brightness flashes
-        this.flashStart = 0;
-        this.flashUntil = 0;
+        display:none;
 
     }
 
 }
 
-class Edge {
+header{
 
-    constructor(nodeA, nodeB) {
+    position:fixed;
 
-        this.nodeA = nodeA;
-        this.nodeB = nodeB;
-        const length = distance(nodeA, nodeB);
+    top:0;
+    left:0;
+
+    width:100%;
+
+    z-index:1000;
+
+    backdrop-filter:none;
+
+    background:rgba(8,8,8,.92);
+
+    border-bottom:1px solid var(--accent);
+
+    transition:
+        transform .4s ease,
+        background .35s ease;
+}
+
+/* Added by JS once the page has scrolled a bit,
+   so the header always shows plain at the very top */
+header.header-scrolled{
+
+    background:rgba(8,8,8,.96);
+
+}
+
+/* Added by JS on scroll-down, removed on scroll-up */
+header.header-hidden{
+
+    transform:translateY(-100%);
+
+}
+
+.navbar{
+
+    max-width:1300px;
+
+    margin:auto;
+
+    height:70px;
+
+    padding:0 40px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:var(--heading-accent);
+
+    text-decoration:none;
+
+    font-size:1.3rem;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+}
+
+/* The site-wide rule grouping .logo in with nav links/buttons
+   sets Manrope — that's right for the rest of that group, but
+   the wordmark itself should match the serif used for every
+   other heading on the site (h1/h2), not the UI sans. */
+.logo-text{
+
+    font-family:'VT323', monospace;
+
+    font-weight:400;
+
+    font-size:1.7rem;
+
+    text-shadow:0 0 6px var(--accent-2-glow);
+
+}
+
+.logo-mark{
+
+    flex-shrink:0;
+
+    width:34px;
+    height:34px;
+
+}
+
+.logo-mark circle.logo-ring{
+
+    transition:stroke .3s ease;
+
+}
+
+.logo:hover .logo-ring{
+
+    stroke:var(--accent-2);
+
+}
+
+/* Below ~400px the icon + full name + hamburger button
+   is too tight — keep the mark, drop the wordmark. */
+@media (max-width:400px){
+
+    .logo-text{
+
+        display:none;
+
+    }
+
+}
+
+.nav-links a{
+
+    position:relative;
+
+    color:var(--accent);
+
+    text-decoration:none;
+
+    font-size:1.15rem;
+
+    padding:4px 8px;
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+
+    transition:none;
+}
+
+.nav-links a::after{
+
+    display:none;
+
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+
+    background:var(--accent);
+    color:#000;
+    text-shadow:none;
+}
+
+/* Active page gets its own blinking cursor — "Contact_" —
+   reusing the same terminal-prompt cue as the hero, so it
+   reads as "you are here" rather than just a color swap. */
+.nav-links a.active::after{
+
+    content:"_";
+
+    display:inline;
+
+    color:#000;
+
+    animation:blink 1s step-end infinite;
+
+}
+/* =====================================
+   Hero Network Overlay
+===================================== */
+
+.network-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:1;
+
+}
+
+
+/* =====================================
+   Pulse Animation
+===================================== */
+
+@keyframes hubPulse{
+
+    0%,100%{
+
+        transform:scale(1);
+
+        opacity:.8;
+
+    }
+
+    50%{
+
+        transform:scale(1.5);
+
+        opacity:1;
+
+    }
+
+}
+
+
+/* =====================================
+   Overview Section
+===================================== */
+
+#overview{
+
+    position:relative;
+
+    min-height:100vh;
+
+    padding:var(--space-hero-y) 0;
+
+    display:flex;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+
+/* =====================================
+   Overview Content
+===================================== */
+
+#overview .container{
+
+    padding:0 clamp(12px,2vw,24px);
+
+    position:relative;
+
+    z-index:1;
+
+    width:min(1280px,92%);
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
     
-        const maxBend =
-            Math.min(
-                Math.max(length * 0.18, 8),
-                28
-            );
+    justify-content:center;
+
+}
+
+#overview h2{
+
+    color:var(--heading-accent);
+
+    font-size:clamp(2.3rem, 2vw + 1rem, 3.6rem);
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+}
+
+#overview h2::before,
+#publications h2::before{
+
+    content:"> ";
+    color:rgba(51,255,51,.5);
+
+}
+
+.overview-subtitle{
+
+    max-width:min(760px, 90%);
+
+    margin:0 auto clamp(48px,6vh,80px);
+
+    text-align:center;
+
+    color:var(--heading-accent-muted);
+
+    font-size:clamp(1rem, .4vw + .9rem, 1.25rem);
+
+    line-height:1.8;
+
+}
+
+/* =====================================
+   Research Interest Cards
+===================================== */
+
+.interest-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4, 1fr);
+
+    gap:clamp(96px,3vw,180px);
+
+    margin-top:clamp(64px,8vh,120px);
     
-        this.bend =
-            (Math.random() ** 2) *
-            maxBend *
-            (Math.random() < 0.5 ? -1 : 1);
+    justify-items:center;
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+.interest-grid::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:12%;
+
+    right:12%;
+
+    top:calc(clamp(28px,2vw,42px) + clamp(140px,10vw,180px) / 2);;
+
+    height:2px;
+
+    background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(51,255,51,.25) 12%,
+    rgba(51,255,51,.25) 88%,
+    transparent);
+
+}
+
+/* =====================================
+   Interest Line Pulse
+   A small glowing dot travels the connecting
+   line left-to-right, then pauses before firing
+   again — reads as a signal/impulse traveling
+   the line rather than continuous motion,
+   echoing the "neural signal" theme.
+===================================== */
+
+.interest-grid::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:calc(clamp(28px,2vw,42px) + clamp(140px,10vw,180px) / 2 - 3px);;
+
+    left:12%;
+
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:var(--accent);
+
+    box-shadow:
+        0 0 8px 2px rgba(51,255,51,.85),
+        0 0 18px 5px rgba(51,255,51,.35);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    z-index:0;
+
+    animation:interestPulse 8s cubic-bezier(.45,0,.2,1) infinite;
+
+}
+
+@keyframes interestPulse{
+
+    0%{
+
+        left:12%;
+        opacity:0;
+
+    }
+
+    4%{
+
+        opacity:1;
+
+    }
+
+    32%{
+
+        left:88%;
+        opacity:1;
+
+    }
+
+    38%,
+    100%{
+
+        left:88%;
+        opacity:0;
 
     }
 
 }
 
-class Pulse {
 
-    constructor(edge, direction = 1) {
 
-        this.edge = edge;
+.interest-card{
 
-        this.direction = direction;
+    background:rgba(10,14,10,.6);
 
-        this.progress = 0;
+    border:1px solid var(--accent);
 
-        this.speed =
-            0.35 + Math.random() * 0.25;
+    border-radius:0;
 
-        this.radius = 3.5;
+    padding:clamp(28px,2vw,42px)
+        clamp(22px,2vw,34px);
+
+    min-height:clamp(180px,22vh,240px);
+
+    position:relative;
+
+    /* Without this, the pulse's ::after (which conceptually
+       sits "after" the cards in paint order) would render on
+       top of them instead of passing behind, like the static
+       connector line already correctly does. */
+    z-index:1;
+
+    overflow:hidden;
+
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    text-align:center;
+
+    width:100%;
+    
+    max-width:clamp(240px,18vw,300px);
+
+}
+
+.interest-card::before{
+
+    display:none;
+
+}
+
+.interest-card:hover{
+
+    transform:none;
+
+    border-color:var(--accent);
+
+    box-shadow:0 0 26px rgba(51,255,51,.55);
+
+}
+
+.interest-card h3{
+
+    color:var(--heading-accent-muted);
+
+    font-size:clamp(1.05rem,.4vw + .95rem,1.3rem);
+
+    font-weight:600;
+
+    margin-bottom:14px;
+
+    line-height:1.35;
+
+}
+
+.interest-card p{
+
+    color:var(--text-muted);
+
+    font-size:clamp(.9rem,.3vw + .85rem,1.05rem);
+
+    line-height:1.6;
+
+}
+
+.interest-icon{
+
+    width:clamp(140px,10vw,180px);
+
+    height:clamp(140px,10vw,180px);
+
+    margin:0 auto 24px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:1px solid var(--accent);
+    border-radius:50%;
+
+    background:rgba(51,255,51,.04);
+
+    color:var(--accent);
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.interest-icon img{
+
+    width:clamp(112px,8vw,140px);
+
+    height:clamp(112px,8vw,140px);
+
+    object-fit:contain;
+
+    display:block;
+
+}
+
+.interest-icon{
+
+    color:var(--accent);
+
+}
+
+.interest-icon svg{
+
+    width:clamp(64px,4.5vw,80px);
+
+    height:clamp(64px,4.5vw,80px);
+
+    display:block;
+
+}
+
+
+/* =====================================
+   Tablet
+===================================== */
+
+@media (max-width:1200px){
+
+    .interest-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:48px;
+
+    }
+
+    .interest-grid::before{
+
+        display:none;
+
+    }
+
+    .interest-grid::after{
+
+        display:none;
 
     }
 
 }
 
-// =====================================
-// Helpers
-// =====================================
+/* =====================================
+   Mobile
+===================================== */
 
-function distance(a, b) {
+@media (max-width:768px){
 
-    const dx = a.baseX3d - b.baseX3d;
-    const dy = a.baseY3d - b.baseY3d;
-    const dz = a.baseZ3d - b.baseZ3d;
+    #overview{
 
-    return Math.sqrt(dx*dx + dy*dy + dz*dz);
+        padding:80px 0;
+
+    }
+
+    #overview h2{
+
+        font-size:2.2rem;
+
+    }
+
+    .overview-subtitle{
+
+        font-size:1rem;
+
+        margin-bottom:48px;
+
+    }
+
+    .interest-grid{
+
+        grid-template-columns:1fr;
+
+        gap:32px;
+
+    }
+
+    .interest-card{
+
+        max-width:420px;
+
+        width:100%;
+
+        margin:0 auto;
+
+    }
 
 }
 
-function randomRadius() {
+/* =============================
+Recent Publication Section 
+================================*/
+#publications{
 
-    const r = Math.random();
+    position:relative;
 
-    if (r < 0.65) return 3;
+    min-height:100vh;
 
-    if (r < 0.90) return 4.5;
+    padding:var(--space-hero-y) 0;
 
-    return 7;
+    display:flex;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+#publications .container{
+
+    width:min(900px,90%);
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:28px;     /* <-- controls spacing */
+
+    justify-content:center;
+    
+    height:100%;
+
+}
+
+#publications h2{
+
+    color:var(--heading-accent);
+
+    font-family:'VT323', monospace;
+
+    font-size:clamp(2.5rem,2.4vw + 1rem,4rem);
+
+    text-align:center;
+
+    margin-bottom:clamp(18px,2vh,28px);
 
 }
 
 
-// =====================================
-// Graph Generation
-// =====================================
+.publication-card{
 
-function generateNodes() {
+    background:rgba(10,14,10,.5);
 
-    nodes.length = 0;
+    border:1px solid var(--accent);
 
-    buildClusters();
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
 
-    // Height alone (the old Math.min(width,height) approach)
-    // caps the sphere at whatever the shorter dimension is —
-    // on a wide-but-short desktop window, that means the
-    // sphere never grows to use the available width and
-    // reads as small, adrift in a lot of empty space. Letting
-    // width contribute its own (larger) factor allows it to
-    // grow on wide screens while height still keeps it from
-    // overflowing a short viewport. The 0.88 safety factor at
-    // the end accounts for shell-node jitter and drift, which
-    // push the visible edge slightly past the nominal radius —
-    // without it the sphere clips the top/bottom of the
-    // viewport instead of sitting comfortably inside it.
-    sphereRadius =
-        Math.min(
-            width * 0.30,
-            height * 0.42
-        ) * 0.88;
+    box-shadow:none;
 
-    for (let i = 0; i < NODE_COUNT; i++) {
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
 
-        const radius = randomRadius();
+    border-radius:0;
 
-        const isShell = i < NODE_COUNT * SHELL_FRACTION;
+    padding:32px;
 
-        // Shell nodes sit close to the sphere's surface, with
-        // only a little jitter — this is what forms the
-        // definite ring/boundary. Interior nodes get a radius
-        // biased toward the center via a power curve, for a
-        // volume-uniform-ish scatter.
-        const radiusFraction = isShell
-            ? 0.95 + Math.random() * 0.05
-            : Math.pow(Math.random(), 1.6) * 0.85;
+    overflow:hidden;
 
-        // Raised from 15% — that wasn't enough baseline
-        // coverage to fill the gaps between clusters, which
-        // is part of what let the sphere read as isolated
-        // islands rather than one continuous structure.
-        const useCluster = Math.random() < 0.65;
+    display:flex;
 
-        let theta, phi;
+    align-items:flex-start;
+    
+    gap:28px;
+    
+    position:relative;
+    
+    margin-bottom:clamp(18px,2vh,30px);
 
-        if (useCluster) {
+}
 
-            const cluster = pickCluster();
+.publication-card:hover{
 
-            // Sum of three uniforms is a cheap stand-in for a
-            // Gaussian — bell-shaped jitter around the cluster
-            // center rather than a hard-edged uniform blob.
-            const jitterT = (Math.random() + Math.random() + Math.random() - 1.5);
-            const jitterP = (Math.random() + Math.random() + Math.random() - 1.5);
+    transform:none;
 
-            theta = cluster.theta + jitterT * cluster.spread;
-            phi = cluster.phi + jitterP * cluster.spread;
+    border-color:var(--accent);
 
-            theta = Math.max(0.05, Math.min(Math.PI - 0.05, theta));
+    box-shadow:0 0 26px rgba(51,255,51,.55);
 
-        } else {
+}
 
-            theta = Math.acos(2 * Math.random() - 1);
-            phi = Math.random() * Math.PI * 2;
+.publication-thumbnail{
 
-        }
+    flex-shrink:0;
 
-        const r = sphereRadius * radiusFraction;
+    width:72px;
 
-        const x3d = r * Math.sin(theta) * Math.cos(phi);
-        const y3d = r * Math.cos(theta);
-        const z3d = r * Math.sin(theta) * Math.sin(phi);
+    display:flex;
 
-        let valid = true;
+    justify-content:center;
 
-        for (const other of nodes) {
+    align-items:flex-start;
 
-            const minSpacing =
-                radius + other.baseRadius + 6 + Math.random() * 4;
+}
 
-            const dx = x3d - other.baseX3d;
-            const dy = y3d - other.baseY3d;
-            const dz = z3d - other.baseZ3d;
+.publication-thumbnail img{
 
-            if (Math.sqrt(dx*dx + dy*dy + dz*dz) < minSpacing) {
+    width:96px;
 
-                valid = false;
-                break;
+    height:auto;
 
-            }
+    display:block;
 
-        }
+    transition:transform .35s ease;
 
-        if (!valid) {
+   filter:grayscale(1) brightness(1.4) sepia(1) hue-rotate(60deg) saturate(4);
 
-            i--;
-            continue;
+}
 
-        }
+.publication-info{
 
-        nodes.push(
-            new Node(
-                i,
-                x3d,
-                y3d,
-                z3d,
-                radius,
-                radiusFraction
+    flex:1;
+
+}
+
+.publication-info a{
+
+    text-decoration:none;
+
+}
+
+.publication-info h3{
+
+    margin:0 0 12px;
+
+    color:var(--heading-accent-muted);
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+
+    transition:none;
+
+}
+
+.publication-info p{
+
+    margin:0;
+
+    color:var(--text-muted);
+
+}
+
+.publication-card:hover .publication-thumbnail img{
+
+    transform:
+        rotate(-3deg)
+        translateY(-2px)
+        scale(1.04);
+
+}
+
+.publication-card:hover .publication-info h3{
+
+    color:var(--heading-accent-muted);
+
+}
+
+/* =====================
+       Footer 
+======================== */
+footer {
+    width: 100%;
+    padding: 2rem 0;
+    margin-top: 0;
+
+    text-align: center;
+
+    color: rgba(244,245,251,.65);
+    font-size: 0.9rem;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    background: rgba(17,17,17,.55);
+
+    border-top: 1px solid rgba(71,216,255,.12);
+}
+
+footer p {
+    margin: 0;
+}
+
+/* ==========================================
+   Cursor Particle System
+========================================== */
+
+#cursor-trail{
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+    z-index:9999;
+
+    overflow:hidden;
+}
+
+.cursor-particle{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    transform:translate(-50%,-50%);
+
+    pointer-events:none;
+
+    filter:blur(0.5px);
+
+    animation:particleFade .8s ease-out forwards;
+
+    will-change:transform,opacity;
+}
+
+@keyframes particleFade{
+
+    from{
+
+        opacity:.45;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+
+    }
+
+    to{
+
+        opacity:0;
+
+        transform:
+            translate(
+                calc(-50% + var(--dx)),
+                calc(-50% + var(--dy))
             )
+            scale(.15);
+
+    }
+
+}
+
+#cursor-glow{
+
+    position:fixed;
+
+    width:40px;
+    height:40px;
+
+    border-radius:50%;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(circle,
+        rgba(51,255,51,.18),
+        transparent 70%);
+
+    transform:translate(-50%,-50%);
+
+    filter:blur(8px);
+
+    z-index:9998;
+
+    transition:
+        transform .08s linear;
+
+}
+
+/* ===================
+    CTA Home Page 
+====================== */
+.cta-btn{
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-top:2.5rem;
+
+    padding:0.9rem 2.3rem;
+
+    border:2px solid var(--accent);
+    border-radius:0;
+
+    color:var(--accent);
+    text-decoration:none;
+
+    font-weight:600;
+    letter-spacing:.4px;
+
+    background:transparent;
+
+    position:relative;
+    overflow:hidden;
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+
+    transition:none;
+
+    box-shadow:none;
+
+}
+
+.cta-btn::before{
+
+    display:none;
+
+}
+
+.cta-btn::after{
+
+    content:" >";
+
+}
+
+.cta-btn:hover{
+
+    background:var(--accent);
+    color:#000;
+    text-shadow:none;
+    transform:none;
+
+    box-shadow:
+        0 0 26px rgba(51,255,51,.55);
+
+}
+
+.cta-btn:active{
+
+    transform:none;
+
+}
+
+
+
+/* ====================================
+        About
+        (single consolidated #about rule —
+        this used to be declared twice)
+======================================= */
+#about-page{
+
+    position: relative;
+
+    min-height: 100vh;
+
+    padding: var(--space-hero-y) 0;
+
+    overflow: hidden;
+
+}
+
+#about{
+
+    position:relative;
+    z-index:1;
+
+    max-width:1100px;
+
+    margin:0 auto;
+
+    padding:0 var(--space-6);
+
+}
+
+.about-header{
+
+    margin-bottom:var(--space-9);
+
+}
+
+.about-header h1{
+
+    font-family:'VT323', monospace;
+
+    font-weight:400;
+
+    font-size:var(--text-hero);
+
+    margin-bottom:var(--space-2);
+
+    color:var(--heading-accent);
+
+}
+
+.subtitle{
+
+    font-size:1.2rem;
+
+    color:var(--text-muted);
+
+    max-width:700px;
+
+    line-height:1.7;
+
+}
+
+.about-layout{
+
+    display:grid;
+
+    grid-template-columns:280px 1fr;
+
+    gap:4rem;
+
+    align-items:flex-start;
+
+}
+
+.about-photo{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.about-photo img{
+
+    position:relative;
+
+    width: 260px;
+
+    height: auto;
+
+    display:block;
+
+    border-radius: 20px;
+
+    border: 1px solid var(--glass-border);
+
+    box-shadow: var(--glass-shadow);
+
+    /* Softens the photo's bright studio background so it
+       reads as part of the dark glass UI rather than a
+       pasted-on rectangle */
+    filter: saturate(.88) contrast(1.04) brightness(.94);
+
+}
+
+/* Vignette that fades the photo's edges toward the card's
+   own tone, further blending it into the dark theme */
+.about-photo::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    width:260px;
+
+    margin:auto;
+
+    border-radius:20px;
+
+    pointer-events:none;
+
+    box-shadow:
+        inset 0 0 40px 12px rgba(17,17,17,.55);
+
+}
+
+.journey-carousel{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+}
+
+.journey-cards{
+
+    position:relative;
+
+}
+
+.journey-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background: rgba(10,14,10,.6);
+    border: 1px solid var(--accent);
+    border-radius: 0;
+    padding: 2.5rem;
+    backdrop-filter: none;
+    min-height: 260px;
+
+    display: none;
+    opacity: 0;
+    transform: translateX(25px);
+
+    transition:
+        opacity .45s ease,
+        transform .45s ease,
+        border-color .2s ease,
+        border-width .2s ease,
+        box-shadow .2s ease;
+
+}
+
+/* A large, quiet quotation mark fills the card's negative
+   space instead of leaving it a bare glass void when a
+   chapter's text is short — reads as intentional rather
+   than empty. */
+
+.journey-card::after{
+
+    content:"\201C";
+
+    position:absolute;
+
+    right:1.2rem;
+    bottom:-1.2rem;
+
+    font-family:'VT323', monospace;
+
+    font-size:12rem;
+    line-height:1;
+
+    color:rgba(51,255,51,.08);
+
+    pointer-events:none;
+
+    z-index:0;
+
+}
+
+.journey-card > *{
+
+    position:relative;
+    z-index:1;
+
+}
+
+.journey-card.active{
+
+    display:block;
+
+    opacity:1;
+
+    transform:translateX(0);
+
+}
+
+.journey-card:hover{
+
+    border-color:var(--accent);
+
+    border-width:2px;
+
+    box-shadow:0 0 28px rgba(51,255,51,.55);
+
+}
+
+.journey-card h2{
+
+    color:var(--heading-accent);
+
+    margin-bottom:1rem;
+
+    font-size:1.6rem;
+
+}
+
+.journey-card h2::before{
+
+    content:"> ";
+
+    color:rgba(51,255,51,.5);
+
+}
+
+.chapter-number{
+
+    color:var(--text-muted);
+
+}
+
+.chapter-number::before{
+
+    content:"[ ";
+
+}
+
+.chapter-number::after{
+
+    content:" ]";
+
+}
+
+.journey-card p{
+
+    line-height:1.9;
+
+    color:var(--text-muted);
+
+}
+
+.journey-card p::after{
+
+    content:"_";
+
+    display:inline-block;
+
+    margin-left:2px;
+
+    animation:blink 1s step-end infinite;
+
+}
+
+.carousel-controls{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:1.2rem;
+
+    margin-top:1.75rem;
+
+}
+
+.carousel-dots{
+
+    display:flex;
+
+    gap:.75rem;
+
+}
+
+#prev,
+#next{
+
+    width:42px;
+
+    height:42px;
+
+    border:1px solid var(--accent);
+
+    border-radius:50%;
+
+    background:rgba(51,255,51,.08);
+
+    color:var(--accent);
+
+    font-size:1.2rem;
+
+    cursor:pointer;
+
+    transition:none;
+
+}
+
+#prev:hover,
+#next:hover{
+
+    background:var(--accent);
+
+    color:#000;
+
+    transform:none;
+
+}
+
+.dot{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:0;
+
+    background:rgba(51,255,51,.25);
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.dot.active{
+
+    background:var(--accent);
+
+}
+
+
+
+@media (max-width:900px){
+
+.about-layout{
+
+    grid-template-columns:1fr;
+
+}
+    
+.about-photo{
+
+    position:static;
+
+}
+
+.about-header h1{
+
+    font-size:2.5rem;
+
+}
+
+}
+
+
+/* =====================================
+   Glass Variables
+===================================== */
+
+:root{
+
+    --glass-bg:rgba(10,14,10,.55);
+
+    --glass-bg-hover:rgba(20,28,20,.7);
+
+    --glass-border:rgba(51,255,51,.4);
+
+    --glass-highlight:rgba(51,255,51,.04);
+
+    --glass-shadow:
+        0 0 0 rgba(0,0,0,0);
+
+    --glass-shadow-hover:
+        0 0 16px rgba(51,255,51,.25);
+
+    --glass-blur:0px;
+
+    --radius-sm:0px;
+
+    --radius-md:0px;
+
+    --radius-lg:0px;
+
+    --radius-xl:0px;
+
+    --glass-padding:clamp(1.5rem, 2vw, 2.5rem);
+
+}
+
+
+/* =====================================
+   Glass Components
+===================================== */
+
+.glass{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:var(--glass-padding);
+
+    background:var(--glass-bg);
+
+    backdrop-filter:blur(var(--glass-blur));
+
+    -webkit-backdrop-filter:blur(var(--glass-blur));
+
+    border:2px solid var(--glass-border);
+
+    border-radius:var(--radius-xl);
+
+    box-shadow:var(--glass-shadow);
+
+    transition:
+        background .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease,
+        transform .35s ease;
+
+}
+
+
+/* =====================================
+   Glass Highlight
+===================================== */
+
+.glass::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    border-radius:inherit;
+
+    background:
+
+        linear-gradient(
+            180deg,
+            var(--glass-highlight) 0%,
+            rgba(255,255,255,0.02) 18%,
+            transparent 45%
         );
 
+}
+
+
+/* =====================================
+   Glass Hover
+===================================== */
+
+.glass:hover{
+
+    background:var(--glass-bg-hover);
+
+    border-color:rgba(51,255,51,0.22);
+
+    box-shadow:var(--glass-shadow-hover);
+
+    transform:translateY(-3px);
+
+}
+
+
+/* =====================================
+   Research Page Intro
+===================================== */
+
+#research-page{
+
+    position:relative;
+
+    min-height:100vh;
+
+    padding:0 clamp(var(--space-4), 4vw, var(--space-6));
+
+}
+
+/* =====================================
+   Research Hero
+===================================== */
+
+.research-hero{
+
+    text-align:center;
+
+    padding:var(--space-hero-y) 0 var(--space-9);
+
+}
+
+.research-hero .container{
+
+    position:relative;
+    z-index:1;
+
+    max-width:800px;
+
+    margin:0 auto;
+
+}
+
+.research-hero h1{
+
+    font-family:'VT323', monospace;
+
+    font-size:var(--text-hero);
+
+    color:var(--heading-accent);
+
+    margin-bottom:var(--space-5);
+
+}
+
+.research-hero p{
+
+    font-family:'VT323', monospace;
+
+    max-width:700px;
+
+    margin:0 auto;
+
+    font-size:var(--text-body-lg);
+
+    line-height:var(--leading-relaxed);
+
+    color:var(--text-muted);
+
+}
+
+
+/* =====================================
+   Research Timeline
+===================================== */
+
+.research-timeline{
+
+    position:relative;
+    z-index:1;
+
+    padding:var(--space-6) 0 var(--space-11);
+
+}
+
+/* =====================================
+   Timeline Container
+===================================== */
+
+.timeline{
+
+    position:relative;
+
+    width:min(1200px,90%);
+
+    margin:0 auto;
+
+}
+
+/* =====================================
+   Timeline Spine
+===================================== */
+
+.timeline-spine{
+
+    position:absolute;
+
+    top:0;
+
+    bottom:0;
+
+    left:50%;
+
+    width:2px;
+
+    transform:translateX(-50%);
+
+    background:rgba(51,255,51,.25);
+
+    z-index:1;
+
+}
+
+/* =====================================
+   Timeline Items
+===================================== */
+
+.timeline-item{
+
+    position:relative;
+
+    display:grid;
+
+    grid-template-columns:1fr 100px 1fr;
+
+    align-items:start;
+
+    margin-bottom:5rem;
+
+    min-height:340px;
+
+}
+
+/* =====================================
+   Left & Right Layout
+===================================== */
+
+.timeline-item.left .timeline-card{
+
+    grid-column:1;
+
+}
+
+.timeline-item.right .timeline-card{
+
+    grid-column:3;
+
+}
+
+/* =====================================
+   Poster Preview
+   Sits in the timeline's blank column —
+   opposite side from wherever the card
+   landed for that entry. Left-card entries
+   get their poster in column 3, right-card
+   entries in column 1.
+===================================== */
+
+.poster-preview{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    text-decoration:none;
+
+    padding:1.25rem;
+
+    border:1px solid var(--accent);
+    background:rgba(10,14,10,.5);
+
+    transition:border-color .2s ease, box-shadow .2s ease;
+
+}
+
+.poster-preview:hover{
+
+    box-shadow:0 0 26px rgba(51,255,51,.55);
+
+}
+
+.poster-preview img{
+
+    width:100%;
+    max-width:260px;
+    height:auto;
+
+    display:block;
+
+    border:1px solid rgba(51,255,51,.35);
+
+}
+
+.poster-preview:hover img{
+
+    border-color:var(--accent);
+
+}
+
+.poster-caption{
+
+    margin-top:.9rem;
+
+    font-size:.85rem;
+
+    color:var(--accent);
+
+    text-shadow:0 0 4px var(--accent-2-glow);
+
+}
+
+.poster-caption::after{
+
+    content:" ↗";
+
+}
+
+.poster-placeholder{
+
+    position:relative;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    min-height:140px;
+
+    padding:1.5rem;
+
+    color:var(--text-muted);
+
+    font-size:.95rem;
+
+    text-align:center;
+
+    /* Animated dashed border — real border-style:dashed can't
+       be animated, so this fakes it with four thin repeating
+       gradients (one per edge) and shifts their position each
+       frame, the classic CSS "marching ants" technique. */
+    background-image:
+        linear-gradient(90deg, rgba(51,255,51,.5) 50%, transparent 50%),
+        linear-gradient(90deg, rgba(51,255,51,.5) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(51,255,51,.5) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(51,255,51,.5) 50%, transparent 50%);
+
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+
+    background-size: 10px 1px, 10px 1px, 1px 10px, 1px 10px;
+
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+
+    animation:marchingAnts .5s linear infinite;
+
+}
+
+@keyframes marchingAnts{
+
+    to{
+        background-position: 10px 0, -10px 100%, 0 -10px, 100% 10px;
     }
 
 }
 
-function buildConnections() {
+.timeline-item.left .poster-preview,
+.timeline-item.left .poster-placeholder{
 
-    edges.length = 0;
+    grid-column:3;
+    grid-row:1;
 
-    const edgeSet = new Set();
+}
 
-    // Distance cap — without this, a node in a sparse area
-    // is still forced to connect to its "nearest" neighbors
-    // no matter how far away they actually are, which is
-    // exactly what produced the long stretched bridge lines
-    // between clusters. Filtering candidates to a reasonable
-    // radius first means an isolated node just ends up with
-    // fewer (or zero) edges instead of a visible tether to
-    // the nearest distant cluster.
-    const maxConnectionDist = sphereRadius * 0.55;
+.timeline-item.right .poster-preview,
+.timeline-item.right .poster-placeholder{
 
-    for (const node of nodes) {
+    grid-column:1;
+    grid-row:1;
 
-        const nConnections =
-            node.radius >= 7 ? 7 :
-            node.radius >= 4 ? 4 : 2;
-        
-        const nearest = [...nodes]
-        
-            .filter(other => other.id !== node.id)
+}
 
-            .filter(other => distance(node, other) < maxConnectionDist)
-        
-            .sort((a, b) => distance(node, a) - distance(node, b))
-        
-            .slice(0, nConnections);
+@media (max-width:768px){
 
-        for (const neighbor of nearest) {
+    .timeline-item.left .poster-preview,
+    .timeline-item.left .poster-placeholder,
+    .timeline-item.right .poster-preview,
+    .timeline-item.right .poster-placeholder{
 
-            const key =
+        grid-column:2;
+        grid-row:2;
 
-                node.id < neighbor.id
-
-                ? `${node.id}-${neighbor.id}`
-
-                : `${neighbor.id}-${node.id}`;
-
-            if (edgeSet.has(key))
-                continue;
-
-            edgeSet.add(key);
-
-            edges.push(
-
-                new Edge(node, neighbor)
-
-            );
-
-        }
+        margin-top:1.5rem;
 
     }
 
-}
+    .poster-preview img{
 
-    
-// =====================================
-// Animation
-// =====================================
-
-function chooseNewTarget(node, now) {
-
-    node.startX3d = node.targetX3d;
-    node.startY3d = node.targetY3d;
-    node.startZ3d = node.targetZ3d;
-
-    // Candidate destination — jitter around the node's fixed
-    // sphere anchor, budget scaled per-node (tight near the
-    // boundary, loose near the center).
-    let tx = node.baseX3d + (Math.random() * 2 - 1) * node.jitterBudget;
-    let ty = node.baseY3d + (Math.random() * 2 - 1) * node.jitterBudget;
-    let tz = node.baseZ3d + (Math.random() * 2 - 1) * node.jitterBudget;
-
-    // Keep drift targets from wandering past the sphere's
-    // own radius (mainly relevant for interior nodes with a
-    // large jitter budget).
-    const d = Math.sqrt(tx*tx + ty*ty + tz*tz);
-
-    if (d > sphereRadius) {
-
-        tx = tx / d * sphereRadius;
-        ty = ty / d * sphereRadius;
-        tz = tz / d * sphereRadius;
-
-    }
-
-    node.targetX3d = tx;
-    node.targetY3d = ty;
-    node.targetZ3d = tz;
-
-    node.moveStart = now;
-
-    node.moveDuration =
-        DRIFT_MIN_TIME +
-        Math.random() *
-        (DRIFT_MAX_TIME - DRIFT_MIN_TIME);
-
-}
-
-function smoothstep(t) {
-
-    return t * t * (3 - 2 * t);
-
-}
-
-function updateNodes(now) {
-
-    const centerX = width / 2;
-    const centerY = height / 2;
-
-    const cosR = Math.cos(rotation);
-    const sinR = Math.sin(rotation);
-
-    for (const node of nodes) {
-
-        let t =
-            (now - node.moveStart) /
-            node.moveDuration;
-
-        if (t >= 1) {
-
-            chooseNewTarget(node, now);
-
-            t = 0;
-
-        }
-
-        const e = smoothstep(t);
-
-        // 3D drift position, in the sphere's own unrotated
-        // local space.
-        const driftedX =
-            node.startX3d +
-            (node.targetX3d - node.startX3d) * e;
-
-        const driftedY =
-            node.startY3d +
-            (node.targetY3d - node.startY3d) * e;
-
-        const driftedZ =
-            node.startZ3d +
-            (node.targetZ3d - node.startZ3d) * e;
-
-        // Y-axis rotation, applied once per frame to every
-        // node — this is what makes the whole structure read
-        // as a slowly turning sphere.
-        const rx = driftedX * cosR + driftedZ * sinR;
-        const rz = -driftedX * sinR + driftedZ * cosR;
-
-        node.depth = Math.max(0, Math.min(1,
-            (rz + sphereRadius) / (sphereRadius * 2)
-        ));
-
-        node.x = centerX + rx;
-        node.y = centerY + driftedY;
-
-        // ============================
-        // Cursor repulsion goes HERE
-        // ============================
-
-        // Decay the displayed offset
-        node.offsetX *= 0.96;
-        node.offsetY *= 0.96;
-        
-        // Mouse force
-        if (mouse.active) {
-        
-            const dx = node.x - mouse.x;
-            const dy = node.y - mouse.y;
-        
-            const d = Math.hypot(dx, dy);
-        
-            if (d < REPULSE_RADIUS && d > 1) {
-        
-                const strength =
-                    Math.pow(1 - d / REPULSE_RADIUS, 2) *
-                    REPULSE_STRENGTH;
-        
-                node.vx += dx / d * strength;
-                node.vy += dy / d * strength;
-        
-            }
-        
-        }
-        
-        // Velocity damping
-        node.vx *= 0.82;
-        node.vy *= 0.82;
-        
-        // Apply velocity
-        node.offsetX += node.vx;
-        node.offsetY += node.vy;
-        
-        // Draw position
-        node.x += node.offsetX;
-        node.y += node.offsetY;
-        
-        // ============================
-        // Existing breathing animation
-        // ============================
-
-        node.radius =
-            node.baseRadius *
-            (1 + 0.06 * Math.sin(now * 0.0012 + node.phase));
-
-    }
-
-    maybeSpawnFlash(now);
-
-}
-
-function updatePulses() {
-
-    for (let i = pulses.length - 1; i >= 0; i--) {
-
-        const pulse = pulses[i];
-
-        pulse.progress += pulse.speed / 100;
-
-        if (pulse.progress >= 1) {
-
-            pulses.splice(i, 1);
-
-        }
-
-    }
-
-}
-
-// =====================================
-// Rendering
-// =====================================
-
-function drawEdges() {
-
-    for (const edge of edges) {
-
-        const ax = edge.nodeA.x;
-        const ay = edge.nodeA.y;
-
-        const bx = edge.nodeB.x;
-        const by = edge.nodeB.y;
-
-        const dx = bx - ax;
-        const dy = by - ay;
-
-        const length = Math.hypot(dx, dy);
-
-        if (length < 1) continue;
-
-        // Depth-modulated — edges on the far side of the
-        // rotating sphere fade out rather than staying flat,
-        // which is what actually sells the 3D read. Very
-        // deep back-side edges are skipped entirely so the
-        // far side doesn't turn into visual mud.
-        const avgDepth = (edge.nodeA.depth + edge.nodeB.depth) / 2;
-
-        if (avgDepth < 0.12) continue;
-
-        // Thickness depends on connected node sizes
-        ctx.lineWidth =
-            (0.8 +
-            (edge.nodeA.radius + edge.nodeB.radius) / 10) *
-            (0.5 + avgDepth * 0.6);
-
-        const lengthAlpha = Math.max(
-            0.1,
-            0.5 - length / 800
-        );
-
-        const alpha = lengthAlpha * (0.35 + avgDepth * 0.65);
-
-        ctx.strokeStyle = `rgba(255,204,116,${alpha})`;
-
-        const nx = -dy / length;
-        const ny = dx / length;
-
-        const bend = edge.bend;
-
-        const mx = (ax + bx) / 2;
-        const my = (ay + by) / 2;
-
-        ctx.beginPath();
-        ctx.moveTo(ax, ay);
-
-        ctx.quadraticCurveTo(
-            mx + nx * bend,
-            my + ny * bend,
-            bx,
-            by
-        );
-
-        ctx.stroke();
-    }
-}
-    
-function drawNodes() {
-
-    const now = performance.now();
-
-    for (const node of nodes) {
-
-        let flashBoost = 0;
-
-        if (now < node.flashUntil) {
-
-            const progress = (now - node.flashStart) / FLASH_DURATION;
-            flashBoost = Math.sin(progress * Math.PI);
-
-        }
-
-        // Depth-modulated brightness/size, boosted briefly for
-        // whichever nodes are currently "activated".
-        const alpha = Math.min(1,
-            0.35 + node.depth * 0.65 + flashBoost * 0.5
-        );
-
-        const renderRadius =
-            node.radius *
-            (0.55 + node.depth * 0.55) *
-            (1 + flashBoost * 0.8);
-
-        ctx.fillStyle = `rgba(51,255,51,${alpha})`;
-
-        ctx.shadowBlur = renderRadius * 3 + flashBoost * 16;
-        ctx.shadowColor = NODE_COLOR;
-        
-        ctx.beginPath();
-
-        ctx.arc(
-
-            node.x,
-            node.y,
-            renderRadius,
-            0,
-            Math.PI * 2
-
-        );
-
-        ctx.fill();
-
-        ctx.shadowBlur = 0;
+        max-width:220px;
 
     }
 
 }
 
-function drawPulses() {
+/* =====================================
+   Timeline Card
+===================================== */
 
-    for (const pulse of pulses) {
+.timeline-card{
 
-        const a = pulse.edge.nodeA;
-        const b = pulse.edge.nodeB;
+    position:relative;
 
-        const t = pulse.progress;
+    padding:2rem;
 
-        // Same curve the edge itself is drawn with — without
-        // this, the pulse cut a straight line across a
-        // visibly bent edge instead of riding along it.
-        const dx = b.x - a.x;
-        const dy = b.y - a.y;
-        const length = Math.hypot(dx, dy);
+    border-radius:0;
 
-        if (length < 1) continue;
+    z-index:3;
 
-        const nx = -dy / length;
-        const ny = dx / length;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
 
-        const mx = (a.x + b.x) / 2;
-        const my = (a.y + b.y) / 2;
+}
 
-        const cx = mx + nx * pulse.edge.bend;
-        const cy = my + ny * pulse.edge.bend;
+.timeline-card:hover{
 
-        const x =
-            (1 - t) * (1 - t) * a.x +
-            2 * (1 - t) * t * cx +
-            t * t * b.x;
+    transform:none;
+    border:1px solid var(--accent);
+    box-shadow:0 0 26px rgba(51,255,51,.55);
 
-        const y =
-            (1 - t) * (1 - t) * a.y +
-            2 * (1 - t) * t * cy +
-            t * t * b.y;
+}
 
-        const avgDepth = (a.depth + b.depth) / 2;
+/* =====================================
+   Connector Lines
+===================================== */
 
-        ctx.fillStyle = `rgba(250,116,32,${0.5 + avgDepth * 0.5})`;
+.timeline-card::after{
 
-        ctx.shadowBlur = 18 * (0.5 + avgDepth * 0.5);
-        ctx.shadowColor = "#ffffff";
+    content:"";
 
-        ctx.beginPath();
+    position:absolute;
 
-        ctx.arc(
-            x,
-            y,
-            pulse.radius,
-            0,
-            Math.PI * 2
-        );
+    top:43px;
 
-        ctx.fill();
+    height:2px;
+
+    background:rgba(51,255,51,.3);
+
+}
+
+/* Left Card Connector */
+
+.timeline-item.left .timeline-card::after{
+
+    left:100%;
+
+    width:50px;
+
+}
+
+/* Right Card Connector */
+
+.timeline-item.right .timeline-card::after{
+
+    right:100%;
+
+    width:50px;
+
+}
+
+/* =====================================
+   Timeline Node
+===================================== */
+
+.timeline-node{
+
+    position:absolute;
+
+    left:50%;
+
+    top:32px;
+
+    transform:translateX(-50%);
+
+    width:22px;
+
+    height:22px;
+
+    border:2px solid var(--accent);
+
+    border-radius:50%;
+
+    background:var(--bg);
+
+    z-index:5;
+
+}
+
+/* =====================================
+   Node Core
+   Left-side entries use the primary amber,
+   right-side entries use the secondary blue —
+   a deliberate rhythm along the timeline rather
+   than a single repeated color.
+===================================== */
+
+.node-core{
+
+    position:absolute;
+
+    inset:4px;
+
+    border-radius:50%;
+
+    background:var(--accent);
+
+    box-shadow:0 0 12px rgba(51,255,51,.6);
+
+}
+
+.timeline-item.right .timeline-node{
+
+    border-color:var(--accent);
+
+}
+
+.timeline-item.right .node-core{
+
+    background:var(--accent-2);
+
+    box-shadow:0 0 12px var(--accent-2-glow);
+
+}
+
+/* =====================================
+   Timeline — Mobile
+   The alternating left/right layout with a
+   centered spine and connector lines needs a
+   100px+ center gutter to work — far too much
+   on a narrow phone. Below 768px it collapses
+   to a single column: spine and nodes move to
+   the left edge, every card (left or right)
+   stacks in the same column, and the connector
+   lines (which only make sense pointing at a
+   center spine) are hidden.
+===================================== */
+
+@media (max-width:768px){
+
+    .timeline-spine{
+
+        left:20px;
+
+        transform:none;
 
     }
 
-    ctx.shadowBlur = 2;
+    .timeline-item{
+
+        grid-template-columns:40px 1fr;
+
+        margin-bottom:2.5rem;
+
+        min-height:0;
+
+    }
+
+    .timeline-item.left .timeline-card,
+    .timeline-item.right .timeline-card{
+
+        grid-column:2;
+
+    }
+
+    .timeline-card{
+
+        padding:1.5rem;
+
+    }
+
+    .timeline-card::after{
+
+        display:none;
+
+    }
+
+    .timeline-node{
+
+        left:20px;
+
+    }
+
+}
+
+/* =====================================
+   Research Topic
+   The eyebrow label is metadata, not the
+   heading — using the secondary accent here
+   (rather than white) makes that distinction
+   visible at a glance, and gives the second
+   color a consistent job across the site.
+===================================== */
+
+.research-topic{
+
+    display:inline-block;
+
+    margin-bottom:.75rem;
+
+    font-size:.85rem;
+
+    font-weight:600;
+
+    letter-spacing:.15em;
+
+    text-transform:uppercase;
+
+    color:var(--accent-2);
+
+}
+
+.research-topic::before{
+
+    content:"[ ";
+
+}
+
+.research-topic::after{
+
+    content:" ]";
+
+}
+
+/* =====================================
+   Card Heading
+===================================== */
+
+.timeline-card h2{
+
+    margin-bottom:1rem;
+
+    color:var(--heading-accent);
+
+    font-size:1.8rem;
+
+    line-height:1.2;
+
+}
+
+/* =====================================
+   Card Description
+===================================== */
+
+.timeline-card p{
+
+    color:var(--text-muted);
+
+    line-height:1.8;
+
+}
+
+/* =====================================
+   Publications
+===================================== */
+
+.publication-list{
+
+    margin-top:2rem;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:1rem;
+
+}
+
+.publication{
+
+    padding-top:1rem;
+
+    border-top:1px solid rgba(51,255,51,.15);
+
+}
+
+.publication a{
+
+    text-decoration:none;
+
+    transition:none;
+
+}
+
+/* Linked entries need to read as clickable before the user
+   ever hovers — a brighter "> " prefix and a trailing arrow
+   (the same ↗ cue used on the contact cards) both signal it
+   at a glance, rather than only revealing itself on hover. */
+.publication a h3::before{
+
+    color:var(--accent);
+
+}
+
+.publication a h3::after{
+
+    content:" ↗";
+
+    color:var(--accent);
+
+    font-size:.85em;
+
+}
+
+.publication a:hover h3{
+
+    color:var(--accent);
+
+}
+
+.publication h3{
+
+    font-size:1rem;
+
+    color:var(--heading-accent-muted);
+
+    margin-bottom:.35rem;
+
+}
+
+.publication h3::before{
+
+    content:"> ";
+    color:rgba(51,255,51,.5);
+
+}
+
+.publication p{
+
+    margin:0;
+
+    font-size:.9rem;
+
+    color:var(--text-muted);
+
+}
+
+/* =====================================
+   Research CTA
+===================================== */
+
+.research-cta{
+
+    padding:var(--space-11) 0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+}
+
+.research-cta h2{
+
+    margin-bottom:var(--space-4);
+
+    max-width:18ch;
+
+    font-size:var(--text-h2);
+
+    color:var(--heading-accent)
+
+}
+
+.research-cta p{
+
+    max-width:700px;
+
+    margin:0 auto var(--space-6);
+
+    line-height:var(--leading-relaxed);
+
+    color:var(--text-muted)
 
 }
 
 
-function render() {
+/* =====================================
+   Contact Hero
+===================================== */
 
-    ctx.fillStyle = "#111111";
-    ctx.fillRect(0, 0, width, height);
+.contact-hero{
 
-    drawEdges();
-    drawPulses();
-    drawNodes();
+    text-align:center;
 
-}
-
-// =====================================
-// Main Loop
-// =====================================
-
-function animate(now) {
-
-    rotation += ROTATION_SPEED;
-
-    updateNodes(now);
-
-    updatePulses();
-
-    render();
-
-    if (Math.random() < 0.015 && edges.length) {
-
-        const edge =
-            edges[Math.floor(Math.random() * edges.length)];
-    
-        pulses.push(new Pulse(edge));
-    
-    }
-
-    requestAnimationFrame(animate);
+    padding:var(--space-hero-y) 0 var(--space-9);
 
 }
 
-// =====================================
-// Hero Elements
-// =====================================
+.contact-hero .container{
 
-const connectomeHero =
-    document.getElementById("connectome-hero");
+    position:relative;
+    z-index:1;
 
-const heroIntro =
-    document.getElementById("hero-intro");
+    max-width:800px;
 
-const connectomeCanvas =
-    document.getElementById("connectomeCanvas");
-
-window.addEventListener("scroll", () => {
-
-    const progress = Math.min(
-        window.scrollY / window.innerHeight,
-        1
-    );
-
-    connectomeCanvas.style.opacity =
-        1 - progress * 0.9;
-
-    connectomeCanvas.style.transform =
-        `scale(${1 + progress * 0.05})`;
-
-    const introProgress = Math.min(
-        progress * 2,
-        1
-    );
-    
-    const heroContent =
-        document.querySelector(".hero-content");
-    
-    heroContent.style.opacity =
-        introProgress;
-    
-    heroContent.style.transform =
-        `translateY(${60*(1-introProgress)}px)`;
-
-});
-
-// =====================================
-// Initialize
-// =====================================
-
-resizeCanvas();
-
-generateNodes();
-
-buildConnections();
-
-const now = performance.now();
-
-for (const node of nodes) {
-
-    chooseNewTarget(node, now);
+    margin:0 auto;
 
 }
 
-if (prefersReducedMotion) {
+.contact-hero h1{
 
-    // A single static frame — chooseNewTarget() above has
-    // already set each node's drift target, but since no
-    // time has passed yet, updateNodes() renders them at
-    // t≈0, which is their clean base sphere position. No
-    // rotation, drift, breathing, flashes, or pulses ever
-    // run.
-    updateNodes(now);
+    font-family:'VT323', monospace;
 
-    render();
+    font-size:var(--text-hero);
 
-} else {
+    color:var(--heading-accent);
 
-    requestAnimationFrame(animate);
+    margin-bottom:var(--space-5);
+
+}
+
+.contact-hero p{
+
+    font-family:'VT323', monospace;
+
+    max-width:700px;
+
+    margin:0 auto;
+
+    font-size:var(--text-body-lg);
+
+    line-height:var(--leading-relaxed);
+
+    color:var(--text-muted);
+
+}
+
+/* =====================================
+   Contact Links
+===================================== */
+
+.contact-links{
+
+    position:relative;
+    z-index:1;
+
+    width:min(1200px,92%);
+    margin:var(--space-11) auto var(--space-12);
+
+}
+
+/* =====================================
+   Contact Grid
+===================================== */
+
+.contact-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:2rem;
+
+    align-items:stretch;
+
+}
+
+/* =====================================
+   Contact Card
+===================================== */
+
+/* =====================================
+   Contact Icons
+===================================== */
+
+.contact-icon{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:44px;
+    height:44px;
+
+    margin-bottom:1rem;
+
+    border-radius:50%;
+
+    border:1px solid rgba(51,255,51,.3);
+
+    background:rgba(51,255,51,.06);
+
+    color:var(--accent-2);
+
+    flex-shrink:0;
+
+}
+
+.contact-icon svg{
+
+    width:20px;
+    height:20px;
+
+}
+
+/* =====================================
+   Featured Contact Cards
+   Email + LinkedIn get visual priority —
+   larger and listed first, since realistically
+   those are the two people actually use.
+===================================== */
+
+.contact-featured{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:2rem;
+
+    margin-bottom:2rem;
+
+}
+
+.contact-card--featured{
+
+    padding:2.8rem;
+
+    min-height:150px;
+
+}
+
+.contact-card--featured .contact-icon{
+
+    width:52px;
+    height:52px;
+
+}
+
+.contact-card--featured .contact-icon svg{
+
+    width:24px;
+    height:24px;
+
+}
+
+.contact-card--featured h3{
+
+    font-size:1.4rem;
+
+}
+
+.contact-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    min-height:90px;
+
+    padding:2.2rem;
+
+    text-decoration:none;
+
+    color:var(--accent);
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        border-width .2s ease;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+/* Decorative glow */
+
+.contact-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-60%;
+    left:-60%;
+
+    width:180%;
+    height:180%;
+
+    background:
+        radial-gradient(circle,
+        rgba(47,47,47,.12) 0%,
+        transparent 70%);
+
+    opacity:0;
+
+    transition:opacity .45s ease;
+
+    pointer-events:none;
+
+}
+
+.contact-card:hover::before{
+
+    opacity:1;
+
+}
+
+.contact-card h3{
+
+    font-family:'VT323', monospace;
+
+    font-size:1.25rem;
+
+    font-weight:600;
+
+    letter-spacing:.08em;
+
+    text-transform:uppercase;
+
+    margin-bottom:.8rem;
+
+    color:var(--heading-accent-muted);
+
+}
+
+.contact-card p{
+
+    font-family:'VT323', monospace;
+
+    font-size:.98rem;
+
+    line-height:1.7;
+
+    color:var(--text-muted);
+
+    margin:0;
+
+}
+
+/* Hover */
+
+.contact-card:hover{
+
+    transform:none;
+
+    border-color:var(--accent);
+    border-width:2px;
+
+    box-shadow:0 0 28px rgba(51,255,51,.55);
+
+}
+
+/* Small arrow */
+
+.contact-card::after{
+
+    content:"↗";
+
+    position:absolute;
+
+    right:1.5rem;
+
+    bottom:1.3rem;
+
+    font-size:1rem;
+
+    color:rgba(51,255,51,.6);
+
+    transition:none;
+
+}
+
+.contact-card:hover::after{
+
+    transform:none;
+
+    color:var(--accent);
+
+}
+
+/* =====================================
+   CV Download
+===================================== */
+
+.cv-download{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin-top:2.5rem;
+
+    margin-bottom:2.5rem;
+
+}
+
+.cv-download .cta-btn{
+
+    min-width:220px;
+
+}
+
+/* =====================================
+   Contact Page
+===================================== */
+
+#contact-page{
+
+    position:relative;
+
+    padding-bottom:var(--space-11);
 
 }
 
 
-} // end if (canvas) — hero connectome
+/* =====================================
+   Scroll Animation States
+===================================== */
 
-})();
+#connectome-hero{
 
+    opacity:1;
 
-// =====================================================
-// Ambient Connectome (About / Research / Contact)
-// A much lighter, non-interactive echo of the homepage
-// network — a handful of slowly drifting nodes and thin
-// connecting edges, low opacity, no mouse interaction.
-// Runs once per .ambient-network canvas found on the page.
-// =====================================================
+    transform:scale(1);
 
-(() => {
-
-const prefersReducedMotion =
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-// Matches the CSS breakpoint that hides .ambient-network on
-// mobile — skip the canvas setup and animation loop entirely
-// rather than running it invisibly in the background.
-const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-if (isMobile) return;
-
-const canvases = document.querySelectorAll(".ambient-network");
-
-if (!canvases.length) return;
-
-const AMBIENT_NODE_COLOR = "#33ff33";
-const AMBIENT_EDGE_BASE_ALPHA = 0.16;
-const AMBIENT_EDGE_RGB = "51,255,51";
-const AMBIENT_EDGE_COLOR = `rgba(${AMBIENT_EDGE_RGB},${AMBIENT_EDGE_BASE_ALPHA})`;
-const AMBIENT_LINK_DISTANCE_FACTOR = 0.14;
-
-// Density scales with the container's area instead of using
-// a fixed node count, so a short page (Contact) and a long
-// page (Research, with its full timeline) both read as an
-// evenly-populated network rather than the same handful of
-// nodes stretched thin over a much bigger canvas.
-function nodeCountFor(width, height) {
-
-    const area = width * height;
-    const density = Math.round(area / 30000);
-
-    return Math.min(90, Math.max(36, density));
+    will-change:transform,opacity;
 
 }
 
-canvases.forEach((canvas) => {
+#hero-intro{
 
-    const ctx = canvas.getContext("2d");
-
-    let width = 0;
-    let height = 0;
-    let nodes = [];
-
-    function resize() {
-
-        const parent = canvas.parentElement;
-        width = parent.clientWidth;
-        height = parent.clientHeight;
-
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    }
-
-    function makeNodes() {
-
-        nodes = [];
-
-        const count = nodeCountFor(width, height);
-
-        // Jittered grid instead of pure Math.random() placement.
-        // Pure randomness naturally produces clumps and empty gaps
-        // (a well-known artifact — true randomness doesn't look
-        // "evenly spread" to the eye). Splitting the canvas into a
-        // grid and placing one node per cell, with a small random
-        // offset inside that cell, keeps coverage even while each
-        // node still lands in a slightly different spot.
-
-        const cols = Math.max(1, Math.round(Math.sqrt(count * width / height)));
-        const rows = Math.max(1, Math.round(count / cols));
-
-        const cellW = width / cols;
-        const cellH = height / rows;
-
-        // How far a node can drift from its cell's center, as a
-        // fraction of the cell size. Lower = more evenly gridded
-        // and orderly, higher = more organic/random-looking.
-        const JITTER = 0.62;
-
-        for (let r = 0; r < rows; r++) {
-
-            for (let c = 0; c < cols; c++) {
-
-                const cellCenterX = (c + 0.5) * cellW;
-                const cellCenterY = (r + 0.5) * cellH;
-
-                const offsetX = (Math.random() - 0.5) * cellW * JITTER;
-                const offsetY = (Math.random() - 0.5) * cellH * JITTER;
-
-                nodes.push({
-                    x: cellCenterX + offsetX,
-                    y: cellCenterY + offsetY,
-                    vx: (Math.random() - 0.5) * 0.12,
-                    vy: (Math.random() - 0.5) * 0.12,
-                    radius: 2 + Math.random() * 2.2
-                });
-
-            }
-
-        }
-
-    }
-
-    function step() {
-
-        const linkDistance =
-            Math.max(width, height) * AMBIENT_LINK_DISTANCE_FACTOR;
-
-        ctx.clearRect(0, 0, width, height);
-
-        // Drift + wrap around edges
-        for (const n of nodes) {
-
-            n.x += n.vx;
-            n.y += n.vy;
-
-            if (n.x < -20) n.x = width + 20;
-            if (n.x > width + 20) n.x = -20;
-            if (n.y < -20) n.y = height + 20;
-            if (n.y > height + 20) n.y = -20;
-
-        }
-
-        // Edges between nearby nodes
-        ctx.lineWidth = 1.3;
-
-        for (let i = 0; i < nodes.length; i++) {
-
-            for (let j = i + 1; j < nodes.length; j++) {
-
-                const a = nodes[i];
-                const b = nodes[j];
-
-                const dx = a.x - b.x;
-                const dy = a.y - b.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < linkDistance) {
-
-                    const opacity = 1 - dist / linkDistance;
-
-                    ctx.strokeStyle = AMBIENT_EDGE_COLOR
-                        .replace(
-                            String(AMBIENT_EDGE_BASE_ALPHA),
-                            (AMBIENT_EDGE_BASE_ALPHA * opacity).toFixed(3)
-                        );
-
-                    ctx.beginPath();
-                    ctx.moveTo(a.x, a.y);
-                    ctx.lineTo(b.x, b.y);
-                    ctx.stroke();
-
-                }
-
-            }
-
-        }
-
-        // Nodes
-        ctx.fillStyle = AMBIENT_NODE_COLOR;
-
-        for (const n of nodes) {
-
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-            ctx.fill();
-
-        }
-
-    }
-
-    function loop() {
-
-        step();
-        requestAnimationFrame(loop);
-
-    }
-
-    window.addEventListener("resize", () => {
-
-        resize();
-        makeNodes();
-
-    });
-
-    resize();
-    makeNodes();
-
-    if (prefersReducedMotion) {
-
-        // Draw a single static frame instead of animating
-        step();
-
-    } else {
-
-        requestAnimationFrame(loop);
-
-    }
-
-});
-
-})();
-
-
-// =====================================================
-// Scroll Reveal
-// Fades/slides .reveal elements in the first time they
-// scroll into view. Staggers siblings slightly so groups
-// of cards feel like they arrive together, not all at once.
-// =====================================================
-
-(() => {
-
-const revealEls = document.querySelectorAll(".reveal");
-
-if (!revealEls.length) return;
-
-const prefersReducedMotion =
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-if (prefersReducedMotion) {
-
-    revealEls.forEach(el => el.classList.add("is-visible"));
-    return;
+    will-change:transform,opacity;
 
 }
 
-// Stagger elements that share a parent, so grids of cards
-// cascade in rather than popping in simultaneously.
-const groups = new Map();
 
-revealEls.forEach((el) => {
+/* =====================================
+   Scroll Reveal
+   Applied via IntersectionObserver in script.js.
+   Elements start hidden/offset, then animate in
+   the first time they cross into view.
+===================================== */
 
-    const parent = el.parentElement;
+.reveal{
 
-    if (!groups.has(parent)) groups.set(parent, []);
-    groups.get(parent).push(el);
+    opacity:0;
 
-});
+    transform:translateY(28px);
 
-groups.forEach((siblings) => {
+    transition:
+        opacity .7s cubic-bezier(.2,.7,.2,1),
+        transform .7s cubic-bezier(.2,.7,.2,1);
 
-    siblings.forEach((el, i) => {
-
-        el.style.transitionDelay = Math.min(i * 90, 360) + "ms";
-
-    });
-
-});
-
-const observer = new IntersectionObserver((entries) => {
-
-    entries.forEach((entry) => {
-
-        if (entry.isIntersecting) {
-
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-
-        }
-
-    });
-
-}, {
-    threshold: 0.15,
-    rootMargin: "0px 0px -60px 0px"
-});
-
-revealEls.forEach(el => observer.observe(el));
-
-})();
-
-
-// =====================================================
-// Card Tilt
-// Subtle mouse-position-based 3D tilt on any element
-// with the .tilt class (interest/publication/contact/
-// timeline/journey cards). Skipped on touch devices,
-// where hover doesn't really apply.
-// =====================================================
-
-(() => {
-
-const isTouch = window.matchMedia("(hover: none)").matches;
-const prefersReducedMotion =
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-if (isTouch || prefersReducedMotion) return;
-
-const TILT_MAX_DEG = 6;
-const LIFT_PX = 8;
-
-document.querySelectorAll(".tilt").forEach((card) => {
-
-    card.addEventListener("mouseenter", () => {
-
-        card.classList.add("tilt-active");
-
-    });
-
-    card.addEventListener("mousemove", (e) => {
-
-        const rect = card.getBoundingClientRect();
-
-        const px = (e.clientX - rect.left) / rect.width;
-        const py = (e.clientY - rect.top) / rect.height;
-
-        const rotateY = (px - 0.5) * TILT_MAX_DEG * 2;
-        const rotateX = (0.5 - py) * TILT_MAX_DEG * 2;
-
-        card.style.transform =
-            `perspective(900px) translateY(-${LIFT_PX}px) ` +
-            `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-
-    });
-
-    card.addEventListener("mouseleave", () => {
-
-        card.classList.remove("tilt-active");
-        card.style.transform = "";
-
-    });
-
-});
-
-})();
-
-
-// =====================================================
-// Magnetic Buttons
-// CTA buttons gently pull toward the cursor within a
-// small radius, and snap back on mouse leave.
-// =====================================================
-
-(() => {
-
-const isTouch = window.matchMedia("(hover: none)").matches;
-const prefersReducedMotion =
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-if (isTouch || prefersReducedMotion) return;
-
-const PULL_STRENGTH = 0.35;
-const MAX_OFFSET = 10;
-
-document.querySelectorAll(".magnetic").forEach((btn) => {
-
-    btn.addEventListener("mouseenter", () => {
-
-        btn.classList.add("magnetic-active");
-
-    });
-
-    btn.addEventListener("mousemove", (e) => {
-
-        const rect = btn.getBoundingClientRect();
-
-        const offsetX = (e.clientX - rect.left - rect.width / 2)
-            * PULL_STRENGTH;
-        const offsetY = (e.clientY - rect.top - rect.height / 2)
-            * PULL_STRENGTH;
-
-        const clampedX = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, offsetX));
-        const clampedY = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, offsetY));
-
-        btn.style.transform =
-            `translate(${clampedX}px, ${clampedY}px)`;
-
-    });
-
-    btn.addEventListener("mouseleave", () => {
-
-        btn.classList.remove("magnetic-active");
-        btn.style.transform = "";
-
-    });
-
-});
-
-})();
-
-
-// =====================================================
-// Mobile nav toggle
-// Opens/closes the dropdown menu, keeps aria-expanded in
-// sync for screen readers, and closes automatically when
-// a link is tapped or the viewport grows back past mobile.
-// =====================================================
-
-(() => {
-
-const toggle = document.querySelector(".nav-toggle");
-const navLinks = document.querySelector(".nav-links");
-
-if (!toggle || !navLinks) return;
-
-function closeMenu() {
-
-    navLinks.classList.remove("open");
-    toggle.setAttribute("aria-expanded", "false");
+    will-change:opacity, transform;
 
 }
 
-function openMenu() {
+.reveal.is-visible{
 
-    navLinks.classList.add("open");
-    toggle.setAttribute("aria-expanded", "true");
+    opacity:1;
 
-}
-
-toggle.addEventListener("click", () => {
-
-    const isOpen = navLinks.classList.contains("open");
-
-    if (isOpen) {
-        closeMenu();
-    } else {
-        openMenu();
-    }
-
-});
-
-navLinks.querySelectorAll("a").forEach((link) => {
-
-    link.addEventListener("click", closeMenu);
-
-});
-
-// Resizing past the mobile breakpoint (e.g. rotating a
-// tablet, or a desktop window being resized) shouldn't
-// leave the dropdown open with no toggle button visible.
-window.addEventListener("resize", () => {
-
-    if (window.innerWidth > 768) closeMenu();
-
-});
-
-})();
-
-
-// =====================================================
-// Header show/hide on scroll
-// Header gets a solid backdrop once the page has scrolled
-// a bit, and tucks away on scroll-down / reappears on
-// scroll-up so it doesn't compete with content but is
-// always reachable.
-// =====================================================
-
-(() => {
-
-const header = document.querySelector("header");
-
-if (!header) return;
-
-let lastScrollY = window.scrollY;
-let ticking = false;
-
-const SCROLL_THRESHOLD = 24;
-
-function onScroll() {
-
-    const currentY = window.scrollY;
-
-    header.classList.toggle(
-        "header-scrolled",
-        currentY > SCROLL_THRESHOLD
-    );
-
-    if (currentY > lastScrollY && currentY > header.offsetHeight * 2) {
-
-        header.classList.add("header-hidden");
-
-    } else {
-
-        header.classList.remove("header-hidden");
-
-    }
-
-    lastScrollY = currentY;
-    ticking = false;
+    transform:translateY(0);
 
 }
 
-window.addEventListener("scroll", () => {
 
-    if (!ticking) {
+/* =====================================
+   Card Tilt + Magnetic Buttons
+   Base transform/transition setup; the actual
+   rotation values are applied inline by script.js
+   on pointer move.
+===================================== */
 
-        requestAnimationFrame(onScroll);
-        ticking = true;
+.tilt{
+
+    transform-style:preserve-3d;
+
+    transition:
+        transform .5s cubic-bezier(.2,.7,.2,1),
+        border-color .35s ease,
+        box-shadow .35s ease,
+        background .35s ease;
+}
+
+.tilt.tilt-active{
+
+    transition:
+        transform .08s linear,
+        border-color .35s ease,
+        box-shadow .35s ease,
+        background .35s ease;
+}
+
+.magnetic{
+
+    transition:
+        transform .35s cubic-bezier(.2,.7,.2,1),
+        color .35s ease,
+        box-shadow .35s ease;
+}
+
+.magnetic.magnetic-active{
+
+    transition:transform .15s ease-out;
+}
+
+
+/* =====================================
+   Ambient Connectome Layer
+   A quiet, non-interactive echo of the homepage
+   hero network, used as a shared visual thread
+   behind the content on every inner page.
+===================================== */
+
+.ambient-network{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+
+    height:100%;
+
+    z-index:0;
+
+    opacity:.9;
+
+    pointer-events:none;
+
+}
+
+/* Hidden on mobile — the node network is dense enough that
+   on small screens it either looks cluttered or gets scaled
+   so thin it's not worth the render/battery cost. The JS
+   also skips starting the animation loop at this breakpoint
+   (see script.js), so this isn't just a visual hide. */
+@media (max-width:768px){
+
+    .ambient-network{
+
+        display:none;
 
     }
 
-});
+}
 
-})();
+#about-page,
+#research-page,
+#contact-page{
+
+    isolation:isolate;
+
+}
