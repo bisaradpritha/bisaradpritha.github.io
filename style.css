@@ -1813,8 +1813,14 @@ footer p {
 
 }
 
-.credentials-group:hover,
-.accordion-item.active{
+/* Compound selectors (.glass.credentials-group, not just
+   .credentials-group) so this reliably beats .glass:hover's
+   weaker base glow regardless of source order — the two
+   previously had identical specificity, and .glass:hover
+   happening to sit later in the file was silently winning,
+   which is exactly the bug this rule exists to fix. */
+.glass.credentials-group:hover,
+.glass.accordion-item.active{
 
     border-color:var(--accent);
     box-shadow:0 0 26px rgba(51,255,51,.55);
