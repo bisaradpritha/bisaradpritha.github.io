@@ -1,3 +1,4 @@
+// deploy-version: 1
 (() => {
 
 const prefersReducedMotion =
@@ -13,7 +14,12 @@ if (prefersReducedMotion || isTouch) return;
 const trail = document.getElementById("cursor-trail");
 const glow = document.getElementById("cursor-glow");
 
-const colors = ["#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33"];
+const isLightMode =
+    document.documentElement.getAttribute("data-theme") === "light";
+
+const colors = isLightMode
+    ? ["#1a1a1a", "#1a1a1a", "#1a1a1a", "#1a1a1a", "#1a1a1a"]
+    : ["#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33"];
 
 let mouseX = 0;
 let mouseY = 0;
