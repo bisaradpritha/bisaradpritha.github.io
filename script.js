@@ -1,4 +1,4 @@
-// deploy-version: 4
+// deploy-version: 5
 (() => {
 
 // =====================================
@@ -1111,7 +1111,16 @@ if (!canvases.length) return;
 
 const AMBIENT_NODE_COLOR = isLightMode ? "#1a1a1a" : "#33ff33";
 const AMBIENT_EDGE_BASE_ALPHA = 0.16;
-const AMBIENT_EDGE_RGB = isLightMode ? "26,26,26" : "51,255,51";
+/* In dark mode this already differed from the node color
+   (green node, green-but-fainter edge via low alpha alone
+   carried the distinction). In light mode it was previously
+   set to the exact same value as the node color — with
+   monochrome shades and no hue difference to lean on, node
+   and edge read as visually identical. Lightening the edge
+   value specifically gives the ambient network the same
+   node-darkest/edge-lighter layering the hero connectome
+   already has. */
+const AMBIENT_EDGE_RGB = isLightMode ? "110,110,110" : "51,255,51";
 const AMBIENT_EDGE_COLOR = `rgba(${AMBIENT_EDGE_RGB},${AMBIENT_EDGE_BASE_ALPHA})`;
 const AMBIENT_LINK_DISTANCE_FACTOR = 0.14;
 
